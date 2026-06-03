@@ -471,15 +471,15 @@
                 <tr class="hover:bg-cyan-500/[0.02] transition-colors">
                     <td class="px-10 py-5">
                         <h4 class="font-bold text-slate-100 text-sm tracking-tight">${emp.first_name} ${emp.middle_name ? emp.middle_name + ' ' : ''}${emp.last_name}</h4>
-                        <p class="text-[10px] text-cyan-400 font-bold uppercase tracking-wider mt-0.5">HEXID: ${emp.employee_no} • <span class="text-slate-400 font-medium">${emp.position}</span></p>
+                        <p class="text-[10px] text-cyan-400 font-bold uppercase tracking-wider mt-0.5">EMP ID: ${emp.employee_no} • <span class="text-slate-400 font-medium">${emp.position}</span></p>
                         <p class="text-[11px] text-space-400 mt-1 opacity-70">${emp.email || ''}</p>
                         <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-widest mt-1">Status: <span class="text-slate-300 font-medium normal-case">${emp.marital_status || '--'}</span></p>
                     </td>
                     <td class="px-10 py-5">
-                        <p class="text-[11px] text-slate-400">Docked: <span class="text-slate-200 font-medium ml-1">${emp.date_hired || '--'}</span></p>
+                        <p class="text-[11px] text-slate-400">Hired: <span class="text-slate-200 font-medium ml-1">${emp.date_hired || '--'}</span></p>
                         <p class="text-[11px] text-slate-400 mt-0.5">Tenure: <span class="text-emerald-400 font-bold ml-1">${tenure}</span></p>
                         <p class="text-[10px] text-space-400 mt-1.5 uppercase font-bold tracking-wider">Born: <span class="text-slate-300 font-normal normal-case">${emp.birthday || '--'}</span></p>
-                        <p class="text-[10px] text-space-500 mt-1 uppercase font-bold">Sector: <span class="text-slate-300 font-normal normal-case">${emp.location || '--'}</span></p>
+                        <p class="text-[10px] text-space-500 mt-1 uppercase font-bold">Location: <span class="text-slate-300 font-normal normal-case">${emp.location || '--'}</span></p>
                     </td>
                     <td class="px-10 py-5 font-mono text-xs text-slate-300 space-y-0.5">
                         <p><span class="text-[10px] text-space-400 font-sans font-bold uppercase tracking-wider mr-1">SSS:</span> ${emp.sss || '--'}</p>
@@ -538,11 +538,11 @@
                     <td class="px-10 py-5 font-bold text-slate-100 text-sm tracking-tight">${rec.employee_name}</td>
                     <td class="px-10 py-5">
                         <p class="text-xs text-rose-400 font-bold uppercase tracking-wider">${rec.da_type}</p>
-                        <p class="text-[10px] text-space-500 mt-0.5 uppercase font-medium">Anomaly Cycle: ${rec.date_awol || '--'}</p>
+                        <p class="text-[10px] text-space-500 mt-0.5 uppercase font-medium">Date Happen: ${rec.date_awol || '--'}</p>
                     </td>
                     <td class="px-10 py-5">
                         <span class="glass-badge badge-emerald">${rec.status}</span>
-                        <p class="text-[10px] text-space-500 mt-1 uppercase font-medium">Logged: ${rec.date_report || '--'}</p>
+                        <p class="text-[10px] text-space-500 mt-1 uppercase font-medium">Date Report: ${rec.date_report || '--'}</p>
                     </td>
                     <td class="px-10 py-5 max-w-[400px]">
                         <p class="text-xs text-slate-300 italic border-l border-cyan-500/30 pl-4 bg-cyan-500/[0.01] py-2 rounded-r-lg">"${rec.verdict || 'Processing incident variables...'}"</p>
@@ -580,8 +580,8 @@
                     <td class="px-10 py-5 font-bold text-slate-100 text-sm tracking-tight">${rec.first_name} ${rec.last_name}</td>
                     <td class="px-10 py-5 uppercase font-black text-[10px] text-space-400 tracking-wider">${rec.position}</td>
                     <td class="px-10 py-5">
-                        <p class="text-xs text-rose-400 font-semibold">Exit: ${rec.last_day_of_duty}</p>
-                        <p class="text-[10px] text-space-500 mt-0.5">Launch: ${rec.date_hired || '--'}</p>
+                        <p class="text-xs text-rose-400 font-semibold">Last Day: ${rec.last_day_of_duty}</p>
+                        <p class="text-[10px] text-space-500 mt-0.5">Deployed: ${rec.date_hired || '--'}</p>
                     </td>
                     <td class="px-10 py-5 max-w-[400px]">
                         <p class="text-xs text-slate-300 italic border-l border-rose-500/30 pl-4 bg-rose-500/[0.01] py-2 rounded-r-lg">"${rec.reason_for_separation}"</p>
