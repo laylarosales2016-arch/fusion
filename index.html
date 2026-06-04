@@ -285,6 +285,11 @@
         renderMain();
     }
 
+    function selectDAEmployee(name) {
+        document.getElementById('da-name-select').value = name;
+        renderMain();
+    }
+
     function togglePassword() {
         const passInput = document.getElementById('sys-pass');
         const icon = document.getElementById('toggle-icon');
@@ -693,9 +698,13 @@
         `;
 
         dataToRender.forEach(rec => {
+            const isForReporting = !rec.date_report;
             html += `
                 <tr class="hover:bg-cyan-500/[0.02] transition-colors">
-                    <td class="px-10 py-5 font-bold text-slate-100 text-sm tracking-tight">${rec.employee_name}</td>
+                    <td class="px-10 py-5 font-bold text-slate-100 text-sm tracking-tight ${isForReporting ? 'cursor-pointer select-none' : ''}"
+                        ${isForReporting ? `ondblclick="selectDAEmployee('${rec.employee_name}')" title="Double-click to filter"` : ''}>
+                        ${rec.employee_name}
+                    </td>
                     <td class="px-10 py-5">
                         <p class="text-xs text-rose-400 font-bold uppercase tracking-wider">${rec.da_type}</p>
                         <p class="text-[10px] text-space-500 mt-0.5 uppercase font-medium">Date Happen: ${rec.date_awol || '--'}</p>
