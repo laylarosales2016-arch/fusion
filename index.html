@@ -267,10 +267,12 @@
     let employees = [];
     let activeTab = 'attendance';
     let currentAttendance = [];
+    let allAttendance = [];
     let allDaRecords = [];
     let allAttritionRecords = [];
     let currentNote = null;
     let showExcrew = false;
+    let medalCountdownStart = null;
 
     function toggleExcrew() {
         showExcrew = !showExcrew;
@@ -339,6 +341,9 @@
         const { data } = await sb.from('employees').select('*');
         if (data) employees = data;
 
+        const { data: attendanceData } = await sb.from('attendance_records').select('*');
+        if (attendanceData) allAttendance = attendanceData;
+
         const { data: daData } = await sb.from('da_records').select('*').order('date_report', { ascending: false });
         if (daData) {
             allDaRecords = daData;
@@ -354,6 +359,10 @@
 
         const { data: attrData } = await sb.from('attrition_records').select('*').order('last_day_of_duty', { ascending: false });
         if (attrData) allAttritionRecords = attrData;
+
+        // Fetch Medal Countdown Start from settings
+        const { data: settingsData } = await sb.from('settings').select('value').eq('key', 'medal_countdown_start').maybeSingle();
+        if (settingsData) medalCountdownStart = settingsData.value;
 
         fetchSummary(today);
     }
@@ -605,6 +614,29 @@
             return;
         }
 
+        // Calculate Medals for all
+        const medalMap = {};
+        const startDate = medalCountdownStart ? new Date(medalCountdownStart) : new Date();
+        if (!medalCountdownStart) startDate.setDate(startDate.getDate() - 30);
+
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 30);
+
+        allAttendance.forEach(r => {
+            const d = new Date(r.date);
+            if (d >= startDate && d < endDate && (r.status === 'LATE' || r.status === 'OVERBREAK')) {
+                if (!medalMap[r.employee_id]) medalMap[r.employee_id] = { gold: 0, silver: 0 };
+                const note = r.note || "";
+                const match = note.match(/\((\d+)\s*mins\)/);
+                if (match) {
+                    const mins = parseInt(match[1]);
+                    if (mins >= 5) medalMap[r.employee_id].gold++; else medalMap[r.employee_id].silver++;
+                } else {
+                    medalMap[r.employee_id].gold++;
+                }
+            }
+        });
+
         let html = `
             <div class="overflow-x-auto w-full">
                 <table class="w-full text-left border-collapse min-w-[1600px]">
@@ -637,6 +669,17 @@
                     <td class="px-10 py-5">
                         <h4 class="font-bold text-slate-100 text-sm tracking-tight">${emp.first_name} ${emp.middle_name ? emp.middle_name + ' ' : ''}${emp.last_name}</h4>
                         <p class="text-[10px] text-cyan-400 font-bold uppercase tracking-wider mt-0.5">EMP ID: ${emp.employee_no} • <span class="text-slate-400 font-medium">${emp.position}</span></p>
+
+                        <div class="flex items-center gap-1 mt-1">
+                            ${(function() {
+                                const m = medalMap[emp.employee_no] || { gold: 0, silver: 0 };
+                                let icons = '';
+                                for(let i=0; i<m.gold; i++) icons += '<i class="fa-solid fa-medal text-amber-400 text-[10px] shadow-[0_0_8px_rgba(251,191,36,0.4)]"></i>';
+                                for(let i=0; i<m.silver; i++) icons += '<i class="fa-solid fa-medal text-slate-400 text-[10px] shadow-[0_0_8px_rgba(148,163,184,0.4)]"></i>';
+                                return icons;
+                            })()}
+                        </div>
+
                         <p class="text-[11px] text-space-400 mt-1 opacity-70">${emp.email || ''}</p>
                         <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-widest mt-1">Status: <span class="text-slate-300 font-medium normal-case">${emp.marital_status || '--'}</span></p>
                     </td>
