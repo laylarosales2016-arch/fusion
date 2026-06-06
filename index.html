@@ -398,6 +398,7 @@
         <button onclick="switchTab('da')" id="btn-da" class="flex-1 px-6 md:px-8 py-3 rounded-xl text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white whitespace-nowrap">Disciplinary Records</button>
         <button onclick="switchTab('attrition')" id="btn-attrition" class="flex-1 px-6 md:px-8 py-3 rounded-xl text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white whitespace-nowrap">Attrition Logs</button>
         <button onclick="switchTab('medals')" id="btn-medals" class="flex-1 px-6 md:px-8 py-3 rounded-xl text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white whitespace-nowrap">Medal Registry</button>
+        <button onclick="switchTab('system')" id="btn-system" class="hidden flex-1 px-6 md:px-8 py-3 rounded-xl text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white whitespace-nowrap">Master Settings</button>
     </div>
 
     <!-- Admin Note -->
@@ -892,11 +893,12 @@
         const btnDa = document.getElementById('btn-da');
         const btnAttr = document.getElementById('btn-attrition');
         const btnMedal = document.getElementById('btn-medals');
+        const btnSystem = document.getElementById('btn-system');
         const datePicker = document.getElementById('date-picker');
         const daFilter = document.getElementById('da-filter-container');
         const excrewBtn = document.getElementById('btn-excrew-filter');
 
-        [btnAtt, btnEmp, btnDa, btnAttr, btnMedal].forEach(btn => {
+        [btnAtt, btnEmp, btnDa, btnAttr, btnMedal, btnSystem].forEach(btn => {
             if (!btn) return;
             btn.className = "flex-1 px-6 md:px-8 py-3 rounded-xl text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white whitespace-nowrap";
         });
@@ -982,6 +984,9 @@
             statCards.late.classList.remove('hidden');
             statCards.absent.classList.remove('hidden');
             statCards.da.classList.remove('hidden');
+
+            const sysBtn = document.getElementById('btn-system');
+            if (portalRole === 'superadmin') sysBtn.classList.remove('hidden'); else sysBtn.classList.add('hidden');
         }
 
         const daSearch = document.getElementById('da-search').value.toLowerCase();
@@ -1037,6 +1042,11 @@
             statCards.da.classList.add('hidden');
             statLabels.present.innerText = "Total Cases";
             statVals.present.innerText = filteredDa.length;
+        } else if (activeTab === 'system') {
+            statCards.present.classList.add('hidden');
+            statCards.late.classList.add('hidden');
+            statCards.absent.classList.add('hidden');
+            statCards.da.classList.add('hidden');
         } else if (activeTab === 'attrition') {
             statCards.present.classList.add('hidden');
             statCards.late.classList.add('hidden');
@@ -1084,10 +1094,79 @@
         } else if (activeTab === 'medals') {
             titleEl.innerText = "Personnel Medal Registry";
             renderMedals(listContainer);
+        } else if (activeTab === 'system') {
+            titleEl.innerText = "Master System Control";
+            renderSystemSettings(listContainer);
         } else {
             titleEl.innerText = "Historical Attrition Log";
             renderAttrition(listContainer, filteredAttr);
         }
+    }
+
+    async function updateMasterKey(key, inputId) {
+        const val = document.getElementById(inputId).value.trim();
+        const btn = event.target;
+        if (!val) return;
+
+        btn.innerText = "Updating...";
+        try {
+            const { error } = await sb.from('settings').upsert({ key: key, value: val }, { onConflict: 'key' });
+            if (error) throw error;
+            btn.innerText = "Success";
+            btn.className = "bg-emerald-500/20 text-emerald-400 px-4 py-2 rounded-lg font-black text-[9px] uppercase tracking-widest";
+            // Update local variable
+            if (key === 'admin_portal_pass') AUTH_PASS = val;
+            if (key === 'medal_portal_pass') MEDAL_PASS = val;
+            if (key === 'superadmin_portal_pass') SUPER_PASS = val;
+        } catch (e) {
+            btn.innerText = "Error";
+            console.error(e);
+        } finally {
+            setTimeout(() => {
+                btn.innerText = "Update Key";
+                btn.className = "bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-4 py-2 rounded-lg font-black text-[9px] uppercase tracking-widest hover:bg-cyan-500/20 transition-all";
+            }, 2000);
+        }
+    }
+
+    function renderSystemSettings(container) {
+        container.innerHTML = `
+            <div class="p-10 md:p-16 grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div class="glass-card p-8 rounded-[2rem] border-cyan-500/10">
+                    <h4 class="text-xs font-black text-white uppercase tracking-widest mb-6">Portal Access Keys</h4>
+                    <div class="space-y-6">
+                        <div>
+                            <label class="info-label">Main Admin Key (Fusion)</label>
+                            <div class="flex gap-2">
+                                <input type="password" id="sys-fusion-pass" value="${AUTH_PASS || ''}" class="bg-space-950/80 border border-white/10 text-white rounded-lg px-4 py-2 font-mono text-sm outline-none focus:ring-1 focus:ring-cyan-500 flex-1">
+                                <button onclick="updateMasterKey('admin_portal_pass', 'sys-fusion-pass')" class="bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-4 py-2 rounded-lg font-black text-[9px] uppercase tracking-widest hover:bg-cyan-500/20 transition-all">Update Key</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="info-label">Medal Registry Key</label>
+                            <div class="flex gap-2">
+                                <input type="password" id="sys-medal-pass" value="${MEDAL_PASS || ''}" class="bg-space-950/80 border border-white/10 text-white rounded-lg px-4 py-2 font-mono text-sm outline-none focus:ring-1 focus:ring-cyan-500 flex-1">
+                                <button onclick="updateMasterKey('medal_portal_pass', 'sys-medal-pass')" class="bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-4 py-2 rounded-lg font-black text-[9px] uppercase tracking-widest hover:bg-cyan-500/20 transition-all">Update Key</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="info-label">Superadmin Key (Nocturnal)</label>
+                            <div class="flex gap-2">
+                                <input type="password" id="sys-super-pass" value="${SUPER_PASS || ''}" class="bg-space-950/80 border border-white/10 text-white rounded-lg px-4 py-2 font-mono text-sm outline-none focus:ring-1 focus:ring-cyan-500 flex-1">
+                                <button onclick="updateMasterKey('superadmin_portal_pass', 'sys-super-pass')" class="bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-4 py-2 rounded-lg font-black text-[9px] uppercase tracking-widest hover:bg-cyan-500/20 transition-all">Update Key</button>
+                            </div>
+                            <p class="text-[8px] text-rose-400 font-bold uppercase mt-2 opacity-60">* Care: Changing this updates your own current access key.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-card p-8 rounded-[2rem] border-cyan-500/10 flex items-center justify-center text-center">
+                    <div>
+                        <i class="fa-solid fa-shield-halved text-cyan-500/20 text-6xl mb-4"></i>
+                        <p class="text-space-400 text-xs font-medium max-w-[240px]">Master settings are only available to the authorized Superadmin node.</p>
+                    </div>
+                </div>
+            </div>
+        `;
     }
 
     function renderMedals(container) {
