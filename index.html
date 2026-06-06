@@ -1247,13 +1247,13 @@
                     <tr class="hover:bg-cyan-500/[0.02] transition-colors text-xs md:text-sm">
                         <td class="px-4 md:px-10 py-4">
                             <div class="flex items-center gap-3 md:gap-4">
-                                <div class="min-w-[80px] md:min-w-[100px]"><span class="glass-badge badge-cyan !text-[8px] md:!text-[10px] !px-2 md:!px-4">${pos}</span></div>
                                 <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-space-950 border border-white/10 overflow-hidden shrink-0">
                                     <img src="${getProfilePic(emp.employee_no)}" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${emp.first_name}+${emp.last_name}&background=0b0f19&color=22d3ee'">
                                 </div>
                                 <div>
                                     <span class="font-bold text-slate-100">${emp.first_name || ''} ${emp.last_name || ''}</span>
-                                    <p class="text-[8px] md:text-[9px] text-space-400 font-bold uppercase tracking-wider">${emp.employee_no || 'N/A'}</p>
+                                    <p class="text-[8px] md:text-[9px] text-space-400 font-bold uppercase tracking-wider">ID: ${emp.employee_no || 'N/A'}</p>
+                                    <p class="text-[7px] md:text-[8px] text-cyan-400 font-black uppercase tracking-widest opacity-80">${pos}</p>
                                 </div>
                             </div>
                         </td>
