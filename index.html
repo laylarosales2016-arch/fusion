@@ -1213,13 +1213,13 @@
 
         let html = `
             <div class="overflow-x-auto w-full">
-                <table class="w-full text-left border-collapse min-w-[600px] md:min-w-full">
+                <table class="w-full text-left border-collapse min-w-full">
                     <thead>
                         <tr class="bg-space-900/60 border-b border-white/10">
-                            <th class="px-4 md:px-10 py-4 table-header-text">Personnel</th>
-                            <th class="hidden md:table-cell px-10 py-4 table-header-text text-center">Employee ID</th>
-                            <th class="px-4 md:px-10 py-4 table-header-text text-center">Gold Medals</th>
-                            <th class="px-4 md:px-10 py-4 table-header-text text-center">Silver Medals</th>
+                            <th class="px-3 md:px-10 py-4 table-header-text">Personnel</th>
+                            <th class="hidden sm:table-cell px-10 py-4 table-header-text text-center">Employee ID</th>
+                            <th class="px-2 md:px-10 py-4 table-header-text text-center">Gold</th>
+                            <th class="px-2 md:px-10 py-4 table-header-text text-center">Silver</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-white/5">`;
@@ -1253,30 +1253,30 @@
 
                 html += `
                     <tr class="hover:bg-cyan-500/[0.02] transition-colors text-xs md:text-sm">
-                        <td class="px-4 md:px-10 py-4">
-                            <div class="flex items-center gap-3 md:gap-4">
+                        <td class="px-3 md:px-10 py-4">
+                            <div class="flex items-center gap-2 md:gap-4">
                                 <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-space-950 border border-white/10 overflow-hidden shrink-0">
                                     <img src="${getProfilePic(emp.employee_no)}" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${emp.first_name}+${emp.last_name}&background=0b0f19&color=22d3ee'">
                                 </div>
                                 <div>
-                                    <span class="font-bold text-slate-100">${emp.first_name || ''} ${emp.last_name || ''}</span>
+                                    <span class="font-bold text-slate-100 leading-tight block">${emp.first_name || ''} ${emp.last_name || ''}</span>
                                     <p class="text-[8px] md:text-[9px] text-space-400 font-bold uppercase tracking-wider">ID: ${emp.employee_no || 'N/A'}</p>
                                     <p class="text-[7px] md:text-[8px] text-cyan-400 font-black uppercase tracking-widest opacity-80">${pos}</p>
                                 </div>
                             </div>
                         </td>
-                        <td class="hidden md:table-cell px-10 py-4 font-mono text-xs text-cyan-400/80 text-center">${emp.employee_no || 'N/A'}</td>
-                        <td class="px-4 md:px-10 py-4 text-center">
-                            <div class="flex items-center justify-center space-x-1 md:space-x-2">
-                                <div class="flex flex-wrap justify-center max-w-[60px] md:max-w-none">
-                                    ${'<i class="fa-solid fa-medal text-amber-400 text-[10px] md:text-xs shadow-[0_0_8px_rgba(251,191,36,0.4)] m-0.5"></i>'.repeat(m.gold)}
+                        <td class="hidden sm:table-cell px-10 py-4 font-mono text-xs text-cyan-400/80 text-center">${emp.employee_no || 'N/A'}</td>
+                        <td class="px-2 md:px-10 py-4 text-center">
+                            <div class="flex items-center justify-center">
+                                <div class="flex flex-wrap justify-center gap-0.5 max-w-[50px] md:max-w-none">
+                                    ${'<i class="fa-solid fa-medal text-amber-400 text-[10px] md:text-xs shadow-[0_0_8px_rgba(251,191,36,0.4)]"></i>'.repeat(m.gold)}
                                 </div>
                             </div>
                         </td>
-                        <td class="px-4 md:px-10 py-4 text-center">
-                            <div class="flex items-center justify-center space-x-1 md:space-x-2">
-                                <div class="flex flex-wrap justify-center max-w-[60px] md:max-w-none">
-                                    ${'<i class="fa-solid fa-medal text-slate-400 text-[10px] md:text-xs shadow-[0_0_8px_rgba(148,163,184,0.4)] m-0.5"></i>'.repeat(m.silver)}
+                        <td class="px-2 md:px-10 py-4 text-center">
+                            <div class="flex items-center justify-center">
+                                <div class="flex flex-wrap justify-center gap-0.5 max-w-[50px] md:max-w-none">
+                                    ${'<i class="fa-solid fa-medal text-slate-400 text-[10px] md:text-xs shadow-[0_0_8px_rgba(148,163,184,0.4)]"></i>'.repeat(m.silver)}
                                 </div>
                             </div>
                         </td>
