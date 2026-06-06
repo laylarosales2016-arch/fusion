@@ -87,6 +87,11 @@
         .badge-rose { background: rgba(244, 63, 94, 0.12); color: #fb7185; border-color: rgba(244, 63, 94, 0.25); text-shadow: 0 0 8px rgba(251, 113, 133, 0.3); }
         .badge-cyan { background: rgba(34, 211, 238, 0.12); color: #22d3ee; border-color: rgba(34, 211, 238, 0.25); text-shadow: 0 0 8px rgba(34, 211, 238, 0.3); }
 
+        /* Personal Vault Styles */
+        .info-label { font-size: 10px; font-weight: 800; color: #22d3ee; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 4px; display: block; opacity: 0.7; }
+        .info-value { font-size: 15px; font-weight: 600; color: #f3f4f6; }
+        .section-title { font-size: 12px; font-weight: 900; color: #fff; text-transform: uppercase; letter-spacing: 0.2em; padding-bottom: 12px; margin-bottom: 24px; border-bottom: 1px solid rgba(34, 211, 238, 0.2); display: flex; align-items: center; gap: 12px; }
+
         /* Shooting Stars Background Effect */
         .shooting-stars-container {
             position: fixed;
@@ -169,7 +174,112 @@
         <p id="auth-error" class="text-rose-400 text-[10px] font-bold uppercase tracking-widest mt-3 ml-4 hidden">Access Denied: Terminal Sync Failed</p>
     </div>
 
-    <button onclick="checkAuth()" class="w-full bg-cyan-500 hover:bg-cyan-400 text-space-950 font-black uppercase text-xs tracking-[0.2em] py-4 rounded-xl transition-all shadow-lg active:scale-95 shadow-cyan-500/10">Establish Uplink</button>
+    <button onclick="checkAuth()" id="login-btn" class="w-full bg-cyan-500 hover:bg-cyan-400 text-space-950 font-black uppercase text-xs tracking-[0.2em] py-4 rounded-xl transition-all shadow-lg active:scale-95 shadow-cyan-500/10">Establish Uplink</button>
+</div>
+
+<!-- Personal Vault (Hidden by default) -->
+<div id="personal-vault-container" class="hidden w-full max-w-5xl mx-auto py-8">
+    <header class="flex flex-col md:flex-row items-center justify-between mb-12 gap-6">
+        <div class="flex items-center space-x-6">
+            <div id="v-photo-container" class="w-20 h-20 bg-cyan-500/10 border-2 border-cyan-500/30 rounded-full flex items-center justify-center overflow-hidden shadow-[0_0_20px_rgba(34,211,238,0.2)] shrink-0">
+                <i id="v-photo-placeholder" class="fa-solid fa-user-shield text-cyan-400 text-3xl"></i>
+                <img id="v-photo" class="w-full h-full object-cover hidden" src="" alt="" onerror="this.classList.add('hidden'); document.getElementById('v-photo-placeholder').classList.remove('hidden')">
+            </div>
+            <div>
+                <h1 id="v-name" class="text-2xl font-black tracking-tight text-white">---</h1>
+                <p id="v-id-pos" class="text-cyan-400 font-bold uppercase tracking-[0.3em] text-[9px]">ID: --- • ---</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <button id="v-back-btn" onclick="backToDashboard()" class="hidden bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-8 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-cyan-500/20 transition-all">
+                <i class="fa-solid fa-arrow-left mr-2"></i>Return to Portal
+            </button>
+            <button onclick="logout()" class="bg-rose-500/10 border border-rose-500/20 text-rose-400 px-8 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-rose-500/20 transition-all">
+                <i class="fa-solid fa-power-off mr-2"></i>Terminate Session
+            </button>
+        </div>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Column 1: Core & Deployment -->
+        <div class="space-y-8">
+            <div class="glass-card p-8 rounded-[2.5rem]">
+                <h3 class="section-title"><i class="fa-solid fa-id-card"></i> Core Identity</h3>
+                <div class="space-y-6">
+                    <div><span class="info-label">Full Legal Name</span><p id="v-fullname" class="info-value">---</p></div>
+                    <div><span class="info-label">Email Address</span><p id="v-email" class="info-value text-sm">---</p></div>
+                    <div><span class="info-label">Contact Number</span><p id="v-phone" class="info-value">---</p></div>
+                    <div><span class="info-label">Marital Status</span><p id="v-marital" class="info-value uppercase">---</p></div>
+                </div>
+            </div>
+            <div class="glass-card p-8 rounded-[2.5rem]">
+                <h3 class="section-title"><i class="fa-solid fa-rocket"></i> Deployment</h3>
+                <div class="space-y-6">
+                    <div><span class="info-label">Date Hired</span><p id="v-hired" class="info-value">---</p></div>
+                    <div><span class="info-label">System Tenure</span><p id="v-tenure" class="info-value text-emerald-400 font-black">---</p></div>
+                    <div><span class="info-label">Birthday</span><p id="v-birthday" class="info-value">---</p></div>
+                    <div><span class="info-label">Residential Hub</span><p id="v-location" class="info-value text-sm">---</p></div>
+                </div>
+            </div>
+        </div>
+        <!-- Column 2: Registries & Financial -->
+        <div class="space-y-8">
+            <div class="glass-card p-8 rounded-[2.5rem]">
+                <h3 class="section-title"><i class="fa-solid fa-file-invoice"></i> System Registries</h3>
+                <div class="space-y-6 font-mono text-sm">
+                    <div><span class="info-label font-sans">SSS Number</span><p id="v-sss" class="text-slate-300">---</p></div>
+                    <div><span class="info-label font-sans">TIN Number</span><p id="v-tin" class="text-slate-300">---</p></div>
+                    <div><span class="info-label font-sans">PhilHealth ID</span><p id="v-ph" class="text-slate-300">---</p></div>
+                    <div><span class="info-label font-sans">Pag-IBIG Number</span><p id="v-pagibig" class="text-slate-300">---</p></div>
+                </div>
+            </div>
+            <div class="glass-card p-8 rounded-[2.5rem]">
+                <h3 class="section-title"><i class="fa-solid fa-vault"></i> Financial Ledger</h3>
+                <div class="space-y-6">
+                    <div><span class="info-label">Bank Institution</span><p id="v-bank" class="info-value">---</p></div>
+                    <div><span class="info-label">Account Number</span><p id="v-bank-acc" class="info-value font-mono text-cyan-400/80">---</p></div>
+                    <div><span class="info-label">Payroll Username</span><p id="v-payroll-user" class="info-value font-mono opacity-60">---</p></div>
+                </div>
+            </div>
+        </div>
+        <!-- Column 3: Stats, Medals & Emergency -->
+        <div class="space-y-8">
+            <div class="glass-card p-8 rounded-[2.5rem] border-amber-500/20">
+                <h3 class="section-title"><i class="fa-solid fa-medal"></i> Recognition Medals</h3>
+                <div id="v-medal-icons" class="flex flex-wrap gap-2 mb-4"></div>
+                <div id="v-cert" class="px-4 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest text-center">Uncertified</div>
+            </div>
+            <div class="glass-card p-8 rounded-[2.5rem]">
+                <h3 class="section-title"><i class="fa-solid fa-shirt"></i> Allocation Units</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-space-950/50 p-3 rounded-xl border border-white/5"><span class="info-label !text-[8px]">Cap</span><p id="v-cap" class="info-value">0</p></div>
+                    <div class="bg-space-950/50 p-3 rounded-xl border border-white/5"><span class="info-label !text-[8px]">Apron</span><p id="v-apron" class="info-value">0</p></div>
+                    <div class="bg-space-950/50 p-3 rounded-xl border border-white/5"><span class="info-label !text-[8px]">Shirt</span><p id="v-shirt" class="info-value">0</p></div>
+                    <div class="bg-space-950/50 p-3 rounded-xl border border-white/5"><span class="info-label !text-[8px]">Pants</span><p id="v-pants" class="info-value">0</p></div>
+                </div>
+            </div>
+            <div class="glass-card p-8 rounded-[2.5rem] border-rose-500/20">
+                <h3 class="section-title"><i class="fa-solid fa-life-ring"></i> Emergency Anchor</h3>
+                <div class="space-y-4">
+                    <div><span class="info-label">Primary Contact</span><p id="v-ec-name" class="info-value text-sm">---</p></div>
+                    <div><span class="info-label">Relationship</span><p id="v-ec-rel" class="info-value uppercase text-xs">---</p></div>
+                    <div><span class="info-label text-rose-400">Emergency Hotline</span><p id="v-ec-phone" class="info-value font-mono">---</p></div>
+                </div>
+            </div>
+
+            <div class="glass-card p-8 rounded-[2.5rem] border-cyan-500/20">
+                <h3 class="section-title"><i class="fa-solid fa-lock"></i> Portal Security</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="info-label">New Portal Password</label>
+                        <input type="password" id="v-new-pass" placeholder="••••••••" class="bg-space-950/80 border border-white/10 text-white rounded-lg px-4 py-2 font-semibold text-sm outline-none focus:ring-1 focus:ring-cyan-500 w-full mb-3">
+                        <button onclick="updatePortalPassword()" id="btn-update-pass" class="w-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 py-2 rounded-lg font-black text-[9px] uppercase tracking-widest hover:bg-cyan-500/20 transition-all">Update Key</button>
+                        <p id="v-pass-msg" class="text-[8px] font-bold uppercase mt-2 hidden"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Main Portal (Hidden by default) -->
@@ -268,8 +378,17 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVobWpnbndwenNlbWtzeGNqcGl6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3ODMyNDU2NCwiZXhwIjoyMDkzOTAwNTY0fQ.SVdNjQlocvBEwwxl2K_7BMT94vUq5fkNRev65fXrvyc';
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const AUTH_PASS = 'fusion2026';
-    const MEDAL_PASS = 'medal2026';
+    function getProfilePic(empNo) {
+        if (!empNo) return `https://ui-avatars.com/api/?name=User&background=0b0f19&color=22d3ee`;
+        const safeEmpNo = empNo.trim().replace(/\//g, "_").replace(/#/g, "_").replace(/ /g, "_");
+        const { data } = sb.storage.from('backups').getPublicUrl(`${safeEmpNo}/${safeEmpNo}.jpg`);
+        return data.publicUrl;
+    }
+
+    // Master keys will be fetched from Supabase for security
+    let AUTH_PASS = null;
+    let MEDAL_PASS = null;
+    let SUPER_PASS = null;
     let employees = [];
     let activeTab = 'attendance';
     let portalRole = 'admin'; // 'admin' or 'medal'
@@ -311,52 +430,294 @@
         }
     }
 
-    function checkAuth() {
-        const pass = document.getElementById('sys-pass').value;
+    async function checkAuth() {
+        const pass = document.getElementById('sys-pass').value.trim();
         const error = document.getElementById('auth-error');
         const loginSection = document.getElementById('login-container');
         const portalSection = document.getElementById('portal-container');
+        const vaultSection = document.getElementById('personal-vault-container');
         const body = document.body;
+        const btn = document.getElementById('login-btn');
 
-        if (pass === AUTH_PASS || pass === MEDAL_PASS) {
-            const role = pass === AUTH_PASS ? 'admin' : 'medal';
-            sessionStorage.setItem('portal_auth', 'true');
-            sessionStorage.setItem('portal_role', role);
-            portalRole = role;
+        btn.innerHTML = '<div class="loader w-5 h-5 border-2 rounded-full mx-auto"></div>';
+        btn.disabled = true;
 
-            loginSection.classList.add('hidden');
-            portalSection.classList.remove('hidden');
-            body.classList.remove('items-center', 'justify-center');
-            body.classList.add('p-4', 'md:p-12');
-
-            if (role === 'medal') {
-                activeTab = 'medals';
+        try {
+            // 1. Fetch Admin/Medal keys from Supabase settings table if not already fetched
+            if (!AUTH_PASS || !MEDAL_PASS || !SUPER_PASS) {
+                const { data: settings } = await sb.from('settings').select('key, value').in('key', ['admin_portal_pass', 'medal_portal_pass', 'superadmin_portal_pass']);
+                if (settings) {
+                    AUTH_PASS = settings.find(s => s.key === 'admin_portal_pass')?.value || 'fusion2026';
+                    MEDAL_PASS = settings.find(s => s.key === 'medal_portal_pass')?.value || 'medal2026';
+                    SUPER_PASS = settings.find(s => s.key === 'superadmin_portal_pass')?.value || 'nocturnal';
+                }
             }
 
-            initializeData();
-        } else {
+            if (pass === AUTH_PASS || pass === MEDAL_PASS || pass === SUPER_PASS) {
+                let role;
+                if (pass === AUTH_PASS) role = 'admin';
+                else if (pass === MEDAL_PASS) role = 'medal';
+                else role = 'superadmin';
+
+                sessionStorage.setItem('portal_auth', 'true');
+                sessionStorage.setItem('portal_role', role);
+                portalRole = role;
+
+                loginSection.classList.add('hidden');
+                portalSection.classList.remove('hidden');
+                body.classList.remove('items-center', 'justify-center');
+                body.classList.add('p-4', 'md:p-12');
+
+                if (role === 'medal') {
+                    activeTab = 'medals';
+                }
+
+                initializeData();
+                return;
+            }
+
+            // 2. Check for Employee ID or Custom Password
+            // Try to find employee by ID (pass is the ID or custom pass)
+            let { data: emp, error: empErr } = await sb.from('employees')
+                .select('*')
+                .or(`employee_no.eq.${pass},portal_password.eq.${pass}`)
+                .maybeSingle();
+
+            if (empErr) throw empErr;
+
+            if (emp) {
+                sessionStorage.setItem('portal_auth', 'true');
+                sessionStorage.setItem('portal_role', 'personal');
+                sessionStorage.setItem('portal_id', emp.employee_no);
+                portalRole = 'personal';
+                showVault(emp);
+            } else {
+                error.innerText = "Access Denied: Identity Not Found";
+                error.classList.remove('hidden');
+                btn.innerText = 'Establish Uplink';
+                btn.disabled = false;
+            }
+        } catch (err) {
+            error.innerText = "Sync Error: " + err.message;
             error.classList.remove('hidden');
-            document.getElementById('sys-pass').value = '';
-            document.getElementById('sys-pass').focus();
+            btn.innerText = 'Establish Uplink';
+            btn.disabled = false;
+        }
+    }
+
+    async function updatePortalPassword() {
+        const newPass = document.getElementById('v-new-pass').value.trim();
+        const msg = document.getElementById('v-pass-msg');
+        const btn = document.getElementById('btn-update-pass');
+        const empNo = sessionStorage.getItem('portal_id');
+
+        if (!newPass) return;
+        if (newPass.length < 4) {
+            msg.innerText = "Security Alert: Key Too Short (Min 4)";
+            msg.className = "text-[8px] font-black uppercase mt-2 text-rose-400";
+            msg.classList.remove('hidden');
+            return;
+        }
+
+        btn.innerText = "Encrypting...";
+        btn.disabled = true;
+
+        try {
+            const { error } = await sb.from('employees').update({ portal_password: newPass }).eq('employee_no', empNo);
+            if (error) throw error;
+
+            msg.innerText = "Encryption Success: New Key Active";
+            msg.className = "text-[8px] font-black uppercase mt-2 text-emerald-400";
+            msg.classList.remove('hidden');
+            document.getElementById('v-new-pass').value = '';
+        } catch (err) {
+            msg.innerText = "Encryption Failed: " + err.message;
+            msg.className = "text-[8px] font-black uppercase mt-2 text-rose-400";
+            msg.classList.remove('hidden');
+        } finally {
+            btn.innerText = "Update Key";
+            btn.disabled = false;
+        }
+    }
+
+    function openPersonalProfile(empNo) {
+        const emp = employees.find(e => e.employee_no === empNo);
+        if (emp) {
+            document.getElementById('portal-container').classList.add('hidden');
+            showVault(emp);
+        }
+    }
+
+    function backToDashboard() {
+        document.getElementById('personal-vault-container').classList.add('hidden');
+        document.getElementById('portal-container').classList.remove('hidden');
+    }
+
+    async function adminUpdatePass(empNo) {
+        const input = document.getElementById(`pass-${empNo}`);
+        const newPass = input.value.trim();
+        const originalBtnText = event.target.innerText;
+        const btn = event.target;
+
+        if (!newPass) return;
+
+        btn.innerText = "...";
+        btn.disabled = true;
+
+        try {
+            const { error } = await sb.from('employees').update({ portal_password: newPass }).eq('employee_no', empNo);
+            if (error) throw error;
+            btn.innerText = "OK";
+            btn.classList.replace('text-cyan-400', 'text-emerald-400');
+            setTimeout(() => {
+                btn.innerText = "Set";
+                btn.classList.replace('text-emerald-400', 'text-cyan-400');
+                btn.disabled = false;
+            }, 2000);
+        } catch (err) {
+            console.error(err);
+            btn.innerText = "ERR";
+            btn.classList.replace('text-cyan-400', 'text-rose-400');
+            setTimeout(() => {
+                btn.innerText = "Set";
+                btn.classList.replace('text-rose-400', 'text-cyan-400');
+                btn.disabled = false;
+            }, 2000);
         }
     }
 
     function logout() {
         sessionStorage.removeItem('portal_auth');
         sessionStorage.removeItem('portal_role');
+        sessionStorage.removeItem('portal_id');
         location.reload();
     }
 
     window.onload = async () => {
         if (sessionStorage.getItem('portal_auth') === 'true') {
             portalRole = sessionStorage.getItem('portal_role') || 'admin';
-            document.getElementById('login-container').classList.add('hidden');
-            document.getElementById('portal-container').classList.remove('hidden');
-            document.body.classList.remove('items-center', 'justify-center');
-            if (portalRole === 'medal') activeTab = 'medals';
-            initializeData();
+            const portalId = sessionStorage.getItem('portal_id');
+
+            if (portalRole === 'personal' && portalId) {
+                const { data: emp } = await sb.from('employees').select('*').eq('employee_no', portalId).maybeSingle();
+                if (emp) showVault(emp); else logout();
+            } else {
+                document.getElementById('login-container').classList.add('hidden');
+                document.getElementById('portal-container').classList.remove('hidden');
+                document.body.classList.remove('items-center', 'justify-center');
+                if (portalRole === 'medal') activeTab = 'medals';
+                initializeData();
+            }
         }
     };
+
+    async function showVault(emp) {
+        document.getElementById('login-container').classList.add('hidden');
+        document.getElementById('personal-vault-container').classList.remove('hidden');
+        document.body.classList.remove('items-center', 'justify-center');
+        document.body.classList.add('p-4', 'md:p-12');
+
+        // Back button visibility
+        const backBtn = document.getElementById('v-back-btn');
+        if (portalRole === 'admin' || portalRole === 'superadmin') {
+            backBtn.classList.remove('hidden');
+        } else {
+            backBtn.classList.add('hidden');
+        }
+
+        // Photo
+        const photoImg = document.getElementById('v-photo');
+        const photoPlaceholder = document.getElementById('v-photo-placeholder');
+        photoImg.src = getProfilePic(emp.employee_no);
+        photoImg.onload = () => {
+            photoImg.classList.remove('hidden');
+            photoPlaceholder.classList.add('hidden');
+        };
+        photoImg.onerror = () => {
+            photoImg.classList.add('hidden');
+            photoPlaceholder.classList.remove('hidden');
+        };
+
+        // Identity
+        document.getElementById('v-name').innerText = `${emp.first_name} ${emp.last_name}`;
+        document.getElementById('v-id-pos').innerText = `ID: ${emp.employee_no} • ${emp.position}`;
+        document.getElementById('v-fullname').innerText = `${emp.first_name} ${emp.middle_name ? emp.middle_name + ' ' : ''}${emp.last_name}`;
+        document.getElementById('v-email').innerText = emp.email || 'N/A';
+        document.getElementById('v-phone').innerText = emp.phone_number || 'N/A';
+        document.getElementById('v-marital').innerText = emp.marital_status || '---';
+
+        // Deployment
+        document.getElementById('v-hired').innerText = emp.date_hired || '---';
+        document.getElementById('v-birthday').innerText = emp.birthday || '---';
+        document.getElementById('v-location').innerText = emp.location || '---';
+
+        if (emp.date_hired) {
+            const hired = new Date(emp.date_hired);
+            const diff = new Date() - hired;
+            const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
+            const months = Math.floor((diff % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30));
+            document.getElementById('v-tenure').innerText = `${years}y ${months}m`;
+        }
+
+        // Registries
+        document.getElementById('v-sss').innerText = emp.sss || '---';
+        document.getElementById('v-tin').innerText = emp.tin_number || '---';
+        document.getElementById('v-ph').innerText = emp.phil_health || '---';
+        document.getElementById('v-pagibig').innerText = emp.pagibig || '---';
+
+        // Financial
+        document.getElementById('v-bank').innerText = emp.bank || '---';
+        document.getElementById('v-bank-acc').innerText = emp.bank_account_number || '---';
+        document.getElementById('v-payroll-user').innerText = emp.payroll_username || '---';
+
+        // Uniform & Cert
+        document.getElementById('v-cap').innerText = emp.uniform_cap || 0;
+        document.getElementById('v-apron').innerText = emp.uniform_apron || 0;
+        document.getElementById('v-shirt').innerText = emp.uniform_shirt || 0;
+        document.getElementById('v-pants').innerText = emp.uniform_pants || 0;
+
+        const certEl = document.getElementById('v-cert');
+        if (emp.is_certified) {
+            certEl.innerText = "Crew Certified";
+            certEl.className = "px-4 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest text-center";
+        } else {
+            certEl.innerText = "Uncertified";
+            certEl.className = "px-4 py-2 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[10px] font-black uppercase tracking-widest text-center";
+        }
+
+        // Emergency
+        document.getElementById('v-ec-name').innerText = emp.emergency_contact_name || '---';
+        document.getElementById('v-ec-rel').innerText = emp.emergency_contact_relationship || '---';
+        document.getElementById('v-ec-phone').innerText = emp.emergency_contact_phone || '---';
+
+        // Medals
+        const { data: settings } = await sb.from('settings').select('value').eq('key', 'medal_countdown_start').maybeSingle();
+        const startStr = settings ? settings.value : null;
+        const startDate = startStr ? new Date(startStr) : new Date();
+        if (!startStr) startDate.setDate(startDate.getDate() - 30);
+        startDate.setHours(0,0,0,0);
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 30);
+
+        const { data: att } = await sb.from('attendance_records').select('*').eq('employee_id', emp.employee_no);
+        let gold = 0, silver = 0;
+        (att || []).forEach(r => {
+            const d = new Date(r.date);
+            if (d >= startDate && d < endDate && (r.status === 'LATE' || r.status === 'OVERBREAK')) {
+                const note = r.note || "";
+                const match = note.match(/\((\d+)\s*mins\)/);
+                if (match) {
+                    const mins = parseInt(match[1]);
+                    if (mins >= 5) gold++; else silver++;
+                } else gold++;
+            }
+        });
+
+        let icons = '';
+        for(let i=0; i<gold; i++) icons += '<i class="fa-solid fa-medal text-amber-400 text-xl shadow-[0_0_10px_rgba(251,191,36,0.5)]"></i>';
+        for(let i=0; i<silver; i++) icons += '<i class="fa-solid fa-medal text-slate-400 text-xl shadow-[0_0_10px_rgba(148,163,184,0.5)]"></i>';
+        document.getElementById('v-medal-icons').innerHTML = icons || '<p class="text-[10px] text-space-400 italic">No medals in current cycle.</p>';
+    }
 
     async function initializeData() {
         const today = new Date().toISOString().split('T')[0];
@@ -675,6 +1036,9 @@
                         <td class="px-4 md:px-10 py-4">
                             <div class="flex items-center gap-3 md:gap-4">
                                 <div class="min-w-[80px] md:min-w-[100px]"><span class="glass-badge badge-cyan !text-[8px] md:!text-[10px] !px-2 md:!px-4">${pos}</span></div>
+                                <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-space-950 border border-white/10 overflow-hidden shrink-0">
+                                    <img src="${getProfilePic(emp.employee_no)}" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${emp.first_name}+${emp.last_name}&background=0b0f19&color=22d3ee'">
+                                </div>
                                 <div>
                                     <span class="font-bold text-slate-100">${emp.first_name || ''} ${emp.last_name || ''}</span>
                                     <p class="text-[8px] md:text-[9px] text-space-400 font-bold uppercase tracking-wider">${emp.employee_no || 'N/A'}</p>
@@ -828,8 +1192,14 @@
                     <td class="px-10 py-5">
                         <div class="flex items-start gap-4">
                             <div class="min-w-[120px] pt-1"><span class="glass-badge badge-cyan">${currentPos}</span></div>
+                            <div class="w-12 h-12 rounded-full bg-space-950 border border-white/10 overflow-hidden shrink-0">
+                                <img src="${getProfilePic(emp.employee_no)}" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${emp.first_name}+${emp.last_name}&background=0b0f19&color=22d3ee'">
+                            </div>
                             <div>
-                                <h4 class="font-bold text-slate-100 text-sm tracking-tight">${emp.first_name} ${emp.middle_name ? emp.middle_name + ' ' : ''}${emp.last_name}</h4>
+                                <h4 class="font-bold text-slate-100 text-sm tracking-tight ${portalRole === 'admin' || portalRole === 'superadmin' ? 'cursor-pointer select-none' : ''}"
+                                    ${portalRole === 'admin' || portalRole === 'superadmin' ? `ondblclick="openPersonalProfile('${emp.employee_no}')" title="Double-click to view vault"` : ''}>
+                                    ${emp.first_name} ${emp.middle_name ? emp.middle_name + ' ' : ''}${emp.last_name}
+                                </h4>
                                 <p class="text-[10px] text-cyan-400 font-bold uppercase tracking-wider mt-0.5">EMP ID: ${emp.employee_no} • <span class="text-slate-400 font-medium">${emp.position}</span></p>
 
                         <div class="flex items-center gap-1 mt-1">
@@ -841,6 +1211,16 @@
                                 return icons;
                             })()}
                         </div>
+
+                        ${portalRole === 'superadmin' ? `
+                        <div class="mt-4 p-3 bg-space-950/50 border border-white/5 rounded-xl">
+                            <label class="info-label !text-[7px]">Vault Key</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="pass-${emp.employee_no}" value="${emp.portal_password || ''}" placeholder="None" class="bg-space-950 border border-white/10 text-cyan-400 rounded px-2 py-1 text-[10px] font-mono w-24 outline-none focus:ring-1 focus:ring-cyan-500">
+                                <button onclick="adminUpdatePass('${emp.employee_no}')" class="bg-cyan-500/10 text-cyan-400 px-2 py-1 rounded text-[8px] font-black uppercase hover:bg-cyan-500/20">Set</button>
+                            </div>
+                        </div>
+                        ` : ''}
 
                         <p class="text-[11px] text-space-400 mt-1 opacity-70">${emp.email || ''}</p>
                         <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-widest mt-1">Status: <span class="text-slate-300 font-medium normal-case">${emp.marital_status || '--'}</span></p>
