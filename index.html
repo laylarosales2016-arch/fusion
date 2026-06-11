@@ -1177,11 +1177,15 @@
 
                 const excludedNames = ["admin Fusion", "Chowking SM Clark"];
 
+                const excludedPositions = ["assistant manager", "manager", "senior crew", "administrator", "coordinator"];
+
                 const uniqueNames = [...new Set(data
                     .filter(e => {
                         const fullName = `${e.first_name || ''} ${e.last_name || ''}`.trim().toLowerCase();
                         if (excludedNames.some(exName => fullName.includes(exName.toLowerCase()))) return false;
-                        return !e.is_hidden_from_scheduler && !(e.position || "").toLowerCase().includes("excrew");
+                        const pos = (e.position || "").toLowerCase();
+                        if (excludedPositions.some(p => pos.includes(p))) return false;
+                        return !pos.includes("excrew");
                     })
                     .map(e => `${e.first_name || ''} ${e.last_name || ''}`.trim()))]
                     .filter(name => name !== '')
@@ -1276,13 +1280,16 @@
         let filteredEmps;
         const excludedNames = ["admin Fusion", "Chowking SM Clark"];
 
+        const excludedPositions = ["assistant manager", "manager", "senior crew", "administrator", "coordinator"];
         if (showExcrew) {
             filteredEmps = employees.filter(e => (e.position || "").toLowerCase().includes('excrew') && !(`${e.first_name} ${e.last_name}`.includes('Marcyl Maquiling')));
         } else {
             filteredEmps = employees.filter(e => {
                 const fullName = `${e.first_name || ''} ${e.last_name || ''}`.trim().toLowerCase();
                 if (excludedNames.some(exName => fullName.includes(exName.toLowerCase()))) return false;
-                return !e.is_hidden_from_scheduler && !(e.position || "").toLowerCase().includes('excrew');
+                const pos = (e.position || "").toLowerCase();
+                if (excludedPositions.some(p => pos.includes(p))) return false;
+                return !pos.includes('excrew');
             });
         }
         if (daSelectedName) filteredEmps = filteredEmps.filter(e => `${e.first_name || ''} ${e.last_name || ''}`.trim() === daSelectedName || e.employee_no === daSelectedName);
@@ -1366,7 +1373,12 @@
                 if (match && parseInt(match[1]) >= 5) medalMap[r.employee_id].gold++; else medalMap[r.employee_id].silver++;
             }
         });
-        const medalEmps = employees.filter(e => !e.is_hidden_from_scheduler && !(e.position || "").toLowerCase().includes('excrew'));
+        const excludedPositions = ["assistant manager", "manager", "senior crew", "administrator", "coordinator"];
+        const medalEmps = employees.filter(e => {
+            const pos = (e.position || "").toLowerCase();
+            if (excludedPositions.some(p => pos.includes(p))) return false;
+            return !pos.includes('excrew');
+        });
         let html = `<div class="overflow-x-auto w-full"><table class="w-full text-left border-collapse min-w-full"><thead><tr class="bg-space-900/60 border-b border-white/10"><th class="px-3 md:px-10 py-4 table-header-text">Personnel</th><th class="hidden sm:table-cell px-10 py-4 table-header-text text-center">Employee ID</th><th class="px-2 md:px-10 py-4 table-header-text text-center">Gold</th><th class="px-2 md:px-10 py-4 table-header-text text-center">Silver</th></tr></thead><tbody class="divide-y divide-white/5">`;
         const positionOrder = ["team leader", "cashier", "dispatch", "ss", "cic", "assembler", "fryer", "noodle", "dj", "backup"];
         const grouped = medalEmps.reduce((acc, emp) => { const pos = emp.position || "Crew"; if (!acc[pos]) acc[pos] = []; acc[pos].push(emp); return acc; }, {});
@@ -1471,7 +1483,7 @@
                     <tbody class="bg-white">
         `;
 
-        const excludedPositions = ["assistant manager", "administrator", "manager", "senior crew"];
+        const excludedPositions = ["assistant manager", "administrator", "manager", "senior crew", "coordinator"];
         const activeEmps = employees.filter(e => {
             const pos = (e.position || "").toLowerCase();
             return !e.is_hidden_from_scheduler &&
