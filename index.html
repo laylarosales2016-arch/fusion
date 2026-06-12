@@ -129,6 +129,69 @@
         .star:nth-child(8) { top: 0px; right: 700px; left: initial; animation-delay: 1.4s; animation-duration: 1.25s; }
         .star:nth-child(9) { top: 0px; right: 1000px; left: initial; animation-delay: 0.75s; animation-duration: 2.25s; }
         .star:nth-child(10) { top: 0px; right: 450px; left: initial; animation-delay: 2.75s; animation-duration: 2.25s; }
+
+        /* Scheduler Autofit Fixes */
+        .sched-table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            border: 2px solid #000000;
+        }
+        .sched-cell {
+            border: 1px solid #000000;
+            padding: 4px 2px;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 10px;
+            font-weight: bold;
+            color: #000000;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .sched-header-cat {
+            border: 1px solid #000000;
+            font-weight: 800;
+            font-style: italic;
+            font-size: 11px;
+            text-align: center;
+            padding: 6px 4px;
+            vertical-align: middle;
+        }
+        .sched-header-day {
+            background-color: #f4cccc;
+            color: #000000;
+            border: 1px solid #000000;
+            font-weight: bold;
+            font-size: 10px;
+            text-align: center;
+            padding: 6px 2px;
+            vertical-align: middle;
+        }
+        .sched-name-cell {
+            border: 1px solid #000000;
+            background-color: #ffffff;
+            color: #000000;
+            font-weight: bold;
+            font-size: 10px;
+            text-align: left;
+            padding: 4px 6px;
+            vertical-align: middle;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 75px; /* Reduced from 100px */
+        }
+        @media (max-width: 640px) {
+            .sched-name-cell { width: 60px; font-size: 9px; padding: 4px 2px; }
+            .sched-cell { font-size: 9px; padding: 4px 1px; min-height: 24px; }
+            .sched-header-cat { font-size: 9px; padding: 4px 2px; }
+            .sched-header-day { font-size: 8px; padding: 4px 1px; }
+            .sched-day-btn { width: 32px !important; height: 32px !important; font-size: 10px !important; }
+            .sched-week-label { min-width: 130px !important; font-size: 10px !important; }
+            .sched-controls-container { flex-direction: column; gap: 12px !important; align-items: center !important; }
+        }
     </style>
 </head>
 <body class="p-4 md:p-12 min-h-screen flex items-center justify-center">
@@ -1484,34 +1547,28 @@
         weeklySchedules = data || [];
 
         let html = `
-            <div class="p-4 flex items-center justify-between bg-space-950/40 border-b border-white/5">
-                <div class="flex items-center gap-4">
-                    <button onclick="changeSchedWeek(-1)" class="w-10 h-10 rounded-xl bg-space-950/50 border border-white/10 flex items-center justify-center text-cyan-400 hover:bg-cyan-500/20"><i class="fa-solid fa-chevron-left text-sm"></i></button>
-                    <span class="text-xs font-black text-white uppercase tracking-[0.2em] min-w-[200px] text-center">Week of ${startOfWeek.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}</span>
-                    <button onclick="changeSchedWeek(1)" class="w-10 h-10 rounded-xl bg-space-950/50 border border-white/10 flex items-center justify-center text-cyan-400 hover:bg-cyan-500/20"><i class="fa-solid fa-chevron-right text-sm"></i></button>
+            <div class="p-4 flex flex-col md:flex-row items-center justify-between bg-space-950/40 border-b border-white/5 gap-4 sched-controls-container">
+                <div class="flex items-center gap-2">
+                    <button onclick="changeSchedWeek(-1)" class="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-space-950/50 border border-white/10 flex items-center justify-center text-cyan-400 hover:bg-cyan-500/20"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                    <span class="text-[10px] md:text-xs font-black text-white uppercase tracking-wider min-w-[130px] md:min-w-[200px] text-center sched-week-label">Week of ${startOfWeek.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}</span>
+                    <button onclick="changeSchedWeek(1)" class="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-space-950/50 border border-white/10 flex items-center justify-center text-cyan-400 hover:bg-cyan-500/20"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                 </div>
-                <div class="flex gap-2">
+                <div class="flex gap-1 md:gap-2">
                     ${dayNames.map((name, i) => {
                         const isHidden = hiddenSchedDayIndices.has(i);
-                        return `<button onclick="toggleSchedDay(${i})" class="w-10 h-10 rounded-full text-xs font-black uppercase transition-all ${isHidden ? 'bg-space-800 text-space-500' : 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/20'}">${name[0]}</button>`;
+                        return `<button onclick="toggleSchedDay(${i})" class="sched-day-btn w-8 h-8 md:w-10 md:h-10 rounded-full text-[10px] md:text-xs font-black uppercase transition-all ${isHidden ? 'bg-space-800 text-space-500' : 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/20'}">${name[0]}</button>`;
                     }).join('')}
                 </div>
             </div>
-            <div class="overflow-x-auto w-full flex justify-start md:justify-center p-2 md:p-6">
-                <table class="w-full max-w-full md:max-w-7xl text-left border-separate border-spacing-0 rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl bg-space-900/20 border border-white/5 table-fixed">
-                    <thead>
-                        <tr class="bg-space-950/80 backdrop-blur-md">
-                            <th class="px-2 md:px-6 py-3 md:py-6 text-cyan-400 text-[8px] md:text-xs font-black uppercase tracking-widest border-b border-white/10 w-24 md:w-48">Personnel</th>
-                            ${weekDays.map((d, i) => {
-                                if (hiddenSchedDayIndices.has(i)) return '';
-                                return `
-                                <th class="px-1 md:px-3 py-3 md:py-6 text-center border-b border-l border-white/10 w-16 md:w-28">
-                                    <span class="text-white text-[8px] md:text-xs font-black uppercase tracking-wider block mb-0.5 md:mb-1">${dayNames[i]}</span>
-                                    <span class="text-cyan-400/60 text-[6px] md:text-[10px] font-bold uppercase tracking-tighter">${new Date(d).toLocaleDateString('en-US', {month:'short', day:'numeric'})}</span>
-                                </th>`;
-                            }).join('')}
-                        </tr>
-                    </thead>
+            <div class="overflow-x-auto w-full p-1 md:p-6" style="background-color: transparent;">
+                <table class="sched-table">
+                    <colgroup>
+                        <col style="width: 14%;">
+                        ${weekDays.map((d, i) => {
+                            if (hiddenSchedDayIndices.has(i)) return '';
+                            return `<col style="width: 11%;">`;
+                        }).join('')}
+                    </colgroup>
                     <tbody>
         `;
 
@@ -1525,15 +1582,45 @@
 
         const positionOrder = ["team leader", "cashier", "dispatch", "ss", "cic", "assembler", "fryer", "noodle", "dj", "backup"];
 
-        const stationColors = {
-            "dine in": { bg: "bg-rose-500/10", border: "border-rose-500", text: "text-rose-400" },
-            "ss": { bg: "bg-emerald-500/10", border: "border-emerald-500", text: "text-emerald-400" },
-            "cic": { bg: "bg-blue-500/10", border: "border-blue-500", text: "text-blue-400" },
-            "cashier": { bg: "bg-pink-500/10", border: "border-pink-500", text: "text-pink-400" },
-            "dispatch": { bg: "bg-amber-500/10", border: "border-amber-500", text: "text-amber-400" },
-            "dj": { bg: "bg-lime-500/10", border: "border-lime-500", text: "text-lime-400" },
-            "default": { bg: "bg-cyan-500/10", border: "border-cyan-500", text: "text-cyan-400" }
+        const stationThemes = {
+            "dine in": { bg: "#ea9999", text: "#000000" },
+            "dj": { bg: "#00ff00", text: "#000000" },
+            "cic": { bg: "#6d9eeb", text: "#000000" },
+            "cashier": { bg: "#ff00ff", text: "#000000" },
+            "dispatch": { bg: "#ff0000", text: "#000000" },
+            "ss": { bg: "#34d399", text: "#000000" },
+            "default": { bg: "#cccccc", text: "#000000" }
         };
+
+        function formatPositionName(p) {
+            if (p.toLowerCase() === "dine in") return "Dine In";
+            if (p.toLowerCase() === "dj") return "DJ";
+            if (p.toLowerCase() === "cic") return "CIC";
+            if (p.toLowerCase() === "cashier") return "Cashier";
+            if (p.toLowerCase() === "dispatch") return "Dispatch";
+            if (p.toLowerCase() === "ss") return "SS";
+            return p.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+
+        function getCellColors(text) {
+            const textLower = (text || "").toLowerCase().trim();
+            if (!textLower) {
+                return { bg: "#ffffff", text: "#000000" };
+            }
+            if (textLower === "rd" || textLower === "rrd") {
+                return { bg: "#4f8bf4", text: "#000000" }; // blue, bold black text
+            }
+            if (textLower === "sick" || textLower.includes("sick")) {
+                return { bg: "#e06666", text: "#000000" }; // red, bold black text
+            }
+            if (textLower === "ns") {
+                return { bg: "#f1c232", text: "#000000" }; // amber, bold black text
+            }
+            if (textLower.endsWith("dp") || textLower.endsWith("ca")) {
+                return { bg: "#00ff00", text: "#000000" }; // vibrant green, bold black text
+            }
+            return { bg: "#ffffff", text: "#000000" }; // normal shift (white)
+        }
 
         const grouped = activeEmps.reduce((acc, emp) => {
             const pos = (emp.scheduler_position || emp.position || "Crew").toLowerCase();
@@ -1544,59 +1631,73 @@
 
         const visibleDaysCount = 7 - hiddenSchedDayIndices.size;
         const totalColspan = 1 + visibleDaysCount;
-
-        Object.keys(grouped).sort((a, b) => {
+        const sortedPositions = Object.keys(grouped).sort((a, b) => {
             const idxA = positionOrder.indexOf(a), idxB = positionOrder.indexOf(b);
             if (idxA === -1 && idxB === -1) return a.localeCompare(b);
             if (idxA === -1) return 1; if (idxB === -1) return -1;
             return idxA - idxB;
-        }).forEach(pos => {
-            const theme = stationColors[pos] || stationColors["default"];
+        });
+
+        sortedPositions.forEach((pos, posIdx) => {
+            const theme = stationThemes[pos] || stationThemes["default"];
+            const formattedPos = formatPositionName(pos);
+
+            // Add Category Header Row
             html += `
-                <tr class="${theme.bg} backdrop-blur-sm border-b border-white/5">
-                    <td colspan="${totalColspan}" class="px-6 py-4 border-l-4 ${theme.border}">
-                        <div class="flex items-center gap-3">
-                            <div class="w-2.5 h-2.5 rounded-full ${theme.border.replace('border', 'bg')} animate-pulse"></div>
-                            <span class="text-sm font-black ${theme.text} uppercase tracking-[0.25em]">${pos}</span>
-                        </div>
+                <tr>
+                    <td class="sched-header-cat" style="background-color: ${theme.bg}; color: ${theme.text};">
+                        ${formattedPos}
                     </td>
+                    ${weekDays.map((d, i) => {
+                        if (hiddenSchedDayIndices.has(i)) return '';
+                        const dateObj = new Date(d);
+                        // Compact label for mobile
+                        const dayLabel = `${dayNames[i]} ${dateObj.getDate()}`;
+                        return `
+                            <td class="sched-header-day">
+                                ${dayLabel}
+                            </td>`;
+                    }).join('')}
                 </tr>
             `;
 
-            grouped[pos].sort((a, b) => (a.last_name || "").localeCompare(b.last_name || "")).forEach(emp => {
+            // Sort employees under this category by last name
+            const categoryEmps = grouped[pos].sort((a, b) => (a.last_name || "").localeCompare(b.last_name || ""));
+
+            categoryEmps.forEach(emp => {
                 const targetId = emp.id || emp.employee_no;
                 html += `
-                <tr class="hover:bg-white/[0.03] transition-all group">
-                    <td class="px-2 md:px-6 py-2 md:py-4 border-b border-white/5 bg-space-950/20">
-                        <div class="flex items-center gap-2 md:gap-4">
-                            <div class="w-6 h-6 md:w-10 md:h-10 rounded-full bg-space-900 border border-white/10 overflow-hidden shrink-0 shadow-lg group-hover:border-cyan-500/50 transition-colors">
-                                <img src="${getProfilePic(emp.employee_no)}" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${emp.first_name}&background=0b0f19&color=22d3ee'">
-                            </div>
-                            <span class="font-bold text-slate-200 text-[9px] md:text-[13px] tracking-tight truncate">${emp.first_name}</span>
-                        </div>
-                    </td>`;
+                <tr>
+                     <td class="sched-name-cell">
+                        ${emp.first_name}
+                     </td>`;
 
                 weekDays.forEach((date, i) => {
                     if (hiddenSchedDayIndices.has(i)) return;
                     const sched = weeklySchedules.find(s => (s.employee_id === emp.id || s.employee_id === emp.employee_no) && s.date === date);
-                    let text = sched?.schedule_text || sched?.tag || "";
-
-                    let cellStyle = "bg-white/[0.02] text-slate-400 border-white/5";
-                    if(sched?.tag === "RD" || sched?.tag === "RRD") cellStyle = "bg-blue-500/10 text-blue-400 border-blue-500/20 shadow-[inset_0_0_10px_rgba(59,130,246,0.1)]";
-                    else if(sched?.tag === "SICK") cellStyle = "bg-rose-500/10 text-rose-400 border-rose-500/20 shadow-[inset_0_0_10px_rgba(244,63,94,0.1)]";
-                    else if(sched?.tag === "NS") cellStyle = "bg-amber-500/10 text-amber-400 border-amber-500/20 shadow-[inset_0_0_10px_rgba(245,158,11,0.1)]";
-                    else if(sched?.schedule_text) cellStyle = "bg-emerald-500/5 text-emerald-400 border-emerald-500/20";
+                    const text = sched?.schedule_text || sched?.tag || "";
+                    const colors = getCellColors(text);
 
                     html += `
-                        <td class="p-1 md:p-2 border-b border-l border-white/5">
+                        <td class="sched-cell" style="background-color: ${colors.bg};">
                             <div onclick="openSchedEdit('${targetId}', '${emp.first_name}', '${date}')"
-                                 class="h-8 md:h-12 flex items-center justify-center rounded-lg md:rounded-xl cursor-pointer text-[8px] md:text-xs font-black tracking-tight transition-all hover:scale-[1.05] hover:shadow-xl active:scale-95 border ${cellStyle} px-1 text-center">
+                                 style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: ${colors.text};"
+                                 class="hover:opacity-80 active:scale-95 text-center">
                                 ${text}
                             </div>
                         </td>`;
                 });
                 html += `</tr>`;
             });
+
+            // Add separator row if not the last category
+            if (posIdx < sortedPositions.length - 1) {
+                html += `
+                    <tr style="height: 8px; background-color: transparent;">
+                        <td colspan="${totalColspan}" style="border: none; background-color: transparent;"></td>
+                    </tr>
+                `;
+            }
         });
 
         container.innerHTML = html + `</tbody></table></div>`;
