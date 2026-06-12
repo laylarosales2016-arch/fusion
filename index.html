@@ -1497,17 +1497,17 @@
                     }).join('')}
                 </div>
             </div>
-            <div class="overflow-x-auto w-full flex justify-center p-6">
-                <table class="w-full max-w-7xl text-left border-separate border-spacing-0 rounded-[2rem] overflow-hidden shadow-2xl bg-space-900/20 border border-white/5 table-fixed">
+            <div class="overflow-x-auto w-full flex justify-start md:justify-center p-2 md:p-6">
+                <table class="w-full max-w-full md:max-w-7xl text-left border-separate border-spacing-0 rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl bg-space-900/20 border border-white/5 table-fixed">
                     <thead>
                         <tr class="bg-space-950/80 backdrop-blur-md">
-                            <th class="px-6 py-6 text-cyan-400 text-xs font-black uppercase tracking-widest border-b border-white/10 w-48">Personnel</th>
+                            <th class="px-2 md:px-6 py-3 md:py-6 text-cyan-400 text-[8px] md:text-xs font-black uppercase tracking-widest border-b border-white/10 w-24 md:w-48">Personnel</th>
                             ${weekDays.map((d, i) => {
                                 if (hiddenSchedDayIndices.has(i)) return '';
                                 return `
-                                <th class="px-3 py-6 text-center border-b border-l border-white/10 w-28">
-                                    <span class="text-white text-xs font-black uppercase tracking-wider block mb-1">${dayNames[i]}</span>
-                                    <span class="text-cyan-400/60 text-[10px] font-bold uppercase tracking-tighter">${new Date(d).toLocaleDateString('en-US', {month:'short', day:'numeric'})}</span>
+                                <th class="px-1 md:px-3 py-3 md:py-6 text-center border-b border-l border-white/10 w-16 md:w-28">
+                                    <span class="text-white text-[8px] md:text-xs font-black uppercase tracking-wider block mb-0.5 md:mb-1">${dayNames[i]}</span>
+                                    <span class="text-cyan-400/60 text-[6px] md:text-[10px] font-bold uppercase tracking-tighter">${new Date(d).toLocaleDateString('en-US', {month:'short', day:'numeric'})}</span>
                                 </th>`;
                             }).join('')}
                         </tr>
@@ -1567,12 +1567,12 @@
                 const targetId = emp.id || emp.employee_no;
                 html += `
                 <tr class="hover:bg-white/[0.03] transition-all group">
-                    <td class="px-6 py-4 border-b border-white/5 bg-space-950/20">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-full bg-space-900 border border-white/10 overflow-hidden shrink-0 shadow-lg group-hover:border-cyan-500/50 transition-colors">
+                    <td class="px-2 md:px-6 py-2 md:py-4 border-b border-white/5 bg-space-950/20">
+                        <div class="flex items-center gap-2 md:gap-4">
+                            <div class="w-6 h-6 md:w-10 md:h-10 rounded-full bg-space-900 border border-white/10 overflow-hidden shrink-0 shadow-lg group-hover:border-cyan-500/50 transition-colors">
                                 <img src="${getProfilePic(emp.employee_no)}" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${emp.first_name}&background=0b0f19&color=22d3ee'">
                             </div>
-                            <span class="font-bold text-slate-200 text-[13px] tracking-tight truncate">${emp.first_name}</span>
+                            <span class="font-bold text-slate-200 text-[9px] md:text-[13px] tracking-tight truncate">${emp.first_name}</span>
                         </div>
                     </td>`;
 
@@ -1588,9 +1588,9 @@
                     else if(sched?.schedule_text) cellStyle = "bg-emerald-500/5 text-emerald-400 border-emerald-500/20";
 
                     html += `
-                        <td class="p-2 border-b border-l border-white/5">
+                        <td class="p-1 md:p-2 border-b border-l border-white/5">
                             <div onclick="openSchedEdit('${targetId}', '${emp.first_name}', '${date}')"
-                                 class="h-12 flex items-center justify-center rounded-xl cursor-pointer text-xs font-black tracking-tight transition-all hover:scale-[1.05] hover:shadow-xl active:scale-95 border ${cellStyle} px-1 text-center">
+                                 class="h-8 md:h-12 flex items-center justify-center rounded-lg md:rounded-xl cursor-pointer text-[8px] md:text-xs font-black tracking-tight transition-all hover:scale-[1.05] hover:shadow-xl active:scale-95 border ${cellStyle} px-1 text-center">
                                 ${text}
                             </div>
                         </td>`;
