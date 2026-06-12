@@ -521,7 +521,7 @@
     let employees = [], activeTab = 'attendance', portalRole = 'admin';
     let currentAttendance = [], allAttendance = [], allDaRecords = [], allAttritionRecords = [], dtrRecords = [];
     let shiftTemplates = [], weeklySchedules = [], currentSchedDate = new Date();
-    let currentNote = null, showExcrew = false, medalCountdownStart = null;
+    let currentNote = null, showExcrew = false, medalCountdownStart = null, hiddenSchedDayIndices = new Set();
     let currentCalDate = new Date(), dtrCalDate = new Date(), currentVaultEmp = null, selectedDTRDate = null;
     let isVaultEditing = false;
 
@@ -1465,22 +1465,35 @@
         weeklySchedules = data || [];
 
         let html = `
-            <div class="p-2 flex items-center justify-between bg-space-950/40 border-b border-white/5">
-                <div class="flex items-center gap-3">
-                    <button onclick="changeSchedWeek(-1)" class="w-6 h-6 rounded bg-space-950/50 border border-white/10 flex items-center justify-center text-cyan-400 hover:bg-cyan-500/20"><i class="fa-solid fa-chevron-left text-[8px]"></i></button>
-                    <span class="text-[8px] font-black text-white uppercase tracking-[0.1em] min-w-[140px] text-center">Week of ${startOfWeek.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}</span>
-                    <button onclick="changeSchedWeek(1)" class="w-6 h-6 rounded bg-space-950/50 border border-white/10 flex items-center justify-center text-cyan-400 hover:bg-cyan-500/20"><i class="fa-solid fa-chevron-right text-[8px]"></i></button>
+            <div class="p-4 flex items-center justify-between bg-space-950/40 border-b border-white/5">
+                <div class="flex items-center gap-4">
+                    <button onclick="changeSchedWeek(-1)" class="w-10 h-10 rounded-xl bg-space-950/50 border border-white/10 flex items-center justify-center text-cyan-400 hover:bg-cyan-500/20"><i class="fa-solid fa-chevron-left text-sm"></i></button>
+                    <span class="text-xs font-black text-white uppercase tracking-[0.2em] min-w-[200px] text-center">Week of ${startOfWeek.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}</span>
+                    <button onclick="changeSchedWeek(1)" class="w-10 h-10 rounded-xl bg-space-950/50 border border-white/10 flex items-center justify-center text-cyan-400 hover:bg-cyan-500/20"><i class="fa-solid fa-chevron-right text-sm"></i></button>
+                </div>
+                <div class="flex gap-2">
+                    ${dayNames.map((name, i) => {
+                        const isHidden = hiddenSchedDayIndices.has(i);
+                        return `<button onclick="toggleSchedDay(${i})" class="w-10 h-10 rounded-full text-xs font-black uppercase transition-all ${isHidden ? 'bg-space-800 text-space-500' : 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/20'}">${name[0]}</button>`;
+                    }).join('')}
                 </div>
             </div>
-            <div class="overflow-x-auto w-full flex justify-center">
-                <table class="w-full max-w-5xl text-left border border-black table-fixed">
+            <div class="overflow-x-auto w-full flex justify-center p-6">
+                <table class="w-full max-w-7xl text-left border-separate border-spacing-0 rounded-[2rem] overflow-hidden shadow-2xl bg-space-900/20 border border-white/5 table-fixed">
                     <thead>
-                        <tr class="bg-white border-b border-black">
-                            <th class="px-2 py-2 text-black text-[9px] font-black border-r border-black w-32">Employee</th>
-                            ${weekDays.map((d, i) => `<th class="px-1 py-1 text-black text-center text-[8px] font-black border-r border-black last:border-r-0 uppercase">${dayNames[i]}<br><span class="text-black opacity-80 text-[7px] font-bold normal-case">${new Date(d).toLocaleDateString('en-US', {month:'short', day:'numeric'})}</span></th>`).join('')}
+                        <tr class="bg-space-950/80 backdrop-blur-md">
+                            <th class="px-6 py-6 text-cyan-400 text-xs font-black uppercase tracking-widest border-b border-white/10 w-48">Personnel</th>
+                            ${weekDays.map((d, i) => {
+                                if (hiddenSchedDayIndices.has(i)) return '';
+                                return `
+                                <th class="px-3 py-6 text-center border-b border-l border-white/10 w-28">
+                                    <span class="text-white text-xs font-black uppercase tracking-wider block mb-1">${dayNames[i]}</span>
+                                    <span class="text-cyan-400/60 text-[10px] font-bold uppercase tracking-tighter">${new Date(d).toLocaleDateString('en-US', {month:'short', day:'numeric'})}</span>
+                                </th>`;
+                            }).join('')}
                         </tr>
                     </thead>
-                    <tbody class="bg-white">
+                    <tbody>
         `;
 
         const excludedPositions = ["assistant manager", "administrator", "manager", "senior crew", "coordinator"];
@@ -1494,12 +1507,13 @@
         const positionOrder = ["team leader", "cashier", "dispatch", "ss", "cic", "assembler", "fryer", "noodle", "dj", "backup"];
 
         const stationColors = {
-            "dine in": "bg-[#FF0000]",
-            "ss": "bg-[#008000]",
-            "cic": "bg-[#0000FF]",
-            "cashier": "bg-[#FF85FF]",
-            "dispatch": "bg-[#FFB085]",
-            "dj": "bg-[#00FF00]"
+            "dine in": { bg: "bg-rose-500/10", border: "border-rose-500", text: "text-rose-400" },
+            "ss": { bg: "bg-emerald-500/10", border: "border-emerald-500", text: "text-emerald-400" },
+            "cic": { bg: "bg-blue-500/10", border: "border-blue-500", text: "text-blue-400" },
+            "cashier": { bg: "bg-pink-500/10", border: "border-pink-500", text: "text-pink-400" },
+            "dispatch": { bg: "bg-amber-500/10", border: "border-amber-500", text: "text-amber-400" },
+            "dj": { bg: "bg-lime-500/10", border: "border-lime-500", text: "text-lime-400" },
+            "default": { bg: "bg-cyan-500/10", border: "border-cyan-500", text: "text-cyan-400" }
         };
 
         const grouped = activeEmps.reduce((acc, emp) => {
@@ -1509,43 +1523,55 @@
             return acc;
         }, {});
 
+        const visibleDaysCount = 7 - hiddenSchedDayIndices.size;
+        const totalColspan = 1 + visibleDaysCount;
+
         Object.keys(grouped).sort((a, b) => {
             const idxA = positionOrder.indexOf(a), idxB = positionOrder.indexOf(b);
             if (idxA === -1 && idxB === -1) return a.localeCompare(b);
             if (idxA === -1) return 1; if (idxB === -1) return -1;
             return idxA - idxB;
         }).forEach(pos => {
-            const headerColor = stationColors[pos] || "bg-[#333]";
-            const textColor = (pos === 'dispatch' || pos === 'cashier' || pos === 'dj') ? 'text-black' : 'text-white';
+            const theme = stationColors[pos] || stationColors["default"];
             html += `
-                <tr class="${headerColor} border-b border-black">
-                    <td colspan="8" class="px-2 py-1">
-                        <span class="text-[10px] font-black ${textColor} uppercase tracking-[0.05em]">${pos}</span>
+                <tr class="${theme.bg} backdrop-blur-sm border-b border-white/5">
+                    <td colspan="${totalColspan}" class="px-6 py-4 border-l-4 ${theme.border}">
+                        <div class="flex items-center gap-3">
+                            <div class="w-2.5 h-2.5 rounded-full ${theme.border.replace('border', 'bg')} animate-pulse"></div>
+                            <span class="text-sm font-black ${theme.text} uppercase tracking-[0.25em]">${pos}</span>
+                        </div>
                     </td>
                 </tr>
             `;
 
             grouped[pos].sort((a, b) => (a.last_name || "").localeCompare(b.last_name || "")).forEach(emp => {
                 const targetId = emp.id || emp.employee_no;
-                html += `<tr class="border-b border-black last:border-b-0">
-                    <td class="px-2 py-1 border-r border-black bg-white">
-                        <span class="font-black text-black text-[9px] tracking-tight block truncate">${emp.first_name}</span>
+                html += `
+                <tr class="hover:bg-white/[0.03] transition-all group">
+                    <td class="px-6 py-4 border-b border-white/5 bg-space-950/20">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-space-900 border border-white/10 overflow-hidden shrink-0 shadow-lg group-hover:border-cyan-500/50 transition-colors">
+                                <img src="${getProfilePic(emp.employee_no)}" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${emp.first_name}&background=0b0f19&color=22d3ee'">
+                            </div>
+                            <span class="font-bold text-slate-200 text-[13px] tracking-tight truncate">${emp.first_name}</span>
+                        </div>
                     </td>`;
 
-                weekDays.forEach(date => {
+                weekDays.forEach((date, i) => {
+                    if (hiddenSchedDayIndices.has(i)) return;
                     const sched = weeklySchedules.find(s => (s.employee_id === emp.id || s.employee_id === emp.employee_no) && s.date === date);
                     let text = sched?.schedule_text || sched?.tag || "";
-                    let colorClass = "bg-white text-black";
 
-                    if(sched?.tag === "RD" || sched?.tag === "RRD") colorClass = "bg-[#79B8FF] text-black";
-                    else if(sched?.tag === "SICK") colorClass = "bg-[#FF8585] text-white";
-                    else if(sched?.tag === "NS") colorClass = "bg-[#FFB085] text-black";
-                    else if(sched?.schedule_text) colorClass = "bg-white text-black";
+                    let cellStyle = "bg-white/[0.02] text-slate-400 border-white/5";
+                    if(sched?.tag === "RD" || sched?.tag === "RRD") cellStyle = "bg-blue-500/10 text-blue-400 border-blue-500/20 shadow-[inset_0_0_10px_rgba(59,130,246,0.1)]";
+                    else if(sched?.tag === "SICK") cellStyle = "bg-rose-500/10 text-rose-400 border-rose-500/20 shadow-[inset_0_0_10px_rgba(244,63,94,0.1)]";
+                    else if(sched?.tag === "NS") cellStyle = "bg-amber-500/10 text-amber-400 border-amber-500/20 shadow-[inset_0_0_10px_rgba(245,158,11,0.1)]";
+                    else if(sched?.schedule_text) cellStyle = "bg-emerald-500/5 text-emerald-400 border-emerald-500/20";
 
                     html += `
-                        <td class="px-0 py-0 border-r border-black last:border-r-0 ${colorClass}">
+                        <td class="p-2 border-b border-l border-white/5">
                             <div onclick="openSchedEdit('${targetId}', '${emp.first_name}', '${date}')"
-                                 class="h-7 flex items-center justify-center cursor-pointer text-[9px] font-black tracking-tight text-center px-0.5">
+                                 class="h-12 flex items-center justify-center rounded-xl cursor-pointer text-xs font-black tracking-tight transition-all hover:scale-[1.05] hover:shadow-xl active:scale-95 border ${cellStyle} px-1 text-center">
                                 ${text}
                             </div>
                         </td>`;
@@ -1637,6 +1663,12 @@
 
     function closeSchedModal() { document.getElementById('scheduler-edit-modal').classList.add('hidden'); }
     function changeSchedWeek(dir) { currentSchedDate.setDate(currentSchedDate.getDate() + (dir * 7)); renderMain(); }
+
+    function toggleSchedDay(index) {
+        if (hiddenSchedDayIndices.has(index)) hiddenSchedDayIndices.delete(index);
+        else hiddenSchedDayIndices.add(index);
+        renderMain();
+    }
 
     function renderAttrition(container, dataToRender) {
         if (dataToRender.length === 0) { container.innerHTML = `<div class="p-32 text-center text-space-400 font-bold text-xs uppercase tracking-widest opacity-50">No crew detachment sequences registered.</div>`; return; }
