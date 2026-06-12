@@ -1321,7 +1321,27 @@
         });
 
         const noteCard = document.getElementById('day-note-card');
-        if (currentNote && activeTab === 'attendance') { noteCard.classList.remove('hidden'); document.getElementById('day-note-text').innerText = currentNote; } else noteCard.classList.add('hidden');
+        const subTitle = document.getElementById('sub-title');
+
+        if (activeTab === 'medals') {
+            const startDate = medalCountdownStart ? new Date(medalCountdownStart) : new Date();
+            if (!medalCountdownStart) startDate.setDate(startDate.getDate() - 30);
+            const endDate = new Date(startDate); endDate.setDate(endDate.getDate() + 30);
+            subTitle.innerText = `${startDate.toDateString()} — ${endDate.toDateString()}`;
+            subTitle.classList.add('text-cyan-400');
+            subTitle.classList.remove('text-space-400', 'opacity-60');
+        } else {
+            subTitle.innerText = "Employee Attendance & Records";
+            subTitle.classList.remove('text-cyan-400');
+            subTitle.classList.add('text-space-400', 'opacity-60');
+        }
+
+        if (currentNote && activeTab === 'attendance') {
+            noteCard.classList.remove('hidden');
+            document.getElementById('day-note-text').innerText = currentNote;
+        } else {
+            noteCard.classList.add('hidden');
+        }
 
         const listContainer = document.getElementById('attendance-list'), titleEl = document.getElementById('main-breakdown-title');
         if (activeTab === 'attendance') { titleEl.innerText = "Attendance"; renderAttendance(listContainer); }
@@ -1363,7 +1383,6 @@
     function renderMedals(container) {
         const startDate = medalCountdownStart ? new Date(medalCountdownStart) : new Date(); if (!medalCountdownStart) startDate.setDate(startDate.getDate() - 30);
         const endDate = new Date(startDate); endDate.setDate(endDate.getDate() + 30);
-        if (portalRole === 'medal') { document.getElementById('sub-title').innerText = `${startDate.toDateString()} — ${endDate.toDateString()}`; document.getElementById('sub-title').classList.add('text-cyan-400'); document.getElementById('sub-title').classList.remove('text-space-400'); }
         const medalMap = {};
         allAttendance.forEach(r => {
             const d = new Date(r.date);
