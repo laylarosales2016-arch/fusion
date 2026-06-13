@@ -292,7 +292,6 @@
                 <div id="v-financial-container" class="space-y-6">
                     <div><span class="info-label">Bank Institution</span><p id="v-bank" class="info-value">---</p></div>
                     <div><span class="info-label">Account Number</span><p id="v-bank-acc" class="info-value font-mono text-cyan-400/80">---</p></div>
-                    <div><span class="info-label">Vault-ID</span><p id="v-payroll-user" class="info-value font-mono opacity-60">---</p></div>
                 </div>
             </div>
             <div id="v-da-card" class="glass-card p-8 rounded-[2.5rem] border-rose-500/20 hidden">
@@ -604,7 +603,6 @@
             document.getElementById('v-id-pos-container').innerHTML = `
                 <p class="text-cyan-400 font-bold uppercase tracking-[0.3em] text-[9px]">ID: ${currentVaultEmp.employee_no} • </p>
                 <input type="text" id="edit-position" value="${currentVaultEmp.position || ''}" class="bg-space-950 border border-white/10 text-cyan-400 rounded px-2 py-0.5 text-[9px] font-black uppercase w-32 outline-none focus:ring-1 focus:ring-cyan-500 mr-2">
-                <input type="text" id="edit-sched-pos" value="${currentVaultEmp.scheduler_position || ''}" placeholder="SCHEDULER POS" class="bg-space-950 border border-cyan-500/30 text-emerald-400 rounded px-2 py-0.5 text-[9px] font-black uppercase w-32 outline-none focus:ring-1 focus:ring-emerald-500">
             `;
 
             // Core Identity
@@ -648,7 +646,6 @@
             document.getElementById('v-financial-container').innerHTML = `
                 <div><label class="info-label">Bank Institution</label><input type="text" id="edit-bank" value="${currentVaultEmp.bank || ''}" class="bg-space-950 border border-white/10 text-white rounded px-3 py-2 text-xs w-full"></div>
                 <div><label class="info-label">Account Number</label><input type="text" id="edit-bank-acc" value="${currentVaultEmp.bank_account_number || ''}" class="bg-space-950 border border-white/10 text-white rounded px-3 py-2 font-mono text-xs w-full"></div>
-                <div><label class="info-label">Vault-ID (Payroll User)</label><input type="text" id="edit-payroll-user" value="${currentVaultEmp.payroll_username || ''}" class="bg-space-950 border border-white/10 text-white rounded px-3 py-2 font-mono text-xs w-full"></div>
             `;
 
             // Emergency
@@ -679,7 +676,6 @@
             middle_name: document.getElementById('edit-mn').value,
             last_name: document.getElementById('edit-ln').value,
             position: document.getElementById('edit-position').value,
-            scheduler_position: document.getElementById('edit-sched-pos').value,
             email: document.getElementById('edit-email').value,
             phone_number: document.getElementById('edit-phone').value,
             marital_status: document.getElementById('edit-marital').value,
@@ -693,7 +689,6 @@
             pagibig: document.getElementById('edit-pagibig').value,
             bank: document.getElementById('edit-bank').value,
             bank_account_number: document.getElementById('edit-bank-acc').value,
-            payroll_username: document.getElementById('edit-payroll-user').value,
             emergency_contact_name: document.getElementById('edit-ec-name').value,
             emergency_contact_relationship: document.getElementById('edit-ec-rel').value,
             emergency_contact_phone: document.getElementById('edit-ec-phone').value
@@ -962,7 +957,6 @@
             <div><span class="info-label">System Tenure</span><p id="v-tenure" class="info-value text-emerald-400 font-black">---</p></div>
             <div><span class="info-label">Birthday</span><p id="v-birthday" class="info-value">---</p></div>
             <div><span class="info-label">Residential Hub</span><p id="v-location" class="info-value text-sm">---</p></div>
-            <div><span class="info-label">Scheduler Position</span><p id="v-sched-pos" class="info-value text-emerald-400">---</p></div>
         `;
         document.getElementById('v-registries-container').innerHTML = `
             <div><span class="info-label font-sans">SSS Number</span><p id="v-sss" class="text-slate-300">---</p></div>
@@ -973,7 +967,6 @@
         document.getElementById('v-financial-container').innerHTML = `
             <div><span class="info-label">Bank Institution</span><p id="v-bank" class="info-value">---</p></div>
             <div><span class="info-label">Account Number</span><p id="v-bank-acc" class="info-value font-mono text-cyan-400/80">---</p></div>
-            <div><span class="info-label">Vault-ID</span><p id="v-payroll-user" class="info-value font-mono opacity-60">---</p></div>
         `;
         document.getElementById('v-emergency-container').innerHTML = `
             <div><span class="info-label">Primary Contact</span><p id="v-ec-name" class="info-value text-sm">---</p></div>
@@ -1020,7 +1013,6 @@
         document.getElementById('v-hired').innerText = formatDate(emp.date_hired) || '---';
         document.getElementById('v-birthday').innerText = formatDate(emp.birthday) || '---';
         document.getElementById('v-location').innerText = emp.location || '---';
-        document.getElementById('v-sched-pos').innerText = emp.scheduler_position || '---';
 
         if (emp.date_hired) {
             const hired = new Date(emp.date_hired), diff = new Date() - hired;
