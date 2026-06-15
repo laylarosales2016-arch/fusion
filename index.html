@@ -1669,13 +1669,14 @@
                     const sched = weeklySchedules.find(s => (s.employee_id === emp.id || s.employee_id === emp.employee_no) && s.date === date);
                     const text = sched?.schedule_text || sched?.tag || "";
                     const colors = getCellColors(text);
+                    const isAdmin = portalRole === 'admin' || portalRole === 'superadmin';
 
                     html += `
                         <td class="sched-cell" style="background-color: ${colors.bg};">
-                            <div onclick="openSchedEdit('${targetId}', '${emp.first_name}', '${date}')"
-                                 style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: ${colors.text};"
-                                 class="hover:opacity-80 active:scale-95 text-center">
-                                ${text}
+                            <div ${isAdmin ? `onclick="openSchedEdit('${targetId}', '${emp.first_name}', '${date}')"` : ''}
+                                 style="width: 100%; min-height: 24px; display: flex; align-items: center; justify-content: center; color: ${colors.text};"
+                                 class="${isAdmin ? 'cursor-pointer hover:opacity-80 active:scale-95' : ''} text-center">
+                                ${text || '&nbsp;'}
                             </div>
                         </td>`;
                 });
