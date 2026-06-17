@@ -1503,10 +1503,10 @@
             statLabels.da.innerText = showExcrew ? "Excrew Records" : "Active Crew Member"; statVals.da.innerText = filteredEmps.length;
         } else if (activeTab === 'da') {
             [statCards.late, statCards.absent, statCards.da].forEach(c => c.classList.add('hidden')); statLabels.present.innerText = "Total Cases"; statVals.present.innerText = filteredDa.length;
-        } else if (activeTab === 'scheduler') {
+        } else if (activeTab === 'scheduler' || activeTab === 'chat' || activeTab === 'medals' || activeTab === 'system') {
             [statCards.present, statCards.late, statCards.absent, statCards.da].forEach(c => c.classList.add('hidden'));
-        } else if (activeTab === 'system') { [statCards.present, statCards.late, statCards.absent, statCards.da].forEach(c => c.classList.add('hidden')); }
-        else if (activeTab === 'attrition') { [statCards.present, statCards.late, statCards.absent].forEach(c => c.classList.add('hidden')); statLabels.da.innerText = "Historical Log"; statVals.da.innerText = allAttritionRecords.length; }
+            document.getElementById('stats-container').classList.add('hidden');
+        } else if (activeTab === 'attrition') { [statCards.present, statCards.late, statCards.absent].forEach(c => c.classList.add('hidden')); statLabels.da.innerText = "Historical Log"; statVals.da.innerText = allAttritionRecords.length; }
 
         const positionOrder = ["team leader", "cashier", "dispatch", "ss", "cic", "assembler", "fryer", "noodle", "dj", "backup"];
         filteredEmps.sort((a, b) => {
@@ -1602,9 +1602,7 @@
             grouped[pos].sort((a, b) => (a.last_name || '').localeCompare(b.last_name || '')).forEach(emp => {
                 const m = medalMap[emp.employee_no] || { gold: 0, silver: 0 };
                 const myId = sessionStorage.getItem('portal_id');
-                const msgIcon = (myId && myId !== emp.employee_no) || portalRole === 'admin' || portalRole === 'superadmin'
-                    ? `<button onclick="openPrivateChat('${emp.employee_no}')" class="ml-2 text-cyan-400 hover:text-cyan-300 transition-colors" title="Send Message"><i class="fa-solid fa-comment-dots"></i></button>`
-                    : '';
+                const msgIcon = '';
                 html += `<tr class="hover:bg-cyan-500/[0.02] transition-colors text-xs md:text-sm"><td class="px-3 md:px-10 py-4"><div class="flex items-center gap-2 md:gap-4"><div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-space-950 border border-white/10 overflow-hidden shrink-0"><img src="${getProfilePic(emp.employee_no)}" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${emp.first_name}+${emp.last_name}&background=0b0f19&color=22d3ee'"></div><div><div class="flex items-center"><span class="font-bold text-slate-100 block">${emp.first_name} ${emp.last_name}</span>${msgIcon}</div><p class="text-[8px] md:text-[9px] text-space-400 font-bold uppercase tracking-wider">ID: ${emp.employee_no}</p><p class="text-[7px] md:text-[8px] text-cyan-400 font-black uppercase tracking-widest opacity-80">${pos}</p></div></div></td><td class="hidden sm:table-cell px-10 py-4 font-mono text-xs text-cyan-400/80 text-center">${emp.employee_no}</td><td class="px-2 md:px-10 py-4 text-center"><div class="flex items-center justify-center"><div class="flex flex-wrap justify-center gap-0.5 max-w-[50px] md:max-w-none">${'<i class="fa-solid fa-medal text-amber-400 text-[10px] md:text-xs shadow-[0_0_8px_rgba(251,191,36,0.4)]"></i>'.repeat(m.gold)}</div></div></td><td class="px-2 md:px-10 py-4 text-center"><div class="flex items-center justify-center"><div class="flex flex-wrap justify-center gap-0.5 max-w-[50px] md:max-w-none">${'<i class="fa-solid fa-medal text-slate-400 text-[10px] md:text-xs shadow-[0_0_8px_rgba(148,163,184,0.4)]"></i>'.repeat(m.silver)}</div></div></td></tr>`;
             });
         });
@@ -1621,9 +1619,7 @@
             group.forEach((r, idx) => {
                 const emp = employees.find(e => e.employee_no === r.employee_id) || { first_name: 'Unresolved', last_name: 'Node', position: 'Crew', employee_no: r.employee_id };
                 const myId = sessionStorage.getItem('portal_id');
-                const msgIcon = emp.employee_no && ((myId && myId !== emp.employee_no) || portalRole === 'admin' || portalRole === 'superadmin')
-                    ? `<button onclick="openPrivateChat('${emp.employee_no}')" class="ml-2 text-cyan-400 hover:text-cyan-300 transition-colors" title="Send Message"><i class="fa-solid fa-comment-dots"></i></button>`
-                    : '';
+                const msgIcon = '';
                 html += `<tr class="hover:bg-cyan-500/[0.02] transition-colors"><td class="px-10 py-4 font-medium">${idx === 0 ? `<span class="glass-badge ${bc}">${status}</span> <span class="text-[10px] text-cyan-400/60 ml-2 font-bold font-mono">[${group.length}]</span>` : ''}</td><td class="px-10 py-4"><div class="flex items-center"><span class="font-bold text-slate-100 text-sm tracking-tight">${emp.first_name} ${emp.last_name}</span>${msgIcon}</div></td><td class="px-10 py-4"><span class="text-xs font-semibold text-space-400 uppercase tracking-wider">${emp.position}</span></td><td class="px-10 py-4">${r.note ? `<span class="text-xs text-rose-300 font-medium italic bg-rose-500/5 border border-rose-500/20 px-3 py-1.5 rounded-lg block w-max">"${r.note}"</span>` : '<span class="text-space-500 font-mono text-xs">—</span>'}</td></tr>`;
             });
         });
@@ -1658,9 +1654,7 @@
         dataToRender.forEach(rec => {
             const emp = employees.find(e => `${e.first_name || ''} ${e.last_name || ''}`.trim() === rec.employee_name);
             const myId = sessionStorage.getItem('portal_id');
-            const msgIcon = emp && ((myId && myId !== emp.employee_no) || portalRole === 'admin' || portalRole === 'superadmin')
-                ? `<button onclick="openPrivateChat('${emp.employee_no}')" class="ml-2 text-cyan-400 hover:text-cyan-300 transition-colors" title="Send Message"><i class="fa-solid fa-comment-dots"></i></button>`
-                : '';
+            const msgIcon = '';
             const isDone = (rec.status || "").toUpperCase().includes('DONE');
             const badgeClass = isDone ? "badge-emerald" : "badge-rose";
             html += `<tr class="hover:bg-cyan-500/[0.02] transition-colors"><td class="px-10 py-5"><div class="flex items-center"><span class="font-bold text-slate-100 text-sm tracking-tight cursor-pointer select-none" ondblclick="selectDAEmployee('${rec.employee_name}')">${rec.employee_name}</span>${msgIcon}</div></td><td class="px-10 py-5"><p class="text-xs text-rose-400 font-bold uppercase tracking-wider">${rec.da_type}</p><p class="text-[10px] text-space-500 mt-0.5 uppercase font-medium">Date Happen: ${formatAwolDates(rec.date_awol)}</p></td><td class="px-10 py-5"><span class="glass-badge ${badgeClass}">${rec.status}</span><p class="text-[10px] text-space-500 mt-1 uppercase font-medium">${rec.date_report ? 'Report: ' + formatDate(rec.date_report) : 'For Reporting'}</p></td><td class="px-10 py-5 max-w-[400px]"><p class="text-xs text-slate-300 italic border-l border-cyan-500/30 pl-4 bg-cyan-500/[0.01] py-2 rounded-r-lg">"${rec.verdict || 'Processing incident variables...'}"</p></td></tr>`;
@@ -1834,9 +1828,7 @@
             categoryEmps.forEach(emp => {
                 const targetId = emp.id || emp.employee_no;
                 const myId = sessionStorage.getItem('portal_id');
-                const msgIcon = emp.employee_no && ((myId && myId !== emp.employee_no) || portalRole === 'admin' || portalRole === 'superadmin')
-                    ? `<button onclick="openPrivateChat('${emp.employee_no}')" class="ml-1 text-cyan-600 hover:text-cyan-800 transition-colors" title="Send Message"><i class="fa-solid fa-comment-dots text-[8px]"></i></button>`
-                    : '';
+                const msgIcon = '';
                 html += `
                 <tr>
                      <td class="sched-name-cell">
