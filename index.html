@@ -1996,34 +1996,34 @@
                 const photo = getProfilePic(senderId);
 
                 return `
-                    <div class="flex ${isMe ? 'flex-row-reverse' : 'flex-row'} items-end gap-3 mb-6 animate-in fade-in slide-in-from-bottom-2 duration-300 group">
-                        <div class="w-8 h-8 rounded-full border border-white/10 shrink-0 overflow-hidden bg-space-800">
+                    <div class="flex ${isMe ? 'flex-row-reverse' : 'flex-row'} items-end gap-2 md:gap-3 mb-4 md:mb-6 animate-in fade-in slide-in-from-bottom-2 duration-300 group">
+                        <div class="w-7 h-7 md:w-8 md:h-8 rounded-full border border-white/10 shrink-0 overflow-hidden bg-space-800">
                             <img src="${photo}" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${sender.first_name}&background=0b0f19&color=22d3ee'">
                         </div>
-                        <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'} max-w-[80%] relative">
-                            <div class="flex items-center gap-2 mb-1 px-1">
-                                <span class="text-[8px] font-black text-cyan-400 uppercase tracking-widest">${sender.first_name}</span>
-                                <span class="text-[7px] text-space-500 font-bold">${new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                        <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'} max-w-[85%] md:max-w-[80%] relative">
+                            <div class="flex items-center gap-2 mb-0.5 md:mb-1 px-1">
+                                <span class="text-[7px] md:text-[8px] font-black text-cyan-400 uppercase tracking-widest">${sender.first_name}</span>
+                                <span class="text-[6px] md:text-[7px] text-space-500 font-bold">${new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                             </div>
-                            <div class="${isMe ? 'bg-cyan-500 text-space-950 rounded-2xl rounded-tr-none' : 'bg-space-800 text-slate-100 rounded-2xl rounded-tl-none'} px-5 py-3 text-sm shadow-xl border border-white/5 leading-relaxed relative">
+                            <div class="${isMe ? 'bg-cyan-500 text-space-950 rounded-2xl rounded-tr-none' : 'bg-space-800 text-slate-100 rounded-2xl rounded-tl-none'} px-3 md:px-5 py-2 md:py-3 text-xs md:text-sm shadow-xl border border-white/5 leading-relaxed relative">
                                 ${msg.message.startsWith('https://i.ibb.co/') || msg.message.includes('imgbb.com')
-                                    ? `<img src="${msg.message}" class="max-w-xs rounded-lg shadow-lg cursor-pointer hover:scale-105 transition-transform" onclick="window.open('${msg.message}', '_blank')">`
+                                    ? `<img src="${msg.message}" class="max-w-full md:max-w-xs rounded-lg shadow-lg cursor-pointer hover:scale-105 transition-transform" onclick="window.open('${msg.message}', '_blank')">`
                                     : (msg.message.includes('https://file.kiwi/8802af9a')
                                         ? `<div class="flex items-center gap-3 cursor-pointer group/link" onclick="toggleFileKiwiModal()">
-                                            <div class="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover/link:bg-cyan-500 group-hover/link:text-space-950 transition-all">
-                                                <i class="fa-solid fa-folder-open"></i>
+                                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover/link:bg-cyan-500 group-hover/link:text-space-950 transition-all">
+                                                <i class="fa-solid fa-folder-open text-sm"></i>
                                             </div>
                                             <div>
-                                                <p class="font-bold text-xs uppercase tracking-wider">Shared Web Folder</p>
-                                                <p class="text-[10px] opacity-70">Click to open secure repository</p>
+                                                <p class="font-bold text-[10px] md:text-xs uppercase tracking-wider">Shared Web Folder</p>
+                                                <p class="text-[8px] md:text-[10px] opacity-70">Click to open secure repository</p>
                                             </div>
                                            </div>`
                                         : msg.message)}
 
                                 ${isMe ? `
-                                <div class="absolute -left-12 top-1/2 -translate-y-1/2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button onclick="window.editPortalMsg(${msg.id}, \`${msg.message.replace(/'/g, "\\'").replace(/"/g, "&quot;")}\`)" class="w-8 h-8 rounded-full bg-space-900/80 text-cyan-400 flex items-center justify-center hover:bg-cyan-500 hover:text-space-950 transition-all shadow-lg"><i class="fa-solid fa-pen text-[10px]"></i></button>
-                                    <button onclick="window.deletePortalMsg(${msg.id})" class="w-8 h-8 rounded-full bg-space-900/80 text-rose-400 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all shadow-lg"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                                <div class="absolute -left-10 md:-left-12 top-1/2 -translate-y-1/2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button onclick="window.editPortalMsg(${msg.id}, \`${msg.message.replace(/'/g, "\\'").replace(/"/g, "&quot;")}\`)" class="w-6 h-6 md:w-8 md:h-8 rounded-full bg-space-900/80 text-cyan-400 flex items-center justify-center hover:bg-cyan-500 hover:text-space-950 transition-all shadow-lg"><i class="fa-solid fa-pen text-[8px] md:text-[10px]"></i></button>
+                                    <button onclick="window.deletePortalMsg(${msg.id})" class="w-6 h-6 md:w-8 md:h-8 rounded-full bg-space-900/80 text-rose-400 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all shadow-lg"><i class="fa-solid fa-trash text-[8px] md:text-[10px]"></i></button>
                                 </div>
                                 ` : ''}
                             </div>
@@ -2034,50 +2034,50 @@
         }
 
         container.innerHTML = `
-            <div class="flex h-[700px] bg-space-950/40 rounded-[2.5rem] overflow-hidden border border-white/5">
+            <div class="flex flex-col md:flex-row h-[75vh] md:h-[700px] bg-space-950/40 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden border border-white/5">
                 <!-- Sidebar: Contacts -->
-                <div class="w-1/3 md:w-80 border-r border-white/5 flex flex-col bg-space-900/60 backdrop-blur-md">
-                    <div class="p-6 border-b border-white/5">
-                        <h4 class="text-xs font-black text-white uppercase tracking-[0.2em]">Transmission Node</h4>
+                <div id="chat-sidebar-container" class="w-full md:w-80 border-r border-white/5 flex flex-col bg-space-900/60 backdrop-blur-md h-full transition-all">
+                    <div class="p-4 md:p-6 border-b border-white/5">
+                        <h4 class="text-[10px] md:text-xs font-black text-white uppercase tracking-[0.2em]">Transmission Node</h4>
                     </div>
-                    <div class="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar" id="chat-sidebar">
+                    <div class="flex-1 overflow-y-auto p-2 md:p-4 space-y-1 md:space-y-2 custom-scrollbar" id="chat-sidebar">
                         ${employees.length === 0 ? '<div class="p-8 text-center text-[10px] text-space-500 font-bold uppercase tracking-widest animate-pulse">Synchronizing Personnel...</div>' : ''}
                     </div>
                 </div>
 
                 <!-- Chat Interface -->
-                <div class="flex-1 flex flex-col bg-space-950/20 relative">
+                <div id="chat-main-container" class="flex-1 flex flex-col bg-space-950/20 relative h-full">
                     <!-- Header -->
-                    <div class="px-8 py-5 border-b border-white/5 flex items-center justify-between bg-space-900/40" id="chat-header">
+                    <div class="px-4 md:px-8 py-3 md:py-5 border-b border-white/5 flex items-center justify-between bg-space-900/40" id="chat-header">
                         <!-- Header content rendered below -->
                     </div>
 
                     <!-- Messages -->
-                    <div id="chat-messages-box" class="flex-1 overflow-y-auto p-10 space-y-2 custom-scrollbar">
+                    <div id="chat-messages-box" class="flex-1 overflow-y-auto p-4 md:p-10 space-y-2 custom-scrollbar">
                         ${getChatHtml()}
                     </div>
 
                     <!-- Input Area -->
-                    <div class="p-8 bg-space-900/60 border-t border-white/5">
-                        <div id="emoji-picker" class="hidden flex flex-wrap gap-2 mb-4 p-3 bg-space-950 border border-white/10 rounded-2xl animate-in fade-in slide-in-from-bottom-2">
+                    <div class="p-4 md:p-8 bg-space-900/60 border-t border-white/5">
+                        <div id="emoji-picker" class="hidden flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-4 p-2 md:p-3 bg-space-950 border border-white/10 rounded-2xl animate-in fade-in slide-in-from-bottom-2">
                             ${["😊", "😂", "👍", "🙏", "🔥", "✨", "🙌", "❤️", "✅", "⚠️", "🕒", "📍"].map(e => `
-                                <button onclick="insertEmoji('${e}')" class="text-xl hover:scale-125 transition-transform p-1">${e}</button>
+                                <button onclick="insertEmoji('${e}')" class="text-lg md:text-xl hover:scale-125 transition-transform p-1">${e}</button>
                             `).join('')}
                         </div>
-                        <div class="flex gap-4 relative items-center">
-                            <button onclick="toggleEmojiPicker()" class="text-space-400 hover:text-cyan-400 transition-colors text-xl">
+                        <div class="flex gap-2 md:gap-4 relative items-center">
+                            <button onclick="toggleEmojiPicker()" class="text-space-400 hover:text-cyan-400 transition-colors text-lg md:text-xl">
                                 <i class="fa-regular fa-face-smile"></i>
                             </button>
-                            <button onclick="document.getElementById('chat-file-input').click()" class="text-space-400 hover:text-cyan-400 transition-colors text-xl">
+                            <button onclick="document.getElementById('chat-file-input').click()" class="text-space-400 hover:text-cyan-400 transition-colors text-lg md:text-xl">
                                 <i class="fa-solid fa-camera"></i>
                             </button>
-                            <button onclick="toggleFileKiwiModal()" class="text-space-400 hover:text-cyan-400 transition-colors text-xl">
+                            <button onclick="toggleFileKiwiModal()" class="text-space-400 hover:text-cyan-400 transition-colors text-lg md:text-xl">
                                 <i class="fa-solid fa-paperclip"></i>
                             </button>
                             <input type="file" id="chat-file-input" class="hidden" accept="image/*" onchange="window.handleChatFileUpload(this)">
-                            <input type="text" id="chat-input" onkeydown="if(event.key==='Enter') window.sendPortalMsg()" placeholder="Type secure transmission..." class="flex-1 bg-space-950 border border-white/10 text-white rounded-[1.5rem] px-8 py-5 text-sm outline-none focus:ring-2 focus:ring-cyan-500 shadow-inner transition-all">
-                            <button onclick="window.sendPortalMsg()" class="bg-cyan-500 text-space-950 w-16 h-16 rounded-[1.5rem] flex items-center justify-center shadow-lg hover:bg-cyan-400 transition-all active:scale-95 shadow-cyan-500/20">
-                                <i class="fa-solid fa-paper-plane text-xl"></i>
+                            <input type="text" id="chat-input" onkeydown="if(event.key==='Enter') window.sendPortalMsg()" placeholder="Type secure transmission..." class="flex-1 bg-space-950 border border-white/10 text-white rounded-xl md:rounded-[1.5rem] px-4 md:px-8 py-3 md:py-5 text-xs md:text-sm outline-none focus:ring-2 focus:ring-cyan-500 shadow-inner transition-all">
+                            <button onclick="window.sendPortalMsg()" class="bg-cyan-500 text-space-950 w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-[1.5rem] flex items-center justify-center shadow-lg hover:bg-cyan-400 transition-all active:scale-95 shadow-cyan-500/20">
+                                <i class="fa-solid fa-paper-plane text-sm md:text-xl"></i>
                             </button>
                         </div>
                     </div>
@@ -2089,12 +2089,12 @@
             const sidebar = document.getElementById('chat-sidebar');
             if (!sidebar) return;
             sidebar.innerHTML = `
-                <button id="target-group" onclick="window.setChatTarget('group')" class="w-full flex items-center gap-4 p-4 rounded-2xl transition-all ${window.activeChatTarget === 'group' ? 'bg-cyan-500 text-space-950 shadow-lg shadow-cyan-500/10' : 'hover:bg-white/5 text-space-400'}">
-                    <div class="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center border border-white/10"><i class="fa-solid fa-users"></i></div>
-                    <div class="text-left"><p class="text-xs font-black uppercase tracking-wider">Group Core</p><p class="text-[9px] opacity-70">Fleet Broadcast</p></div>
+                <button id="target-group" onclick="window.setChatTarget('group')" class="w-full flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-xl md:rounded-2xl transition-all ${window.activeChatTarget === 'group' ? 'bg-cyan-500 text-space-950 shadow-lg shadow-cyan-500/10' : 'hover:bg-white/5 text-space-400'}">
+                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-cyan-500/20 flex items-center justify-center border border-white/10 shrink-0"><i class="fa-solid fa-users text-xs md:text-base"></i></div>
+                    <div class="text-left overflow-hidden"><p class="text-[10px] md:text-xs font-black uppercase tracking-wider truncate">Group Core</p><p class="text-[8px] md:text-[9px] opacity-70 truncate">Fleet Broadcast</p></div>
                 </button>
 
-                <div class="pt-6 pb-2 px-4 text-[9px] font-black text-space-500 uppercase tracking-[0.2em] opacity-50">Active Units</div>
+                <div class="pt-4 md:pt-6 pb-1 md:pb-2 px-3 md:px-4 text-[8px] md:text-[9px] font-black text-space-500 uppercase tracking-[0.2em] opacity-50">Active Units</div>
 
                 ${employees.filter(e => {
                     const id = String(e.employee_no || e.id);
@@ -2103,13 +2103,13 @@
                 }).map(emp => {
                     const id = String(emp.employee_no || emp.id);
                     return `
-                    <button id="target-${id}" onclick="window.setChatTarget('${id}')" class="w-full flex items-center gap-4 p-4 rounded-2xl transition-all ${String(window.activeChatTarget) === id ? 'bg-cyan-500 text-space-950 shadow-lg shadow-cyan-500/10' : 'hover:bg-white/5 text-space-400'}">
-                        <div class="w-10 h-10 rounded-full border border-white/10 overflow-hidden bg-space-800 shrink-0">
+                    <button id="target-${id}" onclick="window.setChatTarget('${id}')" class="w-full flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-xl md:rounded-2xl transition-all ${String(window.activeChatTarget) === id ? 'bg-cyan-500 text-space-950 shadow-lg shadow-cyan-500/10' : 'hover:bg-white/5 text-space-400'}">
+                        <div class="w-8 h-8 md:w-10 md:h-10 rounded-full border border-white/10 overflow-hidden bg-space-800 shrink-0">
                             <img src="${getProfilePic(id)}" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${emp.first_name}'">
                         </div>
                         <div class="text-left overflow-hidden">
-                            <p class="text-xs font-bold truncate">${emp.first_name} ${emp.last_name}</p>
-                            <p class="text-[9px] opacity-60 uppercase truncate tracking-tighter">${emp.position}</p>
+                            <p class="text-[10px] md:text-xs font-bold truncate">${emp.first_name} ${emp.last_name}</p>
+                            <p class="text-[8px] md:text-[9px] opacity-60 uppercase truncate tracking-tighter">${emp.position}</p>
                         </div>
                     </button>
                 `}).join('')}
@@ -2121,28 +2121,42 @@
             if (!header) return;
             const targetEmp = employees.find(e => (e.employee_no || e.id) === window.activeChatTarget);
             header.innerHTML = `
-                <div class="flex items-center gap-4">
-                    <div id="active-chat-avatar" class="w-10 h-10 rounded-full border border-cyan-500/30 flex items-center justify-center bg-cyan-500/10 text-cyan-400 overflow-hidden">
-                         ${window.activeChatTarget === 'group' ? '<i class="fa-solid fa-users"></i>' : `<img src="${getProfilePic(window.activeChatTarget)}" class="w-full h-full object-cover" onerror="this.style.display='none'">`}
+                <div class="flex items-center gap-3 md:gap-4">
+                    <button onclick="window.backToContacts()" class="md:hidden text-cyan-400 mr-1"><i class="fa-solid fa-chevron-left text-lg"></i></button>
+                    <div id="active-chat-avatar" class="w-8 h-8 md:w-10 md:h-10 rounded-full border border-cyan-500/30 flex items-center justify-center bg-cyan-500/10 text-cyan-400 overflow-hidden shrink-0">
+                         ${window.activeChatTarget === 'group' ? '<i class="fa-solid fa-users text-sm"></i>' : `<img src="${getProfilePic(window.activeChatTarget)}" class="w-full h-full object-cover" onerror="this.style.display='none'">`}
                     </div>
-                    <div>
-                        <h3 id="active-chat-name" class="text-sm font-black text-white uppercase tracking-wider">${window.activeChatTarget === 'group' ? 'Fleet Broadcast' : (targetEmp?.first_name || 'Unit Sync')}</h3>
-                        <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div><span class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest">Secure Uplink Established</span></div>
+                    <div class="overflow-hidden">
+                        <h3 id="active-chat-name" class="text-xs md:text-sm font-black text-white uppercase tracking-wider truncate">${window.activeChatTarget === 'group' ? 'Fleet Broadcast' : (targetEmp?.first_name || 'Unit Sync')}</h3>
+                        <div class="flex items-center gap-1.5 md:gap-2"><div class="w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-emerald-500 animate-pulse"></div><span class="text-[7px] md:text-[9px] font-bold text-emerald-400 uppercase tracking-widest">Established</span></div>
                     </div>
                 </div>
-                ${portalRole === 'personal' ? `
-                <button onclick="backToDashboard()" class="bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-6 py-2.5 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-cyan-500/20 transition-all">
-                    <i class="fa-solid fa-arrow-left mr-2"></i>Back to Vault
-                </button>
-                ` : ''}
+                <div class="flex items-center gap-2">
+                    ${portalRole === 'personal' ? `
+                    <button onclick="backToDashboard()" class="bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-3 md:px-6 py-1.5 md:py-2.5 rounded-lg md:rounded-xl font-black text-[8px] md:text-[9px] uppercase tracking-widest hover:bg-cyan-500/20 transition-all whitespace-nowrap">
+                        <i class="fa-solid fa-house md:mr-2"></i><span class="hidden md:inline">Back to Vault</span>
+                    </button>
+                    ` : ''}
+                </div>
             `;
         }
 
-        renderSidebar();
-        renderHeader();
+        window.backToContacts = () => {
+            document.getElementById('chat-sidebar-container').classList.remove('hidden');
+            document.getElementById('chat-main-container').classList.add('hidden');
+        };
 
         window.setChatTarget = (id) => {
             window.activeChatTarget = id;
+            if (window.innerWidth < 768) {
+                document.getElementById('chat-sidebar-container').classList.add('hidden');
+                document.getElementById('chat-main-container').classList.remove('hidden');
+                document.getElementById('chat-main-container').classList.add('flex');
+            } else {
+                document.getElementById('chat-sidebar-container').classList.remove('hidden');
+                document.getElementById('chat-main-container').classList.remove('hidden');
+                document.getElementById('chat-main-container').classList.add('flex');
+            }
             renderSidebar();
             renderHeader();
             const msgBox = document.getElementById('chat-messages-box');
@@ -2160,79 +2174,99 @@
             }
         };
 
-        window.sendPortalMsg = async () => {
-            const input = document.getElementById('chat-input'), msg = input.value.trim();
-            if (!msg) return;
-            input.value = '';
-            document.getElementById('emoji-picker').classList.add('hidden');
+        renderSidebar();
+        renderHeader();
 
-            const timestamp = Date.now();
-            const newMessage = {
-                sender_id: portalId,
-                receiver_id: window.activeChatTarget,
-                message: msg,
-                timestamp: timestamp
-            };
-
-            // OPTIMISTIC UPDATE: Show message immediately
-            allChatMessages.push(newMessage);
-            window.updateChatMessages();
-
-            try {
-                const { data, error } = await sb.from('chat_messages').insert(newMessage).select();
-                if (error) throw error;
-                if (data && data[0]) {
-                    const idx = allChatMessages.findIndex(m => m.timestamp === timestamp && m.sender_id === portalId && !m.id);
-                    if (idx !== -1) {
-                        allChatMessages[idx].id = data[0].id;
-                        window.updateChatMessages();
-                    }
-                }
-            } catch (err) {
-                console.error("Transmission Error:", err);
-                // alert("Transmission Interrupted: " + err.message);
+        // Final Sync of visibility
+        if (window.innerWidth < 768) {
+            if (window.activeChatTarget === 'group') {
+                document.getElementById('chat-sidebar-container').classList.remove('hidden');
+                document.getElementById('chat-main-container').classList.add('hidden');
+            } else {
+                document.getElementById('chat-sidebar-container').classList.add('hidden');
+                document.getElementById('chat-main-container').classList.remove('hidden');
+                document.getElementById('chat-main-container').classList.add('flex');
             }
+        } else {
+            document.getElementById('chat-sidebar-container').classList.remove('hidden');
+            document.getElementById('chat-main-container').classList.remove('hidden');
+            document.getElementById('chat-main-container').classList.add('flex');
+        }
+
+        const msgBox = document.getElementById('chat-messages-box');
+        if (msgBox) msgBox.scrollTop = msgBox.scrollHeight;
+    }
+
+    window.sendPortalMsg = async () => {
+        const portalId = sessionStorage.getItem('portal_id') || 'ADMIN';
+        const input = document.getElementById('chat-input'), msg = input.value.trim();
+        if (!msg) return;
+        input.value = '';
+        document.getElementById('emoji-picker').classList.add('hidden');
+
+        const timestamp = Date.now();
+        const newMessage = {
+            sender_id: portalId,
+            receiver_id: window.activeChatTarget,
+            message: msg,
+            timestamp: timestamp
         };
 
-        window.toggleEmojiPicker = () => {
-            const picker = document.getElementById('emoji-picker');
-            picker.classList.toggle('hidden');
-        };
+        // OPTIMISTIC UPDATE: Show message immediately
+        allChatMessages.push(newMessage);
+        window.updateChatMessages();
 
-        window.insertEmoji = (emoji) => {
-            const input = document.getElementById('chat-input');
-            input.value += emoji;
-            input.focus();
-        };
-
-        window.editPortalMsg = async (id, oldMsg) => {
-            const newMsg = prompt("Update Transmission:", oldMsg);
-            if (!newMsg || newMsg === oldMsg) return;
-            try {
-                const { error } = await sb.from('chat_messages').update({ message: newMsg }).eq('id', id);
-                if (error) throw error;
-                const idx = allChatMessages.findIndex(m => m.id === id);
+        try {
+            const { data, error } = await sb.from('chat_messages').insert(newMessage).select();
+            if (error) throw error;
+            if (data && data[0]) {
+                const idx = allChatMessages.findIndex(m => m.timestamp === timestamp && m.sender_id === portalId && !m.id);
                 if (idx !== -1) {
-                    allChatMessages[idx].message = newMsg;
+                    allChatMessages[idx].id = data[0].id;
                     window.updateChatMessages();
                 }
-            } catch (err) { alert("Update Interrupted: " + err.message); }
-        };
+            }
+        } catch (err) {
+            console.error("Transmission Error:", err);
+            // alert("Transmission Interrupted: " + err.message);
+        }
+    };
 
-        window.deletePortalMsg = async (id) => {
-            if (!confirm("Purge this transmission from the core?")) return;
-            try {
-                // Number() ensures we use the correct type for BigInt match
-                const { error } = await sb.from('chat_messages').delete().eq('id', Number(id));
-                if (error) throw error;
-                allChatMessages = allChatMessages.filter(m => Number(m.id) !== Number(id));
+    window.toggleEmojiPicker = () => {
+        const picker = document.getElementById('emoji-picker');
+        picker.classList.toggle('hidden');
+    };
+
+    window.insertEmoji = (emoji) => {
+        const input = document.getElementById('chat-input');
+        input.value += emoji;
+        input.focus();
+    };
+
+    window.editPortalMsg = async (id, oldMsg) => {
+        const newMsg = prompt("Update Transmission:", oldMsg);
+        if (!newMsg || newMsg === oldMsg) return;
+        try {
+            const { error } = await sb.from('chat_messages').update({ message: newMsg }).eq('id', id);
+            if (error) throw error;
+            const idx = allChatMessages.findIndex(m => m.id === id);
+            if (idx !== -1) {
+                allChatMessages[idx].message = newMsg;
                 window.updateChatMessages();
-            } catch (err) { alert("Purge Failed: " + err.message); }
-        };
+            }
+        } catch (err) { alert("Update Interrupted: " + err.message); }
+    };
 
-        const box = document.getElementById('chat-messages-box');
-        box.scrollTop = box.scrollHeight;
-    }
+    window.deletePortalMsg = async (id) => {
+        if (!confirm("Purge this transmission from the core?")) return;
+        try {
+            // Number() ensures we use the correct type for BigInt match
+            const { error } = await sb.from('chat_messages').delete().eq('id', Number(id));
+            if (error) throw error;
+            allChatMessages = allChatMessages.filter(m => Number(m.id) !== Number(id));
+            window.updateChatMessages();
+        } catch (err) { alert("Purge Failed: " + err.message); }
+    };
 
     async function initChat() {
         const portalId = sessionStorage.getItem('portal_id') || 'ADMIN';
