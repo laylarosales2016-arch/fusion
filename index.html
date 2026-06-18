@@ -186,7 +186,18 @@
             text-overflow: ellipsis;
             width: 75px; /* Reduced from 100px */
         }
+        .sched-header-unit {
+            border: 2px solid #000000;
+            font-weight: 900;
+            font-size: 14px;
+            text-align: center;
+            padding: 8px 4px;
+            vertical-align: middle;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
         @media (max-width: 640px) {
+            .sched-header-unit { font-size: 12px; padding: 6px 2px; }
             .sched-name-cell { width: 60px; font-size: 9px; padding: 4px 2px; }
             .sched-cell { font-size: 9px; padding: 4px 1px; min-height: 24px; }
             .sched-header-cat { font-size: 9px; padding: 4px 2px; }
@@ -447,15 +458,15 @@
         </div>
     </div>
 
-    <div id="nav-controls" class="hidden flex items-center overflow-x-auto lg:overflow-x-visible lg:justify-center gap-1.5 md:gap-2 mb-10 bg-space-950/60 p-1.5 rounded-2xl border border-white/5 w-full shadow-2xl no-scrollbar">
-        <button onclick="switchTab('attendance')" id="btn-attendance" class="shrink-0 px-5 md:px-8 py-3 rounded-xl text-[9px] md:text-[11px] font-black uppercase tracking-widest transition-all bg-cyan-500 text-space-950 shadow-md shadow-cyan-500/10 whitespace-nowrap">Attendance</button>
-        <button onclick="switchTab('employees')" id="btn-employees" class="shrink-0 px-5 md:px-8 py-3 rounded-xl text-[9px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white whitespace-nowrap">Masterlist</button>
-        <button onclick="switchTab('da')" id="btn-da" class="shrink-0 px-5 md:px-8 py-3 rounded-xl text-[9px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white whitespace-nowrap">DA Records</button>
-        <button onclick="switchTab('attrition')" id="btn-attrition" class="shrink-0 px-5 md:px-8 py-3 rounded-xl text-[9px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white whitespace-nowrap">Attrition</button>
-        <button onclick="switchTab('chat')" id="btn-chat" class="shrink-0 px-5 md:px-8 py-3 rounded-xl text-[9px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white whitespace-nowrap"><i class="fa-solid fa-comments mr-2"></i>Chatbox</button>
-        <button onclick="switchTab('scheduler')" id="btn-scheduler" class="shrink-0 px-5 md:px-8 py-3 rounded-xl text-[9px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white whitespace-nowrap">Scheduler</button>
-        <button onclick="switchTab('medals')" id="btn-medals" class="shrink-0 px-5 md:px-8 py-3 rounded-xl text-[9px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white whitespace-nowrap">Medals</button>
-        <button onclick="switchTab('system')" id="btn-system" class="hidden shrink-0 px-5 md:px-8 py-3 rounded-xl text-[9px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white whitespace-nowrap">System</button>
+    <div id="nav-controls" class="hidden flex items-center gap-1 md:gap-2 mb-10 bg-space-950/60 p-1.5 rounded-2xl border border-white/5 w-full shadow-2xl">
+        <button onclick="switchTab('attendance')" id="btn-attendance" class="flex-1 px-2 md:px-8 py-3 rounded-xl text-[7px] sm:text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all bg-cyan-500 text-space-950 shadow-md shadow-cyan-500/10 whitespace-nowrap">Attendance</button>
+        <button onclick="switchTab('employees')" id="btn-employees" class="flex-1 px-2 md:px-8 py-3 rounded-xl text-[7px] sm:text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white whitespace-nowrap">Masterlist</button>
+        <button onclick="switchTab('da')" id="btn-da" class="flex-1 px-2 md:px-8 py-3 rounded-xl text-[7px] sm:text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white whitespace-nowrap">DA Records</button>
+        <button onclick="switchTab('attrition')" id="btn-attrition" class="flex-1 px-2 md:px-8 py-3 rounded-xl text-[7px] sm:text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white whitespace-nowrap">Attrition</button>
+        <button onclick="switchTab('chat')" id="btn-chat" class="flex-1 px-2 md:px-8 py-3 rounded-xl text-[7px] sm:text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white whitespace-nowrap"><i class="fa-solid fa-comments mr-1 sm:mr-2"></i>Chatbox</button>
+        <button onclick="switchTab('scheduler')" id="btn-scheduler" class="flex-1 px-2 md:px-8 py-3 rounded-xl text-[7px] sm:text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white whitespace-nowrap">Scheduler</button>
+        <button onclick="switchTab('medals')" id="btn-medals" class="flex-1 px-2 md:px-8 py-3 rounded-xl text-[7px] sm:text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white whitespace-nowrap">Medals</button>
+        <button onclick="switchTab('system')" id="btn-system" class="hidden flex-1 px-2 md:px-8 py-3 rounded-xl text-[7px] sm:text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white whitespace-nowrap">System</button>
     </div>
 
     <div id="day-note-card" class="hidden bg-space-900/70 backdrop-blur-md p-8 rounded-[2rem] border border-cyan-500/10 mb-10 flex items-start space-x-5 shadow-2xl">
@@ -1788,8 +1799,8 @@
         activeTab = tab;
         const btnAtt = document.getElementById('btn-attendance'), btnEmp = document.getElementById('btn-employees'), btnDa = document.getElementById('btn-da'), btnAttr = document.getElementById('btn-attrition'), btnMedal = document.getElementById('btn-medals'), btnSystem = document.getElementById('btn-system'), btnSched = document.getElementById('btn-scheduler'), btnChat = document.getElementById('btn-chat');
         const datePicker = document.getElementById('date-picker'), daFilter = document.getElementById('da-filter-container'), excrewBtn = document.getElementById('btn-excrew-filter');
-        [btnAtt, btnEmp, btnDa, btnAttr, btnMedal, btnSystem, btnSched, btnChat].forEach(btn => { if (!btn) return; btn.className = "shrink-0 px-5 md:px-8 py-3 rounded-xl text-[9px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white whitespace-nowrap"; });
-        const activeBtn = document.getElementById('btn-' + tab); if (activeBtn) activeBtn.className = "shrink-0 px-5 md:px-8 py-3 rounded-xl text-[9px] md:text-[11px] font-black uppercase tracking-widest transition-all bg-cyan-500 text-space-950 shadow-md shadow-cyan-500/10 whitespace-nowrap";
+        [btnAtt, btnEmp, btnDa, btnAttr, btnMedal, btnSystem, btnSched, btnChat].forEach(btn => { if (!btn) return; btn.className = "flex-1 px-2 md:px-8 py-3 rounded-xl text-[7px] sm:text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white whitespace-nowrap"; });
+        const activeBtn = document.getElementById('btn-' + tab); if (activeBtn) activeBtn.className = "flex-1 px-2 md:px-8 py-3 rounded-xl text-[7px] sm:text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all bg-cyan-500 text-space-950 shadow-md shadow-cyan-500/10 whitespace-nowrap";
         if (tab === 'attendance') { datePicker.classList.remove('hidden'); daFilter.classList.add('hidden'); }
         else if (tab === 'medals' || tab === 'scheduler' || tab === 'chat') { datePicker.classList.add('hidden'); daFilter.classList.add('hidden'); }
         else { datePicker.classList.add('hidden'); daFilter.classList.remove('hidden'); }
@@ -2138,7 +2149,7 @@
                     <tbody>
         `;
 
-        const excludedPositions = ["assistant manager", "administrator", "manager", "senior crew", "coordinator"];
+        const excludedPositions = ["assistant manager", "administrator", "manager", "coordinator"];
         const activeEmps = employees.filter(e => {
             const pos = (e.position || "").toLowerCase();
             const isExcluded = pos.includes('excrew') || excludedPositions.some(p => pos.includes(p));
@@ -2161,7 +2172,8 @@
             return !e.is_hidden_from_scheduler && !isHiddenThisWeek;
         });
 
-        const positionOrder = ["team leader", "cashier", "dispatch", "ss", "cic", "assembler", "fryer", "noodle", "dj", "backup"];
+        const diningPositions = ["dine in", "cic", "dj", "dispatch", "cashier", "sc", "senior crew"];
+        const kitchenPositions = ["so", "regular", "assembler", "fryman", "noodles", "backup"];
 
         const stationThemes = {
             "dine in": { bg: "#ea9999", text: "#000000" },
@@ -2170,37 +2182,43 @@
             "cashier": { bg: "#ff00ff", text: "#000000" },
             "dispatch": { bg: "#ff0000", text: "#000000" },
             "ss": { bg: "#34d399", text: "#000000" },
+            "so": { bg: "#ffd966", text: "#000000" },
+            "sc": { bg: "#b4a7d6", text: "#000000" },
+            "senior crew": { bg: "#b4a7d6", text: "#000000" },
+            "regular": { bg: "#fff2cc", text: "#000000" },
+            "fryman": { bg: "#fce5cd", text: "#000000" },
+            "assembler": { bg: "#d9ead3", text: "#000000" },
+            "noodles": { bg: "#d0e0e3", text: "#000000" },
+            "backup": { bg: "#efefef", text: "#000000" },
             "default": { bg: "#cccccc", text: "#000000" }
         };
 
         function formatPositionName(p) {
-            if (p.toLowerCase() === "dine in") return "Dine In";
-            if (p.toLowerCase() === "dj") return "DJ";
-            if (p.toLowerCase() === "cic") return "CIC";
-            if (p.toLowerCase() === "cashier") return "Cashier";
-            if (p.toLowerCase() === "dispatch") return "Dispatch";
-            if (p.toLowerCase() === "ss") return "SS";
+            const low = p.toLowerCase();
+            if (low === "dine in") return "Dine In";
+            if (low === "dj") return "DJ";
+            if (low === "cic") return "CIC";
+            if (low === "cashier") return "Cashier";
+            if (low === "dispatch") return "Dispatch";
+            if (low === "ss") return "SS";
+            if (low === "so") return "SO";
+            if (low === "sc") return "SC";
+            if (low === "fryman") return "Fryman";
+            if (low === "noodles") return "Noodles";
+            if (low === "assembler") return "Assembler";
+            if (low === "regular") return "Regular";
+            if (low === "backup") return "Backup";
             return p.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
         }
 
         function getCellColors(text) {
             const textLower = (text || "").toLowerCase().trim();
-            if (!textLower) {
-                return { bg: "#ffffff", text: "#000000" };
-            }
-            if (textLower === "rd" || textLower === "rrd") {
-                return { bg: "#4f8bf4", text: "#000000" }; // blue, bold black text
-            }
-            if (textLower === "sick" || textLower.includes("sick")) {
-                return { bg: "#e06666", text: "#000000" }; // red, bold black text
-            }
-            if (textLower === "ns") {
-                return { bg: "#f1c232", text: "#000000" }; // amber, bold black text
-            }
-            if (textLower.endsWith("dp") || textLower.endsWith("ca")) {
-                return { bg: "#00ff00", text: "#000000" }; // vibrant green, bold black text
-            }
-            return { bg: "#ffffff", text: "#000000" }; // normal shift (white)
+            if (!textLower) return { bg: "#ffffff", text: "#000000" };
+            if (textLower === "rd" || textLower === "rrd") return { bg: "#4f8bf4", text: "#000000" };
+            if (textLower === "sick" || textLower.includes("sick")) return { bg: "#e06666", text: "#000000" };
+            if (textLower === "ns") return { bg: "#f1c232", text: "#000000" };
+            if (textLower.endsWith("dp") || textLower.endsWith("ca")) return { bg: "#00ff00", text: "#000000" };
+            return { bg: "#ffffff", text: "#000000" };
         }
 
         const grouped = activeEmps.reduce((acc, emp) => {
@@ -2212,82 +2230,65 @@
 
         const visibleDaysCount = 7 - hiddenSchedDayIndices.size;
         const totalColspan = 1 + visibleDaysCount;
-        const sortedPositions = Object.keys(grouped).sort((a, b) => {
-            const idxA = positionOrder.indexOf(a), idxB = positionOrder.indexOf(b);
-            if (idxA === -1 && idxB === -1) return a.localeCompare(b);
-            if (idxA === -1) return 1; if (idxB === -1) return -1;
-            return idxA - idxB;
-        });
 
-        sortedPositions.forEach((pos, posIdx) => {
-            const theme = stationThemes[pos] || stationThemes["default"];
-            const formattedPos = formatPositionName(pos);
-
-            // Add Category Header Row
-            html += `
-                <tr>
-                    <td class="sched-header-cat" style="background-color: ${theme.bg}; color: ${theme.text};">
-                        ${formattedPos}
-                    </td>
-                    ${weekDays.map((d, i) => {
-                        if (hiddenSchedDayIndices.has(i)) return '';
-                        const dateObj = new Date(d);
-                        // Compact label for mobile
-                        const dayLabel = `${dayNames[i]} ${dateObj.getDate()}`;
-                        return `
-                            <td class="sched-header-day">
-                                ${dayLabel}
-                            </td>`;
-                    }).join('')}
-                </tr>
+        const renderUnit = (title, positionsInUnit, bgColor, textColor) => {
+            let unitHtml = `
+                <tr style="height: 12px; background-color: transparent;"><td colspan="${totalColspan}" style="border: none;"></td></tr>
+                <tr><td colspan="${totalColspan}" class="sched-header-unit" style="background-color: ${bgColor}; color: ${textColor};">${title}</td></tr>
             `;
-
-            // Sort employees under this category by last name
-            const categoryEmps = grouped[pos].sort((a, b) => (a.last_name || "").localeCompare(b.last_name || ""));
-
-            categoryEmps.forEach(emp => {
-                const targetId = emp.id || emp.employee_no;
-                const myId = sessionStorage.getItem('portal_id');
-                const msgIcon = '';
-                html += `
-                <tr>
-                     <td class="sched-name-cell">
-                        <div class="flex items-center justify-between">
-                            <span class="truncate">${emp.first_name}</span>
-                            <button onclick="openExportModal('sched', '${targetId}')" class="text-cyan-400 hover:text-cyan-300 ml-1" title="Export Schedule">
-                                <i class="fa-solid fa-print text-[9px]"></i>
-                            </button>
-                        </div>
-                     </td>`;
-
-                weekDays.forEach((date, i) => {
-                    if (hiddenSchedDayIndices.has(i)) return;
-                    const sched = weeklySchedules.find(s => (s.employee_id === emp.id || s.employee_id === emp.employee_no) && s.date === date);
-                    const text = sched?.schedule_text || sched?.tag || "";
-                    const colors = getCellColors(text);
-                    const isAdmin = portalRole === 'admin' || portalRole === 'superadmin';
-
-                    html += `
-                        <td class="sched-cell" style="background-color: ${colors.bg};">
-                            <div ${isAdmin ? `onclick="openSchedEdit('${targetId}', '${emp.first_name}', '${date}')"` : ''}
-                                 style="width: 100%; min-height: 24px; display: flex; align-items: center; justify-content: center; color: ${colors.text};"
-                                 class="${isAdmin ? 'cursor-pointer hover:opacity-80 active:scale-95' : ''} text-center">
-                                ${text || '&nbsp;'}
-                            </div>
-                        </td>`;
-                });
-                html += `</tr>`;
+            let hasEmployees = false;
+            positionsInUnit.forEach(pos => {
+                if (grouped[pos]) {
+                    hasEmployees = true;
+                    const theme = stationThemes[pos] || stationThemes["default"];
+                    const formattedPos = formatPositionName(pos);
+                    unitHtml += `
+                        <tr>
+                            <td class="sched-header-cat" style="background-color: ${theme.bg}; color: ${theme.text};">${formattedPos}</td>
+                            ${weekDays.map((d, i) => {
+                                if (hiddenSchedDayIndices.has(i)) return '';
+                                const dateObj = new Date(d);
+                                return `<td class="sched-header-day">${dayNames[i]} ${dateObj.getDate()}</td>`;
+                            }).join('')}
+                        </tr>
+                    `;
+                    grouped[pos].sort((a, b) => (a.last_name || "").localeCompare(b.last_name || "")).forEach(emp => {
+                        const targetId = emp.employee_no;
+                        const isAdmin = portalRole === 'admin' || portalRole === 'superadmin';
+                        unitHtml += `
+                            <tr>
+                                <td class="sched-name-cell">
+                                    ${emp.first_name}
+                                </td>
+                                ${weekDays.map((date, i) => {
+                                    if (hiddenSchedDayIndices.has(i)) return '';
+                                    const sched = weeklySchedules.find(s => (s.employee_id === emp.employee_no) && s.date === date);
+                                    const text = sched?.schedule_text || sched?.tag || "";
+                                    const colors = getCellColors(text);
+                                    return `
+                                        <td class="sched-cell" style="background-color: ${colors.bg};">
+                                            <div ${isAdmin ? `onclick="openSchedEdit('${targetId}', '${emp.first_name}', '${date}')"` : ''}
+                                                 style="width: 100%; min-height: 24px; display: flex; align-items: center; justify-content: center; color: ${colors.text};"
+                                                 class="${isAdmin ? 'cursor-pointer hover:opacity-80 active:scale-95' : ''} text-center">
+                                                ${text || '&nbsp;'}
+                                            </div>
+                                        </td>`;
+                                }).join('')}
+                            </tr>
+                        `;
+                    });
+                }
             });
+            return hasEmployees ? unitHtml : "";
+        };
 
-            // Add separator row if not the last category
-            if (posIdx < sortedPositions.length - 1) {
-                html += `
-                    <tr style="height: 8px; background-color: transparent;">
-                        <td colspan="${totalColspan}" style="border: none; background-color: transparent;"></td>
-                    </tr>
-                `;
-            }
-        });
+        // Render sections
+        html += renderUnit("Dining Unit", diningPositions, "#E0F7FA", "#006064");
+        html += renderUnit("Kitchen Unit", kitchenPositions, "#FFF3E0", "#E65100");
+
+        // Render remaining positions
+        const otherPositions = Object.keys(grouped).filter(p => !diningPositions.includes(p) && !kitchenPositions.includes(p));
+        html += renderUnit("Management / Support", otherPositions, "#F5F5F5", "#333333");
 
         container.innerHTML = html + `</tbody></table></div>`;
     }
