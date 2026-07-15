@@ -721,7 +721,7 @@
     let shiftTemplates = [], weeklySchedules = [], currentSchedDate = new Date();
     let allChatMessages = [], chatChannel = null;
     let currentNote = null, showExcrew = false, medalCountdownStart = null, hiddenSchedDayIndices = new Set();
-    let showSchedulerOrder = true;
+    let showSchedulerOrder = false;
     let currentCalDate = new Date(), dtrCalDate = new Date(), currentVaultEmp = null, selectedDTRDate = null;
     let isVaultEditing = false, exportContext = { mode: 'dtr', emp: null };
 
@@ -2195,7 +2195,7 @@
                 </div>
                 <div class="flex items-center gap-2">
                     <button onclick="window.toggleSchedulerOrder()" class="bg-space-950/50 border border-white/10 text-cyan-400 px-3 py-1.5 rounded-lg font-black text-[8px] uppercase tracking-widest hover:bg-cyan-500/20">
-                        ${showSchedulerOrder ? 'Hide Ranks' : 'Show Ranks'}
+                        ${showSchedulerOrder ? 'Hide Rank' : 'Show Rank'}
                     </button>
                     <div class="flex gap-1 md:gap-2">
                         ${dayNames.map((name, i) => {
