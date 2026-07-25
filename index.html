@@ -269,9 +269,9 @@
                 <i class="fa-solid fa-clock text-base"></i>
                 <span class="text-center leading-tight">DTR Terminal</span>
             </button>
-            <button id="v-perf-btn" onclick="openAppraisalForm()" class="hidden bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-4 rounded-2xl font-black text-[9px] uppercase tracking-widest hover:bg-emerald-500/20 transition-all flex flex-col items-center justify-center gap-2 h-20 w-full lg:w-36 shadow-lg shadow-emerald-500/5">
+            <button id="v-perf-btn" onclick="openAppraisalHistory()" class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-4 rounded-2xl font-black text-[9px] uppercase tracking-widest hover:bg-emerald-500/20 transition-all flex flex-col items-center justify-center gap-2 h-20 w-full lg:w-36 shadow-lg shadow-emerald-500/5">
                 <i class="fa-solid fa-star text-base"></i>
-                <span class="text-center leading-tight">Performance</span>
+                <span class="text-center leading-tight">Performance Appraisal</span>
             </button>
             <button onclick="openExportModal('sched')" class="bg-amber-500/10 border border-amber-500/20 text-amber-400 p-4 rounded-2xl font-black text-[9px] uppercase tracking-widest hover:bg-amber-500/20 transition-all flex flex-col items-center justify-center gap-2 h-20 w-full lg:w-36 shadow-lg shadow-amber-500/5">
                 <i class="fa-solid fa-calendar-check text-base"></i>
@@ -332,25 +332,6 @@
                 <div id="v-financial-container" class="space-y-6">
                     <div><span class="info-label">Bank Institution</span><p id="v-bank" class="info-value">---</p></div>
                     <div><span class="info-label">Account Number</span><p id="v-bank-acc" class="info-value font-mono text-cyan-400/80">---</p></div>
-                </div>
-            </div>
-            <div id="v-appraisal-card" class="glass-card p-8 rounded-[2.5rem] border-emerald-500/20 hidden">
-                <h3 class="section-title"><i class="fa-solid fa-chart-line text-emerald-400"></i> Performance Pulse</h3>
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between bg-space-950/50 p-5 rounded-2xl border border-emerald-500/10">
-                        <div>
-                            <span class="info-label !mb-0">Appraisal Period</span>
-                            <p id="v-perf-period" class="text-[10px] font-black text-emerald-400 uppercase tracking-widest">---</p>
-                        </div>
-                        <div class="text-right">
-                            <span class="info-label !mb-0">Score</span>
-                            <p id="v-perf-score" class="text-3xl font-black text-white">0.0</p>
-                        </div>
-                    </div>
-                    <div class="bg-space-950/30 p-4 rounded-xl border border-white/5">
-                        <span class="info-label">Evaluator Remarks</span>
-                        <p id="v-perf-comments" class="text-[11px] text-slate-300 italic leading-relaxed">No evaluation records found in current cycle.</p>
-                    </div>
                 </div>
             </div>
             <div id="v-da-card" class="glass-card p-8 rounded-[2.5rem] border-rose-500/20 hidden">
@@ -683,9 +664,39 @@
     </div>
 </div>
 
+<div id="appraisal-history-modal" class="fixed inset-0 z-[155] flex items-center justify-center p-4 hidden backdrop-blur-xl bg-space-950/80">
+    <div class="glass-card rounded-[2.5rem] max-w-md w-full max-h-[85vh] flex flex-col overflow-hidden animate-in zoom-in duration-300 border-emerald-500/20 shadow-2xl bg-[#1a1c23]">
+        <div class="p-6 border-b border-white/5 flex items-center justify-between">
+            <div>
+                <h3 id="app-hist-title" class="text-sm font-black text-white uppercase tracking-widest">Appraisal History</h3>
+                <p id="app-hist-subtitle" class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest">Personnel Records</p>
+            </div>
+            <button onclick="closeAppraisalHistory()" class="text-space-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-circle-xmark text-xl"></i>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-6 custom-scrollbar space-y-4">
+            <button id="btn-new-appraisal" onclick="startNewAppraisal()" class="hidden w-full py-4 bg-emerald-500 text-space-950 font-black uppercase text-[10px] tracking-widest rounded-xl hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/20 mb-4">
+                <i class="fa-solid fa-plus mr-2"></i>New Performance Appraisal
+            </button>
+            <div id="app-history-list" class="space-y-3">
+                <!-- History items here -->
+            </div>
+            <div id="app-followup-note" class="hidden p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 mt-4">
+                <p class="text-[10px] font-black text-rose-400 uppercase tracking-widest mb-1">Follow-up Required</p>
+                <p id="followup-text" class="text-[11px] text-slate-300 italic leading-relaxed"></p>
+            </div>
+        </div>
+        <div class="p-6 bg-space-900/40 border-t border-white/5 text-center">
+            <button onclick="closeAppraisalHistory()" class="text-space-400 text-[10px] font-black uppercase tracking-widest hover:text-white transition-all">Close Archive</button>
+        </div>
+    </div>
+</div>
+
 <div id="appraisal-form-modal" class="fixed inset-0 z-[160] flex items-center justify-center p-4 hidden backdrop-blur-xl bg-space-950/80">
     <div class="glass-card rounded-[2.5rem] max-w-xl w-full max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in duration-300 border-rose-500/20 shadow-2xl bg-[#2D2D3A]">
-        <div class="p-8 text-center border-b border-white/5">
+        <div class="p-8 text-center border-b border-white/5 relative">
+            <button onclick="closeAppraisalForm()" class="absolute left-6 top-1/2 -translate-y-1/2 text-space-400 hover:text-white"><i class="fa-solid fa-chevron-left text-xl"></i></button>
             <h2 class="text-2xl font-black text-white tracking-tight">FUSION</h2>
             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Integrated Service Cooperative</p>
             <h3 class="mt-4 text-lg font-black text-white uppercase tracking-wider">Performance Appraisal Form</h3>
@@ -713,22 +724,28 @@
 
             <div class="mb-8">
                 <h4 class="text-[11px] font-black text-white uppercase tracking-widest mb-4">Appraisal Period</h4>
-                <div class="flex flex-col sm:flex-row gap-6 items-center">
-                    <div class="bg-space-950/50 border border-white/10 rounded-xl px-4 py-3 flex-1 w-full flex justify-between items-center">
-                        <span id="app-form-month" class="text-sm font-bold text-white">---</span>
-                        <i class="fa-solid fa-calendar-days text-rose-400"></i>
+                <div class="flex flex-col sm:flex-row gap-4 items-center">
+                    <div class="relative w-full flex-1">
+                        <select id="app-input-month" class="bg-space-950/80 border border-white/10 text-white rounded-xl px-4 py-3 text-sm w-full outline-none focus:ring-1 focus:ring-rose-500 appearance-none font-bold">
+                            <option value="">Select Month...</option>
+                            <option value="January">January</option><option value="February">February</option><option value="March">March</option>
+                            <option value="April">April</option><option value="May">May</option><option value="June">June</option>
+                            <option value="July">July</option><option value="August">August</option><option value="September">September</option>
+                            <option value="October">October</option><option value="November">November</option><option value="December">December</option>
+                        </select>
+                        <i class="fa-solid fa-calendar-days text-rose-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                     </div>
-                    <div class="flex gap-4" id="app-form-qtr-container">
+                    <div class="flex gap-3 bg-space-950/50 p-2 rounded-xl border border-white/10" id="app-form-qtr-container">
                         <!-- Quarters -->
                     </div>
                 </div>
             </div>
 
-            <div class="bg-slate-800/80 p-3 rounded-lg text-center mb-8">
+            <div class="bg-slate-800/80 p-3 rounded-lg text-center mb-8 border border-white/5">
                 <p class="text-[10px] font-black text-white uppercase tracking-wider">Rating Scale: 3-BEST (Exceeds), 2-PASSED (Meets), 1-FAILED (Below)</p>
             </div>
 
-            <div class="space-y-8" id="app-form-factors">
+            <div class="space-y-10" id="app-form-factors">
                 <!-- Factors I to V -->
             </div>
 
@@ -739,70 +756,243 @@
 
             <div class="mt-8">
                 <span class="text-[9px] font-black text-rose-400 uppercase tracking-widest block mb-2">Rater's Overall Comments</span>
-                <div class="bg-space-950/50 p-4 rounded-xl border border-white/5 italic text-slate-300 text-sm leading-relaxed min-h-[100px]" id="app-form-comments">
-                    ---
-                </div>
+                <textarea id="app-input-comments" class="bg-space-950/50 p-4 rounded-xl border border-white/5 italic text-slate-100 text-sm leading-relaxed min-h-[120px] w-full outline-none focus:ring-1 focus:ring-rose-500 shadow-inner" placeholder="Enter evaluator feedback..."></textarea>
+                <div id="app-view-comments" class="hidden bg-space-950/50 p-4 rounded-xl border border-white/5 italic text-slate-300 text-sm leading-relaxed min-h-[100px]"></div>
             </div>
         </div>
 
-        <div class="p-8 bg-space-900/40 border-t border-white/5 flex gap-4">
-            <button onclick="closeAppraisalForm()" class="flex-1 py-4 text-white text-[11px] font-black uppercase tracking-widest hover:text-rose-400 transition-colors">Close Form</button>
+        <div class="p-8 bg-space-900/60 border-t border-white/5 flex gap-4">
+            <button id="btn-save-appraisal" onclick="saveAppraisalRecord()" class="hidden flex-1 py-4 bg-rose-500 hover:bg-rose-400 text-space-950 font-black uppercase text-xs tracking-widest rounded-xl transition-all shadow-lg shadow-rose-500/10">Commit Appraisal</button>
+            <button onclick="closeAppraisalForm()" id="btn-close-app-form" class="flex-1 py-4 text-white text-[11px] font-black uppercase tracking-widest hover:text-rose-400 transition-colors">Close Form</button>
         </div>
     </div>
 </div>
 
 <script>
-    function openAppraisalForm() {
+    let currentAppraisals = [], editingAppraisal = null, appRatings = [0,0,0,0,0], appQtr = 1;
+
+    async function openAppraisalHistory() {
         if (!currentVaultEmp) return;
         const emp = currentVaultEmp;
+        const isAdmin = portalRole === 'admin' || portalRole === 'superadmin';
+
+        document.getElementById('app-hist-subtitle').innerText = `${emp.first_name} ${emp.last_name}`;
+        const newList = document.getElementById('app-history-list');
+        newList.innerHTML = '<div class="p-8 text-center"><div class="loader w-8 h-8 border-2 rounded-full mx-auto"></div></div>';
+
+        document.getElementById('app-followup-note').classList.add('hidden');
+        document.getElementById('btn-new-appraisal').classList.toggle('hidden', !isAdmin);
+
+        document.getElementById('appraisal-history-modal').classList.remove('hidden');
+
+        try {
+            const { data, error } = await sb.from('appraisal_records').select('*').eq('employeeId', emp.id || emp.employee_no).order('createdAt', { ascending: false });
+            if (error) throw error;
+            currentAppraisals = data || [];
+
+            if (currentAppraisals.length === 0) {
+                newList.innerHTML = '<p class="text-center py-8 text-space-400 text-xs font-bold uppercase tracking-widest opacity-50">No historical records found.</p>';
+            } else {
+                newList.innerHTML = currentAppraisals.map(r => {
+                    const isFailed = r.score < 2.0;
+                    return `
+                    <div onclick="openAppraisalForm(${JSON.stringify(r).replace(/"/g, '&quot;')})" class="bg-space-950/40 border ${isFailed ? 'border-rose-500/30 bg-rose-500/5' : 'border-white/5'} p-4 rounded-xl flex justify-between items-center cursor-pointer hover:bg-white/5 transition-all group">
+                        <div>
+                            <p class="text-xs font-bold text-white">${r.month} ${r.year} - Q${r.quarter}</p>
+                            <p class="text-[9px] font-black ${isFailed ? 'text-rose-400' : 'text-emerald-400'} uppercase tracking-widest mt-1">Score: ${r.score.toFixed(1)} / 3.0</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-space-500 group-hover:text-white transition-colors"></i>
+                    </div>`;
+                }).join('');
+
+                // Follow-up Logic
+                const lastFailed = currentAppraisals.find(r => r.score < 2.0);
+                if (lastFailed) {
+                    const followUps = currentAppraisals.filter(r => r.createdAt > lastFailed.createdAt);
+                    if (followUps.length < 3) {
+                        document.getElementById('app-followup-note').classList.remove('hidden');
+                        document.getElementById('followup-text').innerText = `Subject failed appraisal on ${lastFailed.month} ${lastFailed.year}. Required: ${3 - followUps.length} more monthly evaluation(s).`;
+                    }
+                }
+            }
+        } catch (err) {
+            newList.innerHTML = `<p class="text-center py-8 text-rose-400 text-[10px] font-bold">Error: ${err.message}</p>`;
+        }
+    }
+
+    function closeAppraisalHistory() { document.getElementById('appraisal-history-modal').classList.add('hidden'); }
+
+    function startNewAppraisal() {
+        const emp = currentVaultEmp;
+        const newRec = {
+            id: null,
+            employeeId: emp.id || emp.employee_no,
+            score: 0.0,
+            comments: "",
+            rating1: 0, rating2: 0, rating3: 0, rating4: 0, rating5: 0,
+            month: "",
+            quarter: 1,
+            year: new Date().getFullYear()
+        };
+        openAppraisalForm(newRec, false);
+    }
+
+    function openAppraisalForm(record, isViewOnly = null) {
+        if (!currentVaultEmp) return;
+        const emp = currentVaultEmp;
+        editingAppraisal = record;
+        const isAdmin = portalRole === 'admin' || portalRole === 'superadmin';
+        const readOnly = isViewOnly !== null ? isViewOnly : !isAdmin;
 
         document.getElementById('app-form-name').innerText = `${emp.first_name} ${emp.last_name}`;
         document.getElementById('app-form-hired').innerText = emp.date_hired || '---';
         document.getElementById('app-form-pos').innerText = emp.scheduler_position || emp.position || '---';
-        document.getElementById('app-form-month').innerText = emp.appraisal_month || '---';
-        document.getElementById('app-form-score').innerText = (emp.performance_score || 0).toFixed(1);
-        document.getElementById('app-form-comments').innerText = emp.performance_comments || 'No rater remarks provided.';
 
-        // Render Quarters
+        // Inputs vs View
+        const monthInput = document.getElementById('app-input-month');
+        monthInput.value = record.month || "";
+        monthInput.disabled = readOnly;
+
+        const commInput = document.getElementById('app-input-comments');
+        const commView = document.getElementById('app-view-comments');
+        if (readOnly) {
+            commInput.classList.add('hidden');
+            commView.classList.remove('hidden');
+            commView.innerText = record.comments || 'No rater remarks provided.';
+        } else {
+            commInput.classList.remove('hidden');
+            commView.classList.add('hidden');
+            commInput.value = record.comments || "";
+        }
+
+        appRatings = [record.rating1, record.rating2, record.rating3, record.rating4, record.rating5];
+        appQtr = record.quarter || 1;
+
+        updateFormDisplay(readOnly);
+        document.getElementById('btn-save-appraisal').classList.toggle('hidden', readOnly);
+        document.getElementById('btn-close-app-form').innerText = readOnly ? "Close Form" : "Cancel";
+
+        document.getElementById('appraisal-form-modal').classList.remove('hidden');
+    }
+
+    function updateFormDisplay(readOnly) {
+        // Quarters
         const qtrCont = document.getElementById('app-form-qtr-container');
         qtrCont.innerHTML = [1,2,3,4].map(q => `
-            <div class="flex items-center gap-2">
-                <div class="w-5 h-5 rounded-full border-2 ${emp.appraisal_qtr == q ? 'border-rose-400 bg-rose-400' : 'border-slate-600'} flex items-center justify-center">
-                    ${emp.appraisal_qtr == q ? '<i class="fa-solid fa-check text-[10px] text-space-950"></i>' : ''}
+            <div onclick="${readOnly ? '' : `setAppQtr(${q})`}" class="flex items-center gap-2 ${readOnly ? '' : 'cursor-pointer'}">
+                <div class="w-5 h-5 rounded-full border-2 ${appQtr == q ? 'border-rose-400 bg-rose-400' : 'border-slate-600'} flex items-center justify-center transition-all">
+                    ${appQtr == q ? '<i class="fa-solid fa-check text-[10px] text-space-950"></i>' : ''}
                 </div>
-                <span class="text-[10px] font-black text-slate-400">${q}${q==1?'st':q==2?'nd':q==3?'rd':'th'} QTR</span>
+                <span class="text-[9px] font-black ${appQtr == q ? 'text-white' : 'text-slate-500'} uppercase">${q}${q==1?'st':q==2?'nd':q==3?'rd':'th'}</span>
             </div>
         `).join('');
 
-        // Render Factors
+        // Factors
         const factors = [
-            { t: 'I. JOB KNOWLEDGE', s: '(STATION CERTIFICATION, CROSS TRAINING, 4 STEPS)', v: emp.rating1 },
-            { t: 'II. QUALITY OF WORK', s: '(GOLD STANDARD SERVICES, HIGH QUALITY & CONSISTENT)', v: emp.rating2 },
-            { t: 'III. TEAMWORK', s: '(TEAM PLAYER, DEPENDABLE, RESPONSIBLE & RESPECTFUL)', v: emp.rating3 },
-            { t: 'IV. ATTENDANCE & PUNCTUALITY', s: '(HABITUAL TARDINESS, LEAVES & NOTIFICATION)', v: emp.rating4 },
-            { t: 'V. PERSONAL HEALTH HYGIENE & GROOMING', s: '(UNIFORM STANDARDS, CLEANLINESS & GROOMING)', v: emp.rating5 }
+            { t: 'I. JOB KNOWLEDGE', s: '(STATION CERTIFICATION, CROSS TRAINING, 4 STEPS)' },
+            { t: 'II. QUALITY OF WORK', s: '(GOLD STANDARD SERVICES, HIGH QUALITY & CONSISTENT)' },
+            { t: 'III. TEAMWORK', s: '(TEAM PLAYER, DEPENDABLE, RESPONSIBLE & RESPECTFUL)' },
+            { t: 'IV. ATTENDANCE & PUNCTUALITY', s: '(HABITUAL TARDINESS, LEAVES & NOTIFICATION)' },
+            { t: 'V. PERSONAL HEALTH HYGIENE & GROOMING', s: '(UNIFORM STANDARDS, CLEANLINESS & GROOMING)' }
         ];
 
         const factorsCont = document.getElementById('app-form-factors');
-        factorsCont.innerHTML = factors.map(f => `
+        factorsCont.innerHTML = factors.map((f, i) => `
             <div>
                 <h5 class="text-xs font-black text-white uppercase tracking-wider mb-1">${f.t}</h5>
                 <p class="text-[9px] text-slate-500 font-bold uppercase mb-4">${f.s}</p>
                 <div class="flex justify-between sm:justify-start sm:gap-12">
                     ${[1,2,3].map(r => `
-                        <div class="flex items-center gap-3">
-                            <div class="w-6 h-6 rounded-full border-2 ${f.v == r ? 'border-rose-400 bg-rose-400' : 'border-slate-700'} flex items-center justify-center">
-                                ${f.v == r ? '<i class="fa-solid fa-check text-xs text-space-950"></i>' : ''}
+                        <div onclick="${readOnly ? '' : `setAppRating(${i}, ${r})`}" class="flex items-center gap-3 ${readOnly ? '' : 'cursor-pointer group'}">
+                            <div class="w-7 h-7 rounded-full border-2 ${appRatings[i] == r ? 'border-rose-400 bg-rose-400' : 'border-slate-700'} flex items-center justify-center transition-all ${!readOnly ? 'group-hover:border-rose-400/50' : ''}">
+                                ${appRatings[i] == r ? '<i class="fa-solid fa-check text-xs text-space-950"></i>' : ''}
                             </div>
-                            <span class="text-sm font-black ${f.v == r ? 'text-white' : 'text-slate-600'}">${r}</span>
+                            <span class="text-sm font-black ${appRatings[i] == r ? 'text-white' : 'text-slate-600'} group-hover:text-slate-300 transition-colors">${r}</span>
                         </div>
                     `).join('')}
                 </div>
             </div>
         `).join('');
 
-        document.getElementById('appraisal-form-modal').classList.remove('hidden');
+        const total = appRatings.reduce((a,b) => a+b, 0);
+        const avg = total > 0 ? total / 5.0 : 0.0;
+        document.getElementById('app-form-score').innerText = avg.toFixed(1);
     }
+
+    function setAppQtr(q) { appQtr = q; updateFormDisplay(false); }
+    function setAppRating(idx, val) { appRatings[idx] = val; updateFormDisplay(false); }
+
+    async function saveAppraisalRecord() {
+        if (!editingAppraisal) return;
+        const month = document.getElementById('app-input-month').value;
+        const comments = document.getElementById('app-input-comments').value;
+
+        if (!month) return alert("Security Protocol: Appraisal month is mandatory.");
+        if (appRatings.some(r => r === 0)) return alert("Security Protocol: All performance factors must be evaluated.");
+
+        const total = appRatings.reduce((a,b) => a+b, 0);
+        const avg = total / 5.0;
+
+        const btn = document.getElementById('btn-save-appraisal');
+        btn.innerText = "Encrypting..."; btn.disabled = true;
+
+        // Generate a unique ID if this is a new record
+        const recordId = editingAppraisal.id || 'app_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+
+        const payload = {
+            id: recordId,
+            employeeId: editingAppraisal.employeeId,
+            score: avg,
+            comments: comments,
+            rating1: appRatings[0],
+            rating2: appRatings[1],
+            rating3: appRatings[2],
+            rating4: appRatings[3],
+            rating5: appRatings[4],
+            month: month,
+            quarter: appQtr,
+            year: editingAppraisal.year,
+            createdAt: editingAppraisal.id ? editingAppraisal.createdAt : Date.now()
+        };
+
+        try {
+            const { error } = await sb.from('appraisal_records').upsert(payload);
+            if (error) throw error;
+
+            // Also update the main employee profile with LATEST appraisal data
+            // (We keep this for backward compatibility and quick views)
+            await sb.from('employees').update({
+                performance_score: avg,
+                performance_comments: comments,
+                rating1: appRatings[0],
+                rating2: appRatings[1],
+                rating3: appRatings[2],
+                rating4: appRatings[3],
+                rating5: appRatings[4],
+                appraisal_month: month,
+                appraisal_qtr: appQtr
+            }).eq('employee_no', currentVaultEmp.employee_no);
+
+            // Update local state
+            const empIdx = employees.findIndex(e => e.employee_no === currentVaultEmp.employee_no);
+            if (empIdx !== -1) {
+                employees[empIdx].performance_score = avg;
+                employees[empIdx].performance_comments = comments;
+                // ... update other fields if needed
+            }
+
+            alert("Transmission Successful: Appraisal data committed to core.");
+            closeAppraisalForm();
+            openAppraisalHistory(); // Refresh history
+            renderMain(); // Refresh lists
+        } catch (err) {
+            alert("Uplink Error: " + err.message);
+        } finally {
+            btn.innerText = "Commit Appraisal"; btn.disabled = false;
+        }
+    }
+
+    function closeAppraisalForm() { document.getElementById('appraisal-form-modal').classList.add('hidden'); }
     function closeAppraisalForm() { document.getElementById('appraisal-form-modal').classList.add('hidden'); }
 
     window.printReadout = () => {
