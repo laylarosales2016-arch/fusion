@@ -904,7 +904,7 @@
 
         document.getElementById('app-form-name').innerText = `${emp.first_name} ${emp.last_name}`;
         document.getElementById('app-form-hired').innerText = emp.date_hired || '---';
-        document.getElementById('app-form-pos').innerText = emp.scheduler_position || emp.position || '---';
+        document.getElementById('app-form-pos').innerText = emp.position || emp.scheduler_position || '---';
 
         // Inputs vs View
         const monthInput = document.getElementById('app-input-month');
@@ -1703,7 +1703,7 @@
         photoImg.onload = () => { photoImg.classList.remove('hidden'); photoPlaceholder.classList.add('hidden'); };
         photoImg.onerror = () => { photoImg.classList.add('hidden'); photoPlaceholder.classList.remove('hidden'); };
 
-        const displayPos = emp.scheduler_position || emp.position;
+        const displayPos = emp.position || emp.scheduler_position;
         document.getElementById('v-name').innerText = `${emp.first_name} ${emp.last_name}`;
 
         let idPosHtml = `<p id="v-id-pos" class="text-cyan-400 font-bold uppercase tracking-[0.15em] text-[10px] whitespace-nowrap">ID: ${emp.employee_no} • ${displayPos}</p>`;
@@ -2640,7 +2640,7 @@
 
             const perfScore = emp.performance_score ? `<div class="mt-1 flex items-center gap-1.5"><span class="text-[8px] font-black text-emerald-400 uppercase tracking-widest">Perf: ${emp.performance_score.toFixed(1)}</span><div class="h-1 w-10 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-emerald-500" style="width: ${(emp.performance_score/3)*100}%"></div></div></div>` : '';
 
-            const displayPos = emp.scheduler_position || emp.position;
+            const displayPos = emp.position || emp.scheduler_position;
 
             let badgeHtml = '';
             if (emp.date_hired && emp.position !== 'Excrew') {
