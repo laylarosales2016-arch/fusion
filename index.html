@@ -805,6 +805,7 @@
         </div>
 
         <div class="p-8 bg-space-900/60 border-t border-white/5 flex gap-4">
+            <button id="btn-del-appraisal" onclick="deleteAppraisalRecord()" class="hidden py-4 px-6 bg-rose-500/10 border border-rose-500/20 text-rose-400 font-black uppercase text-xs tracking-widest rounded-xl hover:bg-rose-500/20 transition-all"><i class="fa-solid fa-trash"></i></button>
             <button id="btn-save-appraisal" onclick="saveAppraisalRecord()" class="hidden flex-1 py-4 bg-rose-500 hover:bg-rose-400 text-space-950 font-black uppercase text-xs tracking-widest rounded-xl transition-all shadow-lg shadow-rose-500/10">Commit Appraisal</button>
             <button onclick="closeAppraisalForm()" id="btn-close-app-form" class="flex-1 py-4 text-white text-[11px] font-black uppercase tracking-widest hover:text-rose-400 transition-colors">Close Form</button>
         </div>
@@ -927,6 +928,7 @@
 
         updateFormDisplay(readOnly);
         document.getElementById('btn-save-appraisal').classList.toggle('hidden', readOnly);
+        document.getElementById('btn-del-appraisal').classList.toggle('hidden', readOnly || !record.id);
         document.getElementById('btn-close-app-form').innerText = readOnly ? "Close Form" : "Cancel";
 
         document.getElementById('appraisal-form-modal').classList.remove('hidden');
@@ -1016,26 +1018,32 @@
             const { error } = await sb.from('appraisal_records').upsert(payload);
             if (error) throw error;
 
-            // Also update the main employee profile with LATEST appraisal data
-            // (We keep this for backward compatibility and quick views)
+            // Update the main employee profile with the LATEST appraisal in history
+            const { data: history } = await sb.from('appraisal_records')
+                .select('*')
+                .eq('employeeId', editingAppraisal.employeeId)
+                .order('createdAt', { ascending: false })
+                .limit(1);
+
+            const latest = history && history.length > 0 ? history[0] : payload;
+
             await sb.from('employees').update({
-                performance_score: avg,
-                performance_comments: comments,
-                rating1: appRatings[0],
-                rating2: appRatings[1],
-                rating3: appRatings[2],
-                rating4: appRatings[3],
-                rating5: appRatings[4],
-                appraisal_month: month,
-                appraisal_qtr: appQtr
+                performance_score: latest.score,
+                performance_comments: latest.comments,
+                rating1: latest.rating1,
+                rating2: latest.rating2,
+                rating3: latest.rating3,
+                rating4: latest.rating4,
+                rating5: latest.rating5,
+                appraisal_month: latest.month,
+                appraisal_qtr: latest.quarter
             }).eq('employee_no', currentVaultEmp.employee_no);
 
             // Update local state
             const empIdx = employees.findIndex(e => e.employee_no === currentVaultEmp.employee_no);
             if (empIdx !== -1) {
-                employees[empIdx].performance_score = avg;
-                employees[empIdx].performance_comments = comments;
-                // ... update other fields if needed
+                employees[empIdx].performance_score = latest.score;
+                employees[empIdx].performance_comments = latest.comments;
             }
 
             alert("Transmission Successful: Appraisal data committed to core.");
@@ -1046,6 +1054,57 @@
             alert("Uplink Error: " + err.message);
         } finally {
             btn.innerText = "Commit Appraisal"; btn.disabled = false;
+        }
+    }
+
+    async function deleteAppraisalRecord() {
+        if (!editingAppraisal || !editingAppraisal.id) return;
+        if (!confirm("Security Protocol: Are you sure you want to purge this appraisal from the core?")) return;
+
+        const btn = document.getElementById('btn-del-appraisal');
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; btn.disabled = true;
+
+        try {
+            const empId = editingAppraisal.employeeId;
+            const { error } = await sb.from('appraisal_records').delete().eq('id', editingAppraisal.id);
+            if (error) throw error;
+
+            // Find the next latest appraisal to update the employee profile
+            const { data: remaining } = await sb.from('appraisal_records')
+                .select('*')
+                .eq('employeeId', empId)
+                .order('createdAt', { ascending: false })
+                .limit(1);
+
+            const latest = remaining && remaining.length > 0 ? remaining[0] : null;
+
+            await sb.from('employees').update({
+                performance_score: latest ? latest.score : null,
+                performance_comments: latest ? latest.comments : "",
+                rating1: latest ? latest.rating1 : 0,
+                rating2: latest ? latest.rating2 : 0,
+                rating3: latest ? latest.rating3 : 0,
+                rating4: latest ? latest.rating4 : 0,
+                rating5: latest ? latest.rating5 : 0,
+                appraisal_month: latest ? latest.month : "",
+                appraisal_qtr: latest ? latest.quarter : null
+            }).eq('employee_no', currentVaultEmp.employee_no);
+
+            // Update local state
+            const empIdx = employees.findIndex(e => e.employee_no === currentVaultEmp.employee_no);
+            if (empIdx !== -1) {
+                employees[empIdx].performance_score = latest ? latest.score : null;
+                employees[empIdx].performance_comments = latest ? latest.comments : "";
+            }
+
+            alert("Transmission Successful: Appraisal purged from core.");
+            closeAppraisalForm();
+            openAppraisalHistory(); // Refresh history
+            renderMain(); // Refresh lists
+        } catch (err) {
+            alert("Uplink Error: " + err.message);
+        } finally {
+            btn.innerHTML = '<i class="fa-solid fa-trash"></i>'; btn.disabled = false;
         }
     }
 
