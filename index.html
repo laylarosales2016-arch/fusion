@@ -219,6 +219,25 @@
             align-items: center;
             box-shadow: 0 0 15px rgba(218, 165, 32, 0.1);
         }
+        .silver-glitter {
+            background: linear-gradient(90deg, #C0C0C0, #F5F5F5, #C0C0C0, #B0B0B0, #C0C0C0);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 2s linear infinite;
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            text-shadow: 0 0 10px rgba(192, 192, 192, 0.3);
+        }
+        .probationary-badge {
+            border: 1px solid rgba(192, 192, 192, 0.4);
+            background: rgba(192, 192, 192, 0.05);
+            padding: 2px 8px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            box-shadow: 0 0 15px rgba(192, 192, 192, 0.1);
+        }
 
         @media (max-width: 640px) {
             .sched-header-unit { font-size: 12px; padding: 6px 2px; }
@@ -1630,15 +1649,21 @@
 
         let idPosHtml = `<p id="v-id-pos" class="text-cyan-400 font-bold uppercase tracking-[0.15em] text-[10px] whitespace-nowrap">ID: ${emp.employee_no} • ${displayPos}</p>`;
 
-        // Regular Badge Check (6 months tenure)
+        // Regular/Probationary Badge Check
         if (emp.date_hired && emp.position !== 'Excrew') {
             const hired = new Date(emp.date_hired);
             const sixMonthsAgo = new Date();
             sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
             if (hired <= sixMonthsAgo) {
                 idPosHtml += `
-                    <div class="regular-badge">
-                        <span class="gold-glitter text-[9px] whitespace-nowrap">REGULAR</span>
+                    <div class="regular-badge ml-3">
+                        <span class="gold-glitter text-[8px] whitespace-nowrap">REGULAR</span>
+                    </div>
+                `;
+            } else {
+                idPosHtml += `
+                    <div class="probationary-badge ml-3">
+                        <span class="silver-glitter text-[8px] whitespace-nowrap">PROBATIONARY</span>
                     </div>
                 `;
             }
@@ -2557,12 +2582,25 @@
             const perfScore = emp.performance_score ? `<div class="mt-1 flex items-center gap-1.5"><span class="text-[8px] font-black text-emerald-400 uppercase tracking-widest">Perf: ${emp.performance_score.toFixed(1)}</span><div class="h-1 w-10 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-emerald-500" style="width: ${(emp.performance_score/3)*100}%"></div></div></div>` : '';
 
             const displayPos = emp.scheduler_position || emp.position;
+
+            let badgeHtml = '';
+            if (emp.date_hired && emp.position !== 'Excrew') {
+                const hired = new Date(emp.date_hired);
+                const sixMonthsAgo = new Date();
+                sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+                if (hired <= sixMonthsAgo) {
+                    badgeHtml = `<div class="regular-badge scale-[0.7] origin-left -mt-1 -mb-1"><span class="gold-glitter text-[10px] whitespace-nowrap">REGULAR</span></div>`;
+                } else {
+                    badgeHtml = `<div class="probationary-badge scale-[0.7] origin-left -mt-1 -mb-1"><span class="silver-glitter text-[10px] whitespace-nowrap">PROBATIONARY</span></div>`;
+                }
+            }
+
             const myId = sessionStorage.getItem('portal_id');
             const msgIcon = (myId && myId !== emp.employee_no) || portalRole === 'admin' || portalRole === 'superadmin'
                 ? `<button onclick="openPrivateChat('${emp.employee_no}')" class="ml-2 text-cyan-400 hover:text-cyan-300 transition-colors text-[10px]" title="Send Message"><i class="fa-solid fa-comment-dots"></i></button>`
                 : '';
 
-            html += `<tr class="hover:bg-cyan-500/[0.02] transition-colors"><td class="px-6 py-4"><div class="flex items-start gap-3"><div class="min-w-[100px] pt-1"><span class="glass-badge badge-cyan !text-[8px] !py-0.5 !px-2">${displayPos}</span></div><div class="w-10 h-10 rounded-full bg-space-950 border border-white/10 overflow-hidden shrink-0"><img src="${getProfilePic(emp.employee_no)}" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${emp.first_name}+${emp.last_name}&background=0b0f19&color=22d3ee'"></div><div><div class="flex items-center"><h4 class="font-bold text-slate-100 text-xs tracking-tight cursor-pointer select-none" ondblclick="openPersonalProfile('${emp.employee_no}')">${emp.first_name} ${emp.last_name}</h4>${msgIcon}</div><p class="text-[9px] text-cyan-400 font-bold uppercase tracking-wider mt-0.5">ID: ${emp.employee_no}</p><div class="flex items-center gap-1 mt-0.5">${icons}</div>${perfScore}<p class="text-[10px] text-space-400 mt-0.5 opacity-70">${emp.email || ''}</p></div></div></td><td class="px-6 py-4"><p class="text-[10px] text-slate-400">Hired: <span class="text-slate-200 font-medium ml-1">${formatDate(emp.date_hired) || '--'}</span></p><p class="text-[10px] text-slate-400 mt-0.5">Tenure: <span class="text-emerald-400 font-bold ml-1">${tenure}</span></p></td><td class="px-6 py-4"><div class="space-y-1 font-mono text-[10px] text-slate-300"><div class="flex items-center"><span class="w-8 text-[8px] text-space-400 font-sans font-black uppercase tracking-tighter opacity-60">SSS</span><span class="ml-2">${emp.sss || '--'}</span></div><div class="flex items-center"><span class="w-8 text-[8px] text-space-400 font-sans font-black uppercase tracking-tighter opacity-60">TIN</span><span class="ml-2">${emp.tin_number || '--'}</span></div></div></td><td class="px-6 py-4"><p class="text-[11px] font-semibold text-slate-300">${emp.bank || '--'}</p><p class="text-[10px] text-cyan-400/80 font-mono mt-0.5">${emp.bank_account_number || '--'}</p></td><td class="px-6 py-4"><div class="flex flex-wrap gap-1 mb-1 max-w-[200px]"><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">C: ${emp.uniform_cap || 0}</span><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">A: ${emp.uniform_apron || 0}</span><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">S: ${emp.uniform_shirt || 0}</span><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">P: ${emp.uniform_pants || 0}</span></div><span class="glass-badge badge-emerald inline-block mt-0.5 !text-[8px] !py-0.5 !px-2">${emp.is_certified ? 'Certified' : 'Uncertified'}</span></td><td class="px-6 py-4"><p class="text-[11px] font-semibold text-slate-300">${emp.emergency_contact_name || '--'}</p><p class="text-[10px] text-cyan-400 font-mono mt-0.5 font-bold">${emp.emergency_contact_phone || '--'}</p></td></tr>`;
+            html += `<tr class="hover:bg-cyan-500/[0.02] transition-colors"><td class="px-6 py-4"><div class="flex items-start gap-3"><div class="min-w-[100px] pt-1"><span class="glass-badge badge-cyan !text-[8px] !py-0.5 !px-2">${displayPos}</span></div><div class="w-10 h-10 rounded-full bg-space-950 border border-white/10 overflow-hidden shrink-0"><img src="${getProfilePic(emp.employee_no)}" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${emp.first_name}+${emp.last_name}&background=0b0f19&color=22d3ee'"></div><div><div class="flex items-center"><h4 class="font-bold text-slate-100 text-xs tracking-tight cursor-pointer select-none" ondblclick="openPersonalProfile('${emp.employee_no}')">${emp.first_name} ${emp.last_name}</h4>${msgIcon}</div>${badgeHtml}<p class="text-[9px] text-cyan-400 font-bold uppercase tracking-wider mt-0.5">ID: ${emp.employee_no}</p><div class="flex items-center gap-1 mt-0.5">${icons}</div>${perfScore}<p class="text-[10px] text-space-400 mt-0.5 opacity-70">${emp.email || ''}</p></div></div></td><td class="px-6 py-4"><p class="text-[10px] text-slate-400">Hired: <span class="text-slate-200 font-medium ml-1">${formatDate(emp.date_hired) || '--'}</span></p><p class="text-[10px] text-slate-400 mt-0.5">Tenure: <span class="text-emerald-400 font-bold ml-1">${tenure}</span></p></td><td class="px-6 py-4"><div class="space-y-1 font-mono text-[10px] text-slate-300"><div class="flex items-center"><span class="w-8 text-[8px] text-space-400 font-sans font-black uppercase tracking-tighter opacity-60">SSS</span><span class="ml-2">${emp.sss || '--'}</span></div><div class="flex items-center"><span class="w-8 text-[8px] text-space-400 font-sans font-black uppercase tracking-tighter opacity-60">TIN</span><span class="ml-2">${emp.tin_number || '--'}</span></div></div></td><td class="px-6 py-4"><p class="text-[11px] font-semibold text-slate-300">${emp.bank || '--'}</p><p class="text-[10px] text-cyan-400/80 font-mono mt-0.5">${emp.bank_account_number || '--'}</p></td><td class="px-6 py-4"><div class="flex flex-wrap gap-1 mb-1 max-w-[200px]"><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">C: ${emp.uniform_cap || 0}</span><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">A: ${emp.uniform_apron || 0}</span><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">S: ${emp.uniform_shirt || 0}</span><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">P: ${emp.uniform_pants || 0}</span></div><span class="glass-badge badge-emerald inline-block mt-0.5 !text-[8px] !py-0.5 !px-2">${emp.is_certified ? 'Certified' : 'Uncertified'}</span></td><td class="px-6 py-4"><p class="text-[11px] font-semibold text-slate-300">${emp.emergency_contact_name || '--'}</p><p class="text-[10px] text-cyan-400 font-mono mt-0.5 font-bold">${emp.emergency_contact_phone || '--'}</p></td></tr>`;
         });
         container.innerHTML = html + `</tbody></table></div>`;
     }
