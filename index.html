@@ -647,6 +647,10 @@
                     <option value="SS">SS</option>
                 </select>
             </div>
+            <div>
+                <label class="info-label">Weekly Order / Rank</label>
+                <input type="number" id="sched-order-input" class="bg-space-950 border border-white/10 text-white rounded-lg px-4 py-3 text-sm w-full outline-none focus:ring-1 focus:ring-cyan-500" placeholder="Sort order...">
+            </div>
             <div class="grid grid-cols-2 gap-2">
                 <button onclick="applyQuickTag('RD')" class="py-2 bg-blue-500/20 border border-blue-500/30 text-blue-400 text-[10px] font-black uppercase rounded-lg hover:bg-blue-500/30">RD</button>
                 <button onclick="applyQuickTag('RRD')" class="py-2 bg-blue-500/20 border border-blue-500/30 text-blue-400 text-[10px] font-black uppercase rounded-lg hover:bg-blue-500/30">RRD</button>
@@ -2845,8 +2849,11 @@
                         </tr>
                     `;
                     grouped[pos].sort((a, b) => {
-                        if ((a.scheduler_order || 0) !== (b.scheduler_order || 0)) {
-                            return (a.scheduler_order || 0) - (b.scheduler_order || 0);
+                        const mDate = weekDays[0];
+                        const orderA = weeklySchedules.find(s => s.employee_id === a.employee_no && s.date === mDate)?.scheduler_order ?? a.scheduler_order;
+                        const orderB = weeklySchedules.find(s => s.employee_id === b.employee_no && s.date === mDate)?.scheduler_order ?? b.scheduler_order;
+                        if ((orderA || 0) !== (orderB || 0)) {
+                            return (orderA || 0) - (orderB || 0);
                         }
                         return (a.first_name || "").localeCompare(b.first_name || "");
                     }).forEach(emp => {
@@ -2855,7 +2862,13 @@
                         unitHtml += `
                             <tr>
                                 <td class="sched-name-cell">
-                                    ${showSchedulerOrder ? (emp.scheduler_order ? emp.scheduler_order + '. ' : '0. ') : ''}${emp.first_name}
+                                    ${(() => {
+                                        const mDate = weekDays[0];
+                                        const mRec = weeklySchedules.find(s => s.employee_id === emp.employee_no && s.date === mDate);
+                                        const order = mRec?.scheduler_order ?? emp.scheduler_order ?? 0;
+                                        const name = mRec?.employee_name ?? emp.first_name;
+                                        return showSchedulerOrder ? (order + '. ' + name) : name;
+                                    })()}
                                 </td>
                                 ${weekDays.map((date, i) => {
                                     if (hiddenSchedDayIndices.has(i)) return '';
@@ -2897,17 +2910,20 @@
         const mondayDate = getStartOfWeek(new Date(date)).toISOString().split('T')[0];
         document.getElementById('sched-edit-title').innerText = `${name} • ${new Date(date).toDateString()}`;
         const existing = weeklySchedules.find(s => s.employee_id === empId && s.date === date);
-        const weeklyPos = weeklySchedules.find(s => s.employee_id === empId && s.date === mondayDate)?.position;
+        const mondayRec = weeklySchedules.find(s => s.employee_id === empId && s.date === mondayDate);
+        const emp = employees.find(e => e.employee_no === empId || e.id === empId);
 
         document.getElementById('sched-shift-select').value = existing?.schedule_text || "";
-        document.getElementById('sched-station-select').value = weeklyPos || "";
+        document.getElementById('sched-station-select').value = mondayRec?.position || "";
+        document.getElementById('sched-order-input').value = mondayRec?.scheduler_order ?? emp?.scheduler_order ?? 0;
         document.getElementById('scheduler-edit-modal').classList.remove('hidden');
     }
 
     async function saveScheduleEntry() {
         const shift = document.getElementById('sched-shift-select').value;
         const station = document.getElementById('sched-station-select').value;
-        if(!shift && !station) return alert("Security Protocol: Select shift or station first.");
+        const orderInput = document.getElementById('sched-order-input').value;
+        const orderVal = orderInput !== "" ? parseInt(orderInput) : null;
 
         const btn = document.getElementById('btn-save-sched'); btn.innerText = "Syncing..."; btn.disabled = true;
         try {
@@ -2924,13 +2940,18 @@
                 if(error) throw error;
             }
 
-            // 2. Save Station Override (Monday of this week)
-            if (station !== undefined) {
-                const { error } = await sb.from('employee_schedules').upsert({
+            // 2. Save Station & Order & Name Override (Monday of this week)
+            if (station !== undefined || orderVal !== null) {
+                const emp = employees.find(e => e.employee_no === editingSched.empId || e.id === editingSched.empId);
+                const payload = {
                     employee_id: editingSched.empId,
-                    date: mondayDate,
-                    position: station || null
-                }, { onConflict: 'employee_id,date' });
+                    date: mondayDate
+                };
+                if (station) payload.position = station;
+                if (orderVal !== null) payload.scheduler_order = orderVal;
+                if (emp) payload.employee_name = emp.first_name;
+
+                const { error } = await sb.from('employee_schedules').upsert(payload, { onConflict: 'employee_id,date' });
                 if(error) throw error;
             }
 
@@ -2982,12 +3003,39 @@
 
     async function clearScheduleEntry() {
         if(!confirm("Purge deployment entry?")) return;
-        const { error } = await sb.from('employee_schedules').delete().eq('employee_id', editingSched.empId).eq('date', editingSched.date);
-        if(!error) {
-            weeklySchedules = weeklySchedules.filter(s => !(s.employee_id === editingSched.empId && s.date === editingSched.date));
+
+        try {
+            const { data: existing } = await sb.from('employee_schedules').select('*').eq('employee_id', editingSched.empId).eq('date', editingSched.date).maybeSingle();
+
+            if (existing) {
+                // If it has metadata, clear the shift but keep metadata
+                if (existing.position || existing.scheduler_order !== null || existing.tag === "HIDDEN") {
+                    const updateData = {
+                        schedule_text: null,
+                        tag: existing.tag === "HIDDEN" ? "HIDDEN" : null,
+                        color: null,
+                        font_color: null
+                    };
+                    const { error } = await sb.from('employee_schedules').update(updateData).eq('employee_id', editingSched.empId).eq('date', editingSched.date);
+                    if (error) throw error;
+                } else {
+                    const { error } = await sb.from('employee_schedules').delete().eq('employee_id', editingSched.empId).eq('date', editingSched.date);
+                    if (error) throw error;
+                }
+            }
+
+            // Refresh local data
+            const { data } = await sb.from('employee_schedules').select('*').eq('employee_id', editingSched.empId).eq('date', editingSched.date).maybeSingle();
+            if (data) {
+                const idx = weeklySchedules.findIndex(s => s.employee_id === data.employee_id && s.date === data.date);
+                if (idx !== -1) weeklySchedules[idx] = data; else weeklySchedules.push(data);
+            } else {
+                weeklySchedules = weeklySchedules.filter(s => !(s.employee_id === editingSched.empId && s.date === editingSched.date));
+            }
+
             closeSchedModal();
             renderMain();
-        } else alert("Purge Error: " + error.message);
+        } catch (e) { alert("Purge Error: " + e.message); }
     }
 
     function closeSchedModal() { document.getElementById('scheduler-edit-modal').classList.add('hidden'); }
