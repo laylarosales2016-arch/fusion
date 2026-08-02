@@ -273,7 +273,7 @@
     <div class="relative mb-6 text-left">
         <label class="text-[10px] font-black text-cyan-400 uppercase tracking-widest ml-4 mb-2 block">System Password</label>
         <div class="relative">
-            <input type="password" id="sys-pass" onkeydown="if(event.key==='Enter') checkAuth()" placeholder="••••••••" class="bg-space-950/80 border border-white/10 text-white rounded-xl px-6 py-4 pr-12 font-semibold text-sm outline-none focus:ring-2 focus:ring-cyan-500 transition-all w-full shadow-inner">
+            <input type="password" id="sys-pass" onkeydown="if(event.key==='Enter') checkAuth()" placeholder="        " class="bg-space-950/80 border border-white/10 text-white rounded-xl px-6 py-4 pr-12 font-semibold text-sm outline-none focus:ring-2 focus:ring-cyan-500 transition-all w-full shadow-inner">
             <button onclick="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-space-400 hover:text-cyan-400 transition-colors">
                 <i id="toggle-icon" class="fa-solid fa-eye"></i>
             </button>
@@ -295,12 +295,12 @@
             <div>
                 <h1 id="v-name" class="text-xl md:text-2xl font-black tracking-tight text-white whitespace-nowrap">---</h1>
                 <div id="v-id-pos-container" class="flex items-center gap-3 mt-1">
-                    <p id="v-id-pos" class="text-cyan-400 font-bold uppercase tracking-[0.15em] text-[10px] whitespace-nowrap">ID: --- • ---</p>
+                    <p id="v-id-pos" class="text-cyan-400 font-bold uppercase tracking-[0.15em] text-[10px] whitespace-nowrap">ID: ---   ---</p>
                 </div>
             </div>
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:flex lg:flex-wrap items-center justify-center md:justify-end gap-2 w-full md:w-auto">
-            <button id="v-msg-btn" onclick="openPrivateChat(currentVaultEmp?.employee_no)" class="hidden bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 p-3 rounded-2xl font-black text-[8px] uppercase tracking-widest hover:bg-cyan-500/20 transition-all flex flex-col items-center justify-center gap-1.5 h-16 w-full lg:w-28 shadow-lg shadow-cyan-500/5">
+            <button id="v-msg-btn" onclick="openPrivateChat(currentVaultEmp ? currentVaultEmp.employee_no : null)" class="hidden bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 p-3 rounded-2xl font-black text-[8px] uppercase tracking-widest hover:bg-cyan-500/20 transition-all flex flex-col items-center justify-center gap-1.5 h-16 w-full lg:w-28 shadow-lg shadow-cyan-500/5">
                 <i class="fa-solid fa-message text-sm"></i>
                 <span class="text-center leading-tight">Send Message</span>
             </button>
@@ -410,7 +410,7 @@
                 <div class="space-y-4">
                     <div>
                         <label class="info-label">New Portal Password</label>
-                        <input type="password" id="v-new-pass" placeholder="••••••••" class="bg-space-950/80 border border-white/10 text-white rounded-lg px-4 py-2 font-semibold text-sm outline-none focus:ring-1 focus:ring-cyan-500 w-full mb-3">
+                        <input type="password" id="v-new-pass" placeholder="        " class="bg-space-950/80 border border-white/10 text-white rounded-lg px-4 py-2 font-semibold text-sm outline-none focus:ring-1 focus:ring-cyan-500 w-full mb-3">
                         <button onclick="updatePortalPassword()" id="btn-update-pass" class="w-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 py-2 rounded-lg font-black text-[9px] uppercase tracking-widest hover:bg-cyan-500/20 transition-all">Update Key</button>
                         <p id="v-pass-msg" class="text-[8px] font-bold uppercase mt-2 hidden"></p>
                     </div>
@@ -651,6 +651,16 @@
                 <label class="info-label">Weekly Order / Rank</label>
                 <input type="number" id="sched-order-input" class="bg-space-950 border border-white/10 text-white rounded-lg px-4 py-3 text-sm w-full outline-none focus:ring-1 focus:ring-cyan-500" placeholder="Sort order...">
             </div>
+            <div>
+                <label class="info-label">Mini Tag / Superscript</label>
+                <input type="text" id="sched-super-input" class="bg-space-950 border border-white/10 text-white rounded-lg px-4 py-3 text-sm w-full outline-none focus:ring-1 focus:ring-cyan-500" placeholder="RTF, DP, CA, DJ...">
+                <div class="flex gap-1 mt-2">
+                    <button onclick="document.getElementById('sched-super-input').value='RTF'" class="bg-white/5 border border-white/10 text-[8px] text-space-400 px-2 py-1 rounded hover:bg-white/10">RTF</button>
+                    <button onclick="document.getElementById('sched-super-input').value='DP'" class="bg-white/5 border border-white/10 text-[8px] text-space-400 px-2 py-1 rounded hover:bg-white/10">DP</button>
+                    <button onclick="document.getElementById('sched-super-input').value='CA'" class="bg-white/5 border border-white/10 text-[8px] text-space-400 px-2 py-1 rounded hover:bg-white/10">CA</button>
+                    <button onclick="document.getElementById('sched-super-input').value='DJ'" class="bg-white/5 border border-white/10 text-[8px] text-space-400 px-2 py-1 rounded hover:bg-white/10">DJ</button>
+                </div>
+            </div>
             <div class="grid grid-cols-2 gap-2">
                 <button onclick="applyQuickTag('RD')" class="py-2 bg-blue-500/20 border border-blue-500/30 text-blue-400 text-[10px] font-black uppercase rounded-lg hover:bg-blue-500/30">RD</button>
                 <button onclick="applyQuickTag('RRD')" class="py-2 bg-blue-500/20 border border-blue-500/30 text-blue-400 text-[10px] font-black uppercase rounded-lg hover:bg-blue-500/30">RRD</button>
@@ -838,9 +848,9 @@
             <div class="p-3 rounded-xl bg-space-950/50 border border-white/5 mb-4">
                 <p class="text-[9px] font-black text-cyan-400 uppercase tracking-widest mb-2">Appraisal Cycle Protocol</p>
                 <div class="space-y-1 text-[8px] font-bold text-slate-400 uppercase tracking-wider">
-                    <p>• Probationary: Month 1, Month 3, Month 6</p>
-                    <p>• Regular: Every 6 months thereafter</p>
-                    <p class="text-rose-400">• Failing (< 2.0): 3 consecutive monthly evaluations</p>
+                    <p>  Probationary: Month 1, Month 3, Month 6</p>
+                    <p>  Regular: Every 6 months thereafter</p>
+                    <p class="text-rose-400">  Failing (< 2.0): 3 consecutive monthly evaluations</p>
                 </div>
             </div>
         `;
@@ -1178,6 +1188,7 @@
     let showSchedulerOrder = false;
     let currentCalDate = new Date(), dtrCalDate = new Date(), currentVaultEmp = null, selectedDTRDate = null;
     let isVaultEditing = false, exportContext = { mode: 'dtr', emp: null };
+    let weekDays = []; // Global weekDays for scheduler sync
 
     function toggleEditVault() {
         if (!currentVaultEmp) return;
@@ -1193,7 +1204,7 @@
 
             // Header / Position
             document.getElementById('v-id-pos-container').innerHTML = `
-                <p class="text-cyan-400 font-bold uppercase tracking-[0.3em] text-[9px]">ID: ${currentVaultEmp.employee_no} • </p>
+                <p class="text-cyan-400 font-bold uppercase tracking-[0.3em] text-[9px]">ID: ${currentVaultEmp.employee_no}   </p>
                 <input type="text" id="edit-position" value="${currentVaultEmp.position || ''}" class="bg-space-950 border border-white/10 text-cyan-400 rounded px-2 py-0.5 text-[9px] font-black uppercase w-32 outline-none focus:ring-1 focus:ring-cyan-500 mr-2">
             `;
 
@@ -1348,7 +1359,7 @@
     function changeMonth(dir) { currentCalDate.setMonth(currentCalDate.getMonth() + dir); renderCalendar(); }
     function closeNote() { document.getElementById('note-modal').classList.add('hidden'); }
     function showDayNote(dateStr, status, note) {
-        document.getElementById('note-date-title').innerText = `${new Date(dateStr).toDateString()} • ${status}`;
+        document.getElementById('note-date-title').innerText = `${new Date(dateStr).toDateString()}   ${status}`;
         document.getElementById('note-content').innerText = note && note.trim() ? `"${note}"` : "No remarks recorded for this sequence.";
         document.getElementById('note-modal').classList.remove('hidden');
     }
@@ -1432,11 +1443,17 @@
         btn.innerHTML = '<div class="loader w-5 h-5 border-2 rounded-full mx-auto"></div>'; btn.disabled = true;
         try {
             if (!AUTH_PASS || !MEDAL_PASS || !SUPER_PASS) {
-                const { data: settings } = await sb.from('settings').select('key, value').in('key', ['admin_portal_pass', 'medal_portal_pass', 'superadmin_portal_pass']);
+                const result = await sb.from('settings').select('key, value').in('key', ['admin_portal_pass', 'medal_portal_pass', 'superadmin_portal_pass']);
+                const settings = result.data;
                 if (settings) {
-                    AUTH_PASS = settings.find(s => s.key === 'admin_portal_pass')?.value || 'fusion2026';
-                    MEDAL_PASS = settings.find(s => s.key === 'medal_portal_pass')?.value || 'medal2026';
-                    SUPER_PASS = settings.find(s => s.key === 'superadmin_portal_pass')?.value || 'nocturnal';
+                    const adminSet = settings.find(function(s) { return s.key === 'admin_portal_pass'; });
+                    AUTH_PASS = adminSet ? adminSet.value : 'fusion2026';
+
+                    const medalSet = settings.find(function(s) { return s.key === 'medal_portal_pass'; });
+                    MEDAL_PASS = medalSet ? medalSet.value : 'medal2026';
+
+                    const superSet = settings.find(function(s) { return s.key === 'superadmin_portal_pass'; });
+                    SUPER_PASS = superSet ? superSet.value : 'nocturnal';
                 }
             }
 
@@ -1710,7 +1727,7 @@
         const displayPos = emp.position || emp.scheduler_position;
         document.getElementById('v-name').innerText = `${emp.first_name} ${emp.last_name}`;
 
-        let idPosHtml = `<p id="v-id-pos" class="text-cyan-400 font-bold uppercase tracking-[0.15em] text-[10px] whitespace-nowrap">ID: ${emp.employee_no} • ${displayPos}</p>`;
+        let idPosHtml = `<p id="v-id-pos" class="text-cyan-400 font-bold uppercase tracking-[0.15em] text-[10px] whitespace-nowrap">ID: ${emp.employee_no}   ${displayPos}</p>`;
 
         // Regular/Probationary Badge Check
         if (emp.date_hired && emp.position !== 'Excrew') {
@@ -1899,7 +1916,7 @@
                 else if (rec.status === 'RD') statusClass = 'cal-rd';
                 else statusClass = 'cal-present';
             }
-            html += `<div onclick="showDayNote('${dateStr}', '${rec?.status || 'NO RECORD'}', '${(rec?.note || "").replace(/'/g, "\\'")}')" class="calendar-day ${statusClass} ${dateStr === todayStr ? 'cal-today' : ''}">${medalIcon}<span>${d}</span></div>`;
+            html += `<div onclick="showDayNote('${dateStr}', '${rec ? rec.status : 'NO RECORD'}', '${(rec ? (rec.note || "") : "").replace(/'/g, "\\'")}')" class="calendar-day ${statusClass} ${dateStr === todayStr ? 'cal-today' : ''}">${medalIcon}<span>${d}</span></div>`;
         }
         body.innerHTML = html;
     }
@@ -1933,7 +1950,7 @@
         document.getElementById('dtr-entry-title').innerText = `${new Date(date).toDateString()} Entry`;
 
         const rdCheck = document.getElementById('dtr-is-rd');
-        const isRD = r?.note && r.note.startsWith('[RD]');
+        const isRD = r.note && r.note.startsWith('[RD]');
         rdCheck.checked = !!isRD;
         toggleRDInput(rdCheck.checked);
 
@@ -1943,8 +1960,8 @@
             const parts = t.split(':'); let hh = parseInt(parts[0]);
             h.value = (hh % 12 || 12).toString().padStart(2,'0'); m.value = parts[1]; a.value = hh >= 12 ? 'PM' : 'AM';
         };
-        set('ti', r?.time_in); set('to', r?.time_out);
-        document.getElementById('dtr-entry-note').value = isRD ? r.note.replace('[RD] ', '') : (r?.note || '');
+        set('ti', r ? r.time_in : null); set('to', r ? r.time_out : null);
+        document.getElementById('dtr-entry-note').value = isRD ? r.note.replace('[RD] ', '') : (r ? (r.note || '') : '');
         document.getElementById('dtr-entry-modal').classList.remove('hidden');
     }
     function closeDTREntryModal() { document.getElementById('dtr-entry-modal').classList.add('hidden'); }
@@ -2013,7 +2030,7 @@
 
         try {
             document.getElementById('readout-title').innerText = exportContext.mode === 'dtr' ? 'Daily Time Record Readout' : 'Employee Schedule Readout';
-            document.getElementById('readout-subtitle').innerText = `Personnel: ${emp.first_name} ${emp.last_name} • ${formatDate(s)} to ${formatDate(e)}`;
+            document.getElementById('readout-subtitle').innerText = `Personnel: ${emp.first_name} ${emp.last_name}   ${formatDate(s)} to ${formatDate(e)}`;
 
             // Control sync button visibility
             const syncBtn = document.getElementById('btn-sync-all-dtr');
@@ -2094,9 +2111,9 @@
         if (!emp) return alert("System Error: Personnel node not identified.");
         const empNo = emp.employee_no;
 
-        const existing = weeklySchedules.find(s => (s.employee_id === targetId || s.employee_id === emp.id || s.employee_id === emp.employee_no) && s.date === date);
-        const tag = existing?.tag;
-        const text = shift || existing?.schedule_text;
+        const existing = weeklySchedules.find(function(s) { return (s.employee_id === targetId || s.employee_id === emp.id || s.employee_id === emp.employee_no) && s.date === date; });
+        const tag = existing ? existing.tag : null;
+        const text = shift || (existing ? existing.schedule_text : null);
 
         if (!text && !tag) return alert("Security Protocol: No schedule found to post.");
 
@@ -2311,17 +2328,21 @@
 
                 const excludedPositions = ["assistant manager", "manager", "senior crew", "administrator", "coordinator"];
 
-                const uniqueNames = [...new Set(data
-                    .filter(e => {
-                        const fullName = `${e.first_name || ''} ${e.last_name || ''}`.trim().toLowerCase();
-                        if (excludedNames.some(exName => fullName.includes(exName.toLowerCase()))) return false;
-                        const pos = (e.position || "").toLowerCase();
-                        if (excludedPositions.some(p => pos.includes(p))) return false;
-                        return !pos.includes("excrew");
-                    })
-                    .map(e => `${e.first_name || ''} ${e.last_name || ''}`.trim()))]
-                    .filter(name => name !== '')
-                    .sort();
+                var uniqueNames = data.filter(function(e) {
+                        var fullName = (e.first_name || '') + ' ' + (e.last_name || '');
+                        fullName = fullName.trim().toLowerCase();
+                        if (excludedNames.some(function(exName) { return fullName.indexOf(exName.toLowerCase()) !== -1; })) return false;
+                        var pos = (e.position || "").toLowerCase();
+                        if (excludedPositions.some(function(p) { return pos.indexOf(p) !== -1; })) return false;
+                        return pos.indexOf("excrew") === -1;
+                    }).map(function(e) {
+                        return ((e.first_name || '') + ' ' + (e.last_name || '')).trim();
+                    });
+
+                // Deduplicate uniqueNames
+                uniqueNames = uniqueNames.filter(function(item, pos) {
+                    return uniqueNames.indexOf(item) == pos;
+                }).sort();
 
                 uniqueNames.forEach(name => {
                     const opt = document.createElement('option');
@@ -2391,29 +2412,29 @@
         const statCards = { present: document.getElementById('stat-card-present'), late: document.getElementById('stat-card-late'), absent: document.getElementById('stat-card-absent'), da: document.getElementById('stat-card-da') };
 
         if (portalRole === 'medal' || portalRole === 'personal') {
-            [statCards.present, statCards.late, statCards.absent, statCards.da].forEach(c => c?.classList.add('hidden'));
+            [statCards.present, statCards.late, statCards.absent, statCards.da].forEach(c => c.classList.add('hidden'));
             document.getElementById('stats-container').classList.add('hidden');
             document.getElementById('admin-controls').classList.add('hidden');
             const backVaultBtn = document.getElementById('btn-back-vault');
 
             if (portalRole === 'medal') {
                 document.getElementById('nav-controls').classList.add('hidden');
-                backVaultBtn?.classList.add('hidden');
+                backVaultBtn.classList.add('hidden');
             } else {
                 // Personal role
-                backVaultBtn?.classList.remove('hidden');
+                backVaultBtn.classList.remove('hidden');
                 document.getElementById('nav-controls').classList.remove('hidden');
                 const tabs = ['attendance', 'employees', 'da', 'attrition', 'medals', 'scheduler', 'system'];
-                tabs.forEach(t => document.getElementById('btn-' + t)?.classList.add('hidden'));
-                document.getElementById('btn-chat')?.classList.remove('hidden');
-                document.getElementById('btn-chat')?.classList.add('flex-1');
+                tabs.forEach(t => document.getElementById('btn-' + t).classList.add('hidden'));
+                document.getElementById('btn-chat').classList.remove('hidden');
+                document.getElementById('btn-chat').classList.add('flex-1');
             }
         } else {
-            document.getElementById('btn-back-vault')?.classList.add('hidden');
+            document.getElementById('btn-back-vault').classList.add('hidden');
             document.getElementById('stats-container').classList.remove('hidden'); document.getElementById('nav-controls').classList.remove('hidden'); document.getElementById('admin-controls').classList.remove('hidden');
             [statCards.present, statCards.late, statCards.absent, statCards.da].forEach(c => c.classList.remove('hidden'));
             const tabs = ['attendance', 'employees', 'da', 'attrition', 'medals', 'scheduler', 'chat'];
-            tabs.forEach(t => document.getElementById('btn-' + t)?.classList.remove('hidden'));
+            tabs.forEach(t => document.getElementById('btn-' + t).classList.remove('hidden'));
             const sysBtn = document.getElementById('btn-system'); if (portalRole === 'superadmin') sysBtn.classList.remove('hidden'); else sysBtn.classList.add('hidden');
         }
 
@@ -2663,7 +2684,7 @@
                 ? `<button onclick="openPrivateChat('${emp.employee_no}')" class="ml-2 text-cyan-400 hover:text-cyan-300 transition-colors text-[10px]" title="Send Message"><i class="fa-solid fa-comment-dots"></i></button>`
                 : '';
 
-            html += `<tr class="hover:bg-cyan-500/[0.02] transition-colors"><td class="px-6 py-4"><div class="flex items-start gap-3"><div class="min-w-[100px] pt-1"><span class="glass-badge badge-cyan !text-[8px] !py-0.5 !px-2">${displayPos}</span></div><div class="w-10 h-10 rounded-full bg-space-950 border border-white/10 overflow-hidden shrink-0"><img src="${getProfilePic(emp.employee_no)}" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${emp.first_name}+${emp.last_name}&background=0b0f19&color=22d3ee'"></div><div><div class="flex items-center"><h4 class="font-bold text-slate-100 text-xs tracking-tight cursor-pointer select-none" ondblclick="openPersonalProfile('${emp.employee_no}')">${emp.first_name} ${emp.last_name}</h4>${msgIcon}</div>${badgeHtml}<p class="text-[9px] text-cyan-400 font-bold uppercase tracking-wider mt-0.5">ID: ${emp.employee_no}</p><div class="flex items-center gap-1 mt-0.5">${icons}</div>${perfScore}<p class="text-[10px] text-space-400 mt-0.5 opacity-70">${emp.email || ''}</p></div></div></td><td class="px-6 py-4"><p class="text-[10px] text-slate-400">Hired: <span class="text-slate-200 font-medium ml-1">${formatDate(emp.date_hired) || '--'}</span></p><p class="text-[10px] text-slate-400 mt-0.5">Tenure: <span class="text-emerald-400 font-bold ml-1">${tenure}</span></p></td><td class="px-6 py-4"><div class="space-y-1 font-mono text-[10px] text-slate-300"><div class="flex items-center"><span class="w-8 text-[8px] text-space-400 font-sans font-black uppercase tracking-tighter opacity-60">SSS</span><span class="ml-2">${emp.sss || '--'}</span></div><div class="flex items-center"><span class="w-8 text-[8px] text-space-400 font-sans font-black uppercase tracking-tighter opacity-60">TIN</span><span class="ml-2">${emp.tin_number || '--'}</span></div></div></td><td class="px-6 py-4"><p class="text-[11px] font-semibold text-slate-300">${emp.bank || '--'}</p><p class="text-[10px] text-cyan-400/80 font-mono mt-0.5">${emp.bank_account_number || '--'}</p></td><td class="px-6 py-4"><div class="flex flex-wrap gap-1 mb-1 max-w-[200px]"><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">C: ${emp.uniform_cap || 0}</span><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">A: ${emp.uniform_apron || 0}</span><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">S: ${emp.uniform_shirt || 0}</span><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">P: ${emp.uniform_pants || 0}</span></div><span class="glass-badge badge-emerald inline-block mt-0.5 !text-[8px] !py-0.5 !px-2">${emp.is_certified ? 'Certified' : 'Uncertified'}</span></td><td class="px-6 py-4"><p class="text-[11px] font-semibold text-slate-300">${emp.emergency_contact_name || '--'}</p><p class="text-[10px] text-cyan-400 font-mono mt-0.5 font-bold">${emp.emergency_contact_phone || '--'}</p></td></tr>`;
+            html += `<tr class="hover:bg-cyan-500/[0.02] transition-colors"><td class="px-6 py-4"><div class="flex items-start gap-3"><div class="min-w-[100px] pt-1"><span class="glass-badge badge-cyan !text-[8px] !py-0.5 !px-2">${displayPos}</span></div><div class="w-10 h-10 rounded-full bg-space-950 border border-white/10 overflow-hidden shrink-0"><img src="${getProfilePic(emp.employee_no)}" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${emp.first_name}+${emp.last_name}&background=0b0f19&color=22d3ee'"></div><div><div class="flex items-center"><h4 class="font-bold text-slate-100 text-xs tracking-tight cursor-pointer select-none" ondblclick="openPersonalProfile('${emp.employee_no}')">${emp.first_name} ${emp.last_name}</h4>${msgIcon}</div>${badgeHtml}<p class="text-[9px] text-cyan-400 font-bold uppercase tracking-wider mt-0.5">ID: ${emp.employee_no}</p><div class="flex items-center gap-1 mt-0.5">${icons}</div>${perfScore}<p class="text-[10px] text-slate-400 mt-0.5 opacity-80">${emp.phone_number || emp.cp_number || 'No CP'}</p><p class="text-[9px] text-space-400 opacity-60">${emp.email || ''}</p></div></div></td><td class="px-6 py-4"><p class="text-[10px] text-slate-400">Hired: <span class="text-slate-200 font-medium ml-1">${formatDate(emp.date_hired) || '--'}</span></p><p class="text-[10px] text-slate-400 mt-0.5">Tenure: <span class="text-emerald-400 font-bold ml-1">${tenure}</span></p></td><td class="px-6 py-4"><div class="space-y-1 font-mono text-[10px] text-slate-300"><div class="flex items-center"><span class="w-12 text-[8px] text-space-400 font-sans font-black uppercase tracking-tighter opacity-60">SSS</span><span class="ml-2">${emp.sss || '--'}</span></div><div class="flex items-center"><span class="w-12 text-[8px] text-space-400 font-sans font-black uppercase tracking-tighter opacity-60">TIN</span><span class="ml-2">${emp.tin_number || '--'}</span></div><div class="flex items-center"><span class="w-12 text-[8px] text-space-400 font-sans font-black uppercase tracking-tighter opacity-60">PHILH</span><span class="ml-2">${emp.phil_health || '--'}</span></div><div class="flex items-center"><span class="w-12 text-[8px] text-space-400 font-sans font-black uppercase tracking-tighter opacity-60">PAGIBIG</span><span class="ml-2">${emp.pagibig || '--'}</span></div></div></td><td class="px-6 py-4"><p class="text-[11px] font-semibold text-slate-300">${emp.bank || '--'}</p><p class="text-[10px] text-cyan-400/80 font-mono mt-0.5">${emp.bank_account_number || '--'}</p></td><td class="px-6 py-4"><div class="flex flex-wrap gap-1 mb-1 max-w-[200px]"><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">C: ${emp.uniform_cap || 0}</span><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">A: ${emp.uniform_apron || 0}</span><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">S: ${emp.uniform_shirt || 0}</span><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">P: ${emp.uniform_pants || 0}</span></div><span class="glass-badge badge-emerald inline-block mt-0.5 !text-[8px] !py-0.5 !px-2">${emp.is_certified ? 'Certified' : 'Uncertified'}</span></td><td class="px-6 py-4"><p class="text-[11px] font-semibold text-slate-300">${emp.emergency_contact_name || '--'}</p><p class="text-[10px] text-cyan-400 font-mono mt-0.5 font-bold">${emp.emergency_contact_phone || '--'}</p></td></tr>`;
         });
         container.innerHTML = html + `</tbody></table></div>`;
     }
@@ -2697,8 +2718,9 @@
     }
 
     async function renderScheduler(container) {
+        console.log("Rendering scheduler for:", currentSchedDate);
         const startOfWeek = getStartOfWeek(currentSchedDate);
-        const weekDays = [];
+        weekDays = [];
         const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
         for(let i=0; i<7; i++) {
@@ -2712,58 +2734,49 @@
         const { data } = await sb.from('employee_schedules').select('*').in('date', weekDays);
         weeklySchedules = data || [];
 
-        let html = `
-            <div class="p-4 flex flex-col md:flex-row items-center justify-between bg-space-950/40 border-b border-white/5 gap-4 sched-controls-container">
-                <div class="flex items-center gap-2">
-                    <button onclick="changeSchedWeek(-1)" class="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-space-950/50 border border-white/10 flex items-center justify-center text-cyan-400 hover:bg-cyan-500/20"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                    <span class="text-[10px] md:text-xs font-black text-white uppercase tracking-wider min-w-[130px] md:min-w-[200px] text-center sched-week-label">Week of ${startOfWeek.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}</span>
-                    <button onclick="changeSchedWeek(1)" class="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-space-950/50 border border-white/10 flex items-center justify-center text-cyan-400 hover:bg-cyan-500/20"><i class="fa-solid fa-chevron-right text-xs"></i></button>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="window.toggleSchedulerOrder()" class="bg-space-950/50 border border-white/10 text-cyan-400 px-3 py-1.5 rounded-lg font-black text-[8px] uppercase tracking-widest hover:bg-cyan-500/20">
-                        ${showSchedulerOrder ? 'Hide Rank' : 'Show Rank'}
-                    </button>
-                    <div class="flex gap-1 md:gap-2">
-                        ${dayNames.map((name, i) => {
-                            const isHidden = hiddenSchedDayIndices.has(i);
-                            return `<button onclick="toggleSchedDay(${i})" class="sched-day-btn w-8 h-8 md:w-10 md:h-10 rounded-full text-[10px] md:text-xs font-black uppercase transition-all ${isHidden ? 'bg-space-800 text-space-500' : 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/20'}">${name[0]}</button>`;
-                        }).join('')}
-                    </div>
-                </div>
-            </div>
-            <div class="overflow-x-auto w-full p-1 md:p-6" style="background-color: transparent;">
-                <table class="sched-table">
-                    <colgroup>
-                        <col style="width: 14%;">
-                        ${weekDays.map((d, i) => {
+        var html = '\
+            <div class="p-4 flex flex-col md:flex-row items-center justify-between bg-space-950/40 border-b border-white/5 gap-4 sched-controls-container">\
+                <div class="flex items-center gap-2">\
+                    <button onclick="changeSchedWeek(-1)" class="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-space-950/50 border border-white/10 flex items-center justify-center text-cyan-400 hover:bg-cyan-500/20"><i class="fa-solid fa-chevron-left text-xs"></i></button>\
+                    <span class="text-[10px] md:text-xs font-black text-white uppercase tracking-wider min-w-[130px] md:min-w-[200px] text-center sched-week-label">Week of ' + startOfWeek.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) + '</span>\
+                    <button onclick="changeSchedWeek(1)" class="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-space-950/50 border border-white/10 flex items-center justify-center text-cyan-400 hover:bg-cyan-500/20"><i class="fa-solid fa-chevron-right text-xs"></i></button>\
+                </div>\
+                <div class="flex items-center gap-2">\
+                    <button onclick="window.toggleSchedulerOrder()" class="bg-space-950/50 border border-white/10 text-cyan-400 px-3 py-1.5 rounded-lg font-black text-[8px] uppercase tracking-widest hover:bg-cyan-500/20">' + (showSchedulerOrder ? 'Hide Rank' : 'Show Rank') + '</button>\
+                    <div class="flex gap-1 md:gap-2">\
+                        ' + dayNames.map(function(name, i) {
+                            var isHidden = hiddenSchedDayIndices.has(i);
+                            return '<button onclick="toggleSchedDay(' + i + ')" class="sched-day-btn w-8 h-8 md:w-10 md:h-10 rounded-full text-[10px] md:text-xs font-black uppercase transition-all ' + (isHidden ? 'bg-space-800 text-space-500' : 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/20') + '">' + name[0] + '</button>';
+                        }).join('') + '\
+                    </div>\
+                </div>\
+            </div>\
+            <div class="overflow-x-auto w-full p-1 md:p-6" style="background-color: transparent;">\
+                <table class="sched-table">\
+                    <colgroup>\
+                        <col style="width: 14%;">\
+                        ' + weekDays.map(function(d, i) {
                             if (hiddenSchedDayIndices.has(i)) return '';
-                            return `<col style="width: 11%;">`;
-                        }).join('')}
-                    </colgroup>
-                    <tbody>
-        `;
+                            return '<col style="width: 11%;">';
+                        }).join('') + '\
+                    </colgroup>\
+                    <tbody>\
+        ';
 
         const excludedPositions = ["assistant manager", "administrator", "manager", "coordinator"];
-        const activeEmps = employees.filter(e => {
+        const activeEmps = employees.filter(function(e) {
             const pos = (e.position || "").toLowerCase();
-            const isExcluded = pos.includes('excrew') || excludedPositions.some(p => pos.includes(p));
+            const isExcluded = pos.includes('excrew') || excludedPositions.some(function(p) { return pos.includes(p); });
             if (isExcluded) return false;
 
             const targetId = e.id || e.employee_no;
-            const hasSchedThisWeek = weeklySchedules.some(s =>
-                (s.employee_id === targetId || s.employee_id === e.id || s.employee_id === e.employee_no) &&
-                s.tag !== 'HIDDEN' && s.schedule_text
-            );
+            // Only show if there is ANY schedule entry for this employee this week
+            const hasEntryThisWeek = weeklySchedules.some(function(s) {
+                return (s.employee_id === targetId || s.employee_id === e.id || s.employee_id === e.employee_no) &&
+                       (s.schedule_text || s.tag || s.position || s.scheduler_order !== undefined);
+            });
 
-            if (hasSchedThisWeek) return true;
-
-            const isHiddenThisWeek = weeklySchedules.some(s =>
-                (s.employee_id === targetId || s.employee_id === e.id || s.employee_id === e.employee_no) &&
-                s.date === weekDays[0] &&
-                s.tag === 'HIDDEN'
-            );
-
-            return !e.is_hidden_from_scheduler && !isHiddenThisWeek;
+            return hasEntryThisWeek;
         });
 
         const diningPositions = ["dine in", "cic", "dj", "dispatch", "cashier", "sc", "senior crew"];
@@ -2815,19 +2828,20 @@
             return { bg: "#ffffff", text: "#000000" };
         }
 
-        const grouped = activeEmps.reduce((acc, emp) => {
-            const mondayDate = weekDays[0];
-            const weeklyOverride = weeklySchedules.find(s => s.employee_id === emp.employee_no && s.date === mondayDate)?.position;
-            const pos = (weeklyOverride || emp.scheduler_position || emp.position || "Crew").toLowerCase();
+        var grouped = activeEmps.reduce(function(acc, emp) {
+            var mondayDate = weekDays[0];
+            var mRec = weeklySchedules.find(function(s) { return s.employee_id === emp.employee_no && s.date === mondayDate; });
+            var weeklyOverride = mRec ? mRec.position : null;
+            var pos = (weeklyOverride || emp.scheduler_position || emp.position || "Crew").toLowerCase();
             if (!acc[pos]) acc[pos] = [];
             acc[pos].push(emp);
             return acc;
         }, {});
 
-        const visibleDaysCount = 7 - hiddenSchedDayIndices.size;
-        const totalColspan = 1 + visibleDaysCount;
+        var visibleDaysCount = 7 - hiddenSchedDayIndices.size;
+        var totalColspan = 1 + visibleDaysCount;
 
-        const renderUnit = (title, positionsInUnit, bgColor, textColor) => {
+        var renderUnit = function(title, positionsInUnit, bgColor, textColor) {
             let unitHtml = `
                 <tr style="height: 12px; background-color: transparent;"><td colspan="${totalColspan}" style="border: none;"></td></tr>
                 <tr><td colspan="${totalColspan}" class="sched-header-unit" style="background-color: ${bgColor}; color: ${textColor};">${title}</td></tr>
@@ -2848,111 +2862,129 @@
                             }).join('')}
                         </tr>
                     `;
-                    grouped[pos].sort((a, b) => {
-                        const mDate = weekDays[0];
-                        const orderA = weeklySchedules.find(s => s.employee_id === a.employee_no && s.date === mDate)?.scheduler_order ?? a.scheduler_order;
-                        const orderB = weeklySchedules.find(s => s.employee_id === b.employee_no && s.date === mDate)?.scheduler_order ?? b.scheduler_order;
-                        if ((orderA || 0) !== (orderB || 0)) {
-                            return (orderA || 0) - (orderB || 0);
+                    grouped[pos].sort(function(a, b) {
+                        var mDate = weekDays[0];
+                        var sA = weeklySchedules.find(function(s) { return s.employee_id === a.employee_no && s.date === mDate; });
+                        var orderA = (sA && sA.scheduler_order !== undefined && sA.scheduler_order !== null) ? sA.scheduler_order : (a.scheduler_order || 0);
+
+                        var sB = weeklySchedules.find(function(s) { return s.employee_id === b.employee_no && s.date === mDate; });
+                        var orderB = (sB && sB.scheduler_order !== undefined && sB.scheduler_order !== null) ? sB.scheduler_order : (b.scheduler_order || 0);
+
+                        if (orderA !== orderB) {
+                            return orderA - orderB;
                         }
                         return (a.first_name || "").localeCompare(b.first_name || "");
-                    }).forEach(emp => {
-                        const targetId = emp.employee_no;
-                        const isAdmin = portalRole === 'admin' || portalRole === 'superadmin';
-                        unitHtml += `
-                            <tr>
-                                <td class="sched-name-cell">
-                                    ${(() => {
-                                        const mDate = weekDays[0];
-                                        const mRec = weeklySchedules.find(s => s.employee_id === emp.employee_no && s.date === mDate);
-                                        const order = mRec?.scheduler_order ?? emp.scheduler_order ?? 0;
-                                        const name = mRec?.employee_name ?? emp.first_name;
+                    }).forEach(function(emp) {
+                        var targetId = emp.employee_no;
+                        var isAdmin = portalRole === 'admin' || portalRole === 'superadmin';
+                        unitHtml += '\
+                            <tr>\
+                                <td class="sched-name-cell">\
+                                    ' + (function() {
+                                        var mDate = weekDays[0];
+                                        var mRec = weeklySchedules.find(function(s) { return s.employee_id === emp.employee_no && s.date === mDate; });
+                                        var order = (mRec && mRec.scheduler_order !== undefined && mRec.scheduler_order !== null) ? mRec.scheduler_order : (emp.scheduler_order || 0);
+                                        var name = (mRec && mRec.employee_name) ? mRec.employee_name : (emp.first_name || "Node");
                                         return showSchedulerOrder ? (order + '. ' + name) : name;
-                                    })()}
-                                </td>
-                                ${weekDays.map((date, i) => {
+                                    })() + '\
+                                </td>\
+                                ' + weekDays.map(function(date, i) {
                                     if (hiddenSchedDayIndices.has(i)) return '';
-                                    const sched = weeklySchedules.find(s => (s.employee_id === emp.employee_no) && s.date === date);
-                                    const text = sched?.schedule_text || sched?.tag || "";
-                                    const colors = getCellColors(text);
-                                    return `
-                                        <td class="sched-cell" style="background-color: ${colors.bg};">
-                                            <div ${isAdmin ? `onclick="openSchedEdit('${targetId}', '${emp.first_name}', '${date}')"` : ''}
-                                                 style="width: 100%; min-height: 24px; display: flex; align-items: center; justify-content: center; color: ${colors.text};"
-                                                 class="${isAdmin ? 'cursor-pointer hover:opacity-80 active:scale-95' : ''} text-center">
-                                                ${text || '&nbsp;'}
-                                            </div>
-                                        </td>`;
-                                }).join('')}
-                            </tr>
-                        `;
+                                    var sched = weeklySchedules.find(function(s) { return (s.employee_id === emp.employee_no) && s.date === date; });
+                                    var text = (sched && (sched.schedule_text || sched.tag)) ? (sched.schedule_text || sched.tag) : "";
+                                    var superText = (sched && sched.superscript) ? sched.superscript : "";
+                                    var colors = getCellColors(text);
+                                    return '\
+                                        <td class="sched-cell" style="background-color: ' + colors.bg + ';">\
+                                            <div ' + (isAdmin ? 'onclick="openSchedEdit(\'' + targetId + '\', \'' + emp.first_name + '\', \'' + date + '\')"' : '') + '\
+                                                 style="width: 100%; min-height: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: ' + colors.text + ';"\
+                                                 class="' + (isAdmin ? 'cursor-pointer hover:opacity-80 active:scale-95' : '') + ' text-center relative">\
+                                                ' + (superText ? '<span style="font-size: 6.5px; position: absolute; top: 1px; line-height: 1; font-weight: 900; opacity: 0.7; letter-spacing: 0.05em;">' + superText + '</span>' : '') + '\
+                                                <span style="margin-top: ' + (superText ? '4px' : '0') + '">' + (text || '&nbsp;') + '</span>\
+                                            </div>\
+                                        </td>';
+                                }).join('') + '\
+                            </tr>\
+                        ';
                     });
                 }
             });
             return hasEmployees ? unitHtml : "";
         };
 
-        // Render sections
-        html += renderUnit("Dining Unit", diningPositions, "#E0F7FA", "#006064");
-        html += renderUnit("Kitchen Unit", kitchenPositions, "#FFF3E0", "#E65100");
+        try {
+            // Render sections
+            html += renderUnit("Dining Unit", diningPositions, "#E0F7FA", "#006064");
+            html += renderUnit("Kitchen Unit", kitchenPositions, "#FFF3E0", "#E65100");
 
-        // Render remaining positions
-        const otherPositions = Object.keys(grouped).filter(p => !diningPositions.includes(p) && !kitchenPositions.includes(p));
-        html += renderUnit("Management / Support", otherPositions, "#F5F5F5", "#333333");
+            // Render remaining positions
+            const otherPositions = Object.keys(grouped).filter(function(p) {
+                return !diningPositions.includes(p) && !kitchenPositions.includes(p);
+            });
+            html += renderUnit("Management / Support", otherPositions, "#F5F5F5", "#333333");
 
-        container.innerHTML = html + `</tbody></table></div>`;
+            container.innerHTML = html + `</tbody></table></div>`;
+        } catch (e) {
+            console.error("Scheduler Render Error:", e);
+            container.innerHTML = `<div class="p-32 text-center text-rose-400 font-bold uppercase text-xs">Render Error: ${e.message}</div>`;
+        }
     }
 
     let editingSched = { empNo: null, date: null };
 
     function openSchedEdit(empId, name, date) {
-        editingSched = { empId, date };
-        const mondayDate = getStartOfWeek(new Date(date)).toISOString().split('T')[0];
-        document.getElementById('sched-edit-title').innerText = `${name} • ${new Date(date).toDateString()}`;
-        const existing = weeklySchedules.find(s => s.employee_id === empId && s.date === date);
-        const mondayRec = weeklySchedules.find(s => s.employee_id === empId && s.date === mondayDate);
-        const emp = employees.find(e => e.employee_no === empId || e.id === empId);
+        editingSched = { empId: empId, date: date };
+        var mondayDate = getStartOfWeek(new Date(date)).toISOString().split('T')[0];
+        document.getElementById('sched-edit-title').innerText = name + ' • ' + new Date(date).toDateString();
+        var existing = weeklySchedules.find(function(s) { return s.employee_id === empId && s.date === date; });
+        var mondayRec = weeklySchedules.find(function(s) { return s.employee_id === empId && s.date === mondayDate; });
+        var emp = employees.find(function(e) { return e.employee_no === empId || e.id === empId; });
 
-        document.getElementById('sched-shift-select').value = existing?.schedule_text || "";
-        document.getElementById('sched-station-select').value = mondayRec?.position || "";
-        document.getElementById('sched-order-input').value = mondayRec?.scheduler_order ?? emp?.scheduler_order ?? 0;
+        document.getElementById('sched-shift-select').value = (existing && existing.schedule_text) ? existing.schedule_text : "";
+        document.getElementById('sched-station-select').value = (mondayRec && mondayRec.position) ? mondayRec.position : "";
+        document.getElementById('sched-order-input').value = (mondayRec && (mondayRec.scheduler_order !== undefined) && (mondayRec.scheduler_order !== null)) ? mondayRec.scheduler_order : ((emp && (emp.scheduler_order !== undefined)) ? emp.scheduler_order : 0);
+        document.getElementById('sched-super-input').value = (existing && existing.superscript) ? existing.superscript : "";
         document.getElementById('scheduler-edit-modal').classList.remove('hidden');
     }
 
     async function saveScheduleEntry() {
-        const shift = document.getElementById('sched-shift-select').value;
-        const station = document.getElementById('sched-station-select').value;
-        const orderInput = document.getElementById('sched-order-input').value;
-        const orderVal = orderInput !== "" ? parseInt(orderInput) : null;
+        var shift = document.getElementById('sched-shift-select').value;
+        var station = document.getElementById('sched-station-select').value;
+        var orderInput = document.getElementById('sched-order-input').value;
+        var superText = document.getElementById('sched-super-input').value;
+        var orderVal = orderInput !== "" ? parseInt(orderInput) : null;
 
-        const btn = document.getElementById('btn-save-sched'); btn.innerText = "Syncing..."; btn.disabled = true;
+        var btn = document.getElementById('btn-save-sched'); btn.innerText = "Syncing..."; btn.disabled = true;
         try {
-            const mondayDate = getStartOfWeek(new Date(editingSched.date)).toISOString().split('T')[0];
+            var mondayDate = getStartOfWeek(new Date(editingSched.date)).toISOString().split('T')[0];
 
-            // 1. Save shift (Current Date)
-            if (shift) {
-                const { error } = await sb.from('employee_schedules').upsert({
+            // 1. Save shift & superscript (Current Date)
+            if (shift || superText) {
+                var payload = {
                     employee_id: editingSched.empId,
                     date: editingSched.date,
-                    schedule_text: shift,
                     tag: null
-                }, { onConflict: 'employee_id,date' });
-                if(error) throw error;
+                };
+                if (shift) payload.schedule_text = shift;
+                if (superText) payload.superscript = superText;
+
+                var result = await sb.from('employee_schedules').upsert(payload, { onConflict: 'employee_id,date' });
+                if(result.error) throw result.error;
             }
 
             // 2. Save Station & Order & Name Override (Monday of this week)
             if (station !== undefined || orderVal !== null) {
-                const emp = employees.find(e => e.employee_no === editingSched.empId || e.id === editingSched.empId);
-                const payload = {
+                var emp = employees.find(function(e) { return e.employee_no === editingSched.empId || e.id === editingSched.empId; });
+                var payload2 = {
                     employee_id: editingSched.empId,
                     date: mondayDate
                 };
-                if (station) payload.position = station;
-                if (orderVal !== null) payload.scheduler_order = orderVal;
-                if (emp) payload.employee_name = emp.first_name;
+                if (station) payload2.position = station;
+                if (orderVal !== null) payload2.scheduler_order = orderVal;
+                if (emp) payload2.employee_name = emp.first_name;
 
-                const { error } = await sb.from('employee_schedules').upsert(payload, { onConflict: 'employee_id,date' });
-                if(error) throw error;
+                var result2 = await sb.from('employee_schedules').upsert(payload2, { onConflict: 'employee_id,date' });
+                if(result2.error) throw result2.error;
             }
 
             closeSchedModal();
@@ -3047,7 +3079,60 @@
         renderMain();
     }
 
-    window.toggleSchedulerOrder = () => {
+    window.openAddPersonnelToSched = function() {
+        var select = document.getElementById('add-sched-emp-select');
+        var sorted = employees.slice().sort(function(a, b) {
+            return (a.first_name || "").localeCompare(b.first_name || "");
+        });
+
+        var html = '<option value="">Select Crew...</option>';
+        sorted.forEach(function(e) {
+            html += '<option value="' + e.employee_no + '">' + e.first_name + ' ' + (e.last_name || '') + '</option>';
+        });
+        select.innerHTML = html;
+
+        document.getElementById('add-sched-pos-select').value = "";
+        document.getElementById('add-personnel-modal').classList.remove('hidden');
+    };
+
+    window.saveAddPersonnelToSched = async function() {
+        var empNo = document.getElementById('add-sched-emp-select').value;
+        var pos = document.getElementById('add-sched-pos-select').value;
+        if(!empNo || !pos) return alert("Security Protocol: Select personnel and station.");
+
+        var emp = employees.find(function(e) { return e.employee_no === empNo; });
+        var startOfWeek = getStartOfWeek(currentSchedDate);
+        var mondayDate = getISOStr(startOfWeek);
+
+        var btn = document.getElementById('btn-add-personnel-save');
+        btn.innerText = "Syncing..."; btn.disabled = true;
+
+        try {
+            const result = await sb.from('employee_schedules').upsert({
+                employee_id: empNo,
+                date: mondayDate,
+                position: pos,
+                employee_name: emp.first_name,
+                scheduler_order: 0
+            }, { onConflict: 'employee_id,date' });
+
+            if(result.error) throw result.error;
+
+            document.getElementById('add-personnel-modal').classList.add('hidden');
+
+            // Re-fetch schedules to show the new person
+            const fetchResult = await sb.from('employee_schedules').select('*').in('date', weekDays);
+            if (fetchResult.data) weeklySchedules = fetchResult.data;
+
+            renderMain();
+        } catch(e) {
+            alert("Uplink Failed: " + (e.message || "Unknown error"));
+        } finally {
+            btn.innerText = "Add to Schedule"; btn.disabled = false;
+        }
+    };
+
+    window.toggleSchedulerOrder = function() {
         showSchedulerOrder = !showSchedulerOrder;
         renderMain();
     };
@@ -3123,57 +3208,57 @@
             }).join('');
         }
 
-        container.innerHTML = `
-            <div class="flex flex-col md:flex-row h-[65vh] md:h-[600px] bg-space-950/40 rounded-3xl overflow-hidden border border-white/5">
-                <!-- Sidebar: Contacts -->
-                <div id="chat-sidebar-container" class="w-full md:w-80 border-r border-white/5 flex flex-col bg-space-900/60 backdrop-blur-md h-full transition-all">
-                    <div class="p-4 md:p-6 border-b border-white/5">
-                        <h4 class="text-[10px] md:text-xs font-black text-white uppercase tracking-[0.2em]">Transmission Node</h4>
-                    </div>
-                    <div class="flex-1 overflow-y-auto p-2 md:p-4 space-y-1 md:space-y-2 custom-scrollbar" id="chat-sidebar">
-                        ${employees.length === 0 ? '<div class="p-8 text-center text-[10px] text-space-500 font-bold uppercase tracking-widest animate-pulse">Synchronizing Personnel...</div>' : ''}
-                    </div>
-                </div>
-
-                <!-- Chat Interface -->
-                <div id="chat-main-container" class="flex-1 flex flex-col bg-space-950/20 relative h-full">
-                    <!-- Header -->
-                    <div class="px-4 md:px-8 py-3 md:py-5 border-b border-white/5 flex items-center justify-between bg-space-900/40" id="chat-header">
-                        <!-- Header content rendered below -->
-                    </div>
-
-                    <!-- Messages -->
-                    <div id="chat-messages-box" class="flex-1 overflow-y-auto p-4 md:p-10 space-y-2 custom-scrollbar">
-                        ${getChatHtml()}
-                    </div>
-
-                    <!-- Input Area -->
-                    <div class="p-4 md:p-8 bg-space-900/60 border-t border-white/5">
-                        <div id="emoji-picker" class="hidden flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-4 p-2 md:p-3 bg-space-950 border border-white/10 rounded-2xl animate-in fade-in slide-in-from-bottom-2">
-                            ${["😊", "😂", "👍", "🙏", "🔥", "✨", "🙌", "❤️", "✅", "⚠️", "🕒", "📍"].map(e => `
-                                <button onclick="insertEmoji('${e}')" class="text-lg md:text-xl hover:scale-125 transition-transform p-1">${e}</button>
-                            `).join('')}
-                        </div>
-                        <div class="flex gap-2 md:gap-4 relative items-center">
-                            <button onclick="toggleEmojiPicker()" class="text-space-400 hover:text-cyan-400 transition-colors text-lg md:text-xl">
-                                <i class="fa-regular fa-face-smile"></i>
-                            </button>
-                            <button onclick="document.getElementById('chat-file-input').click()" class="text-space-400 hover:text-cyan-400 transition-colors text-lg md:text-xl">
-                                <i class="fa-solid fa-camera"></i>
-                            </button>
-                            <button onclick="toggleFileKiwiModal()" class="text-space-400 hover:text-cyan-400 transition-colors text-lg md:text-xl">
-                                <i class="fa-solid fa-paperclip"></i>
-                            </button>
-                            <input type="file" id="chat-file-input" class="hidden" accept="image/*" onchange="window.handleChatFileUpload(this)">
-                            <input type="text" id="chat-input" onkeydown="if(event.key==='Enter') window.sendPortalMsg()" placeholder="Type secure transmission..." class="flex-1 bg-space-950 border border-white/10 text-white rounded-xl md:rounded-[1.5rem] px-4 md:px-8 py-3 md:py-5 text-xs md:text-sm outline-none focus:ring-2 focus:ring-cyan-500 shadow-inner transition-all">
-                            <button onclick="window.sendPortalMsg()" class="bg-cyan-500 text-space-950 w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-[1.5rem] flex items-center justify-center shadow-lg hover:bg-cyan-400 transition-all active:scale-95 shadow-cyan-500/20">
-                                <i class="fa-solid fa-paper-plane text-sm md:text-xl"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
+        container.innerHTML = '\
+            <div class="flex flex-col md:flex-row h-[65vh] md:h-[600px] bg-space-950/40 rounded-3xl overflow-hidden border border-white/5">\
+                <!-- Sidebar: Contacts -->\
+                <div id="chat-sidebar-container" class="w-full md:w-80 border-r border-white/5 flex flex-col bg-space-900/60 backdrop-blur-md h-full transition-all">\
+                    <div class="p-4 md:p-6 border-b border-white/5">\
+                        <h4 class="text-[10px] md:text-xs font-black text-white uppercase tracking-[0.2em]">Transmission Node</h4>\
+                    </div>\
+                    <div class="flex-1 overflow-y-auto p-2 md:p-4 space-y-1 md:space-y-2 custom-scrollbar" id="chat-sidebar">\
+                        ' + (employees.length === 0 ? '<div class="p-8 text-center text-[10px] text-space-500 font-bold uppercase tracking-widest animate-pulse">Synchronizing Personnel...</div>' : '') + '\
+                    </div>\
+                </div>\
+\
+                <!-- Chat Interface -->\
+                <div id="chat-main-container" class="flex-1 flex flex-col bg-space-950/20 relative h-full">\
+                    <!-- Header -->\
+                    <div class="px-4 md:px-8 py-3 md:py-5 border-b border-white/5 flex items-center justify-between bg-space-900/40" id="chat-header">\
+                        <!-- Header content rendered below -->\
+                    </div>\
+\
+                    <!-- Messages -->\
+                    <div id="chat-messages-box" class="flex-1 overflow-y-auto p-4 md:p-10 space-y-2 custom-scrollbar">\
+                        ' + getChatHtml() + '\
+                    </div>\
+\
+                    <!-- Input Area -->\
+                    <div class="p-4 md:p-8 bg-space-900/60 border-t border-white/5">\
+                        <div id="emoji-picker" class="hidden flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-4 p-2 md:p-3 bg-space-950 border border-white/10 rounded-2xl animate-in fade-in slide-in-from-bottom-2">\
+                            ' + ["😊", "😂", "👍", "🙏", "🔥", "✨", "🙌", "❤️", "✅", "⚠️", "🕒", "📍"].map(function(e) {
+                                return '<button onclick="insertEmoji(\'' + e + '\')" class="text-lg md:text-xl hover:scale-125 transition-transform p-1">' + e + '</button>';
+                            }).join('') + '\
+                        </div>\
+                        <div class="flex gap-2 md:gap-4 relative items-center">\
+                            <button onclick="toggleEmojiPicker()" class="text-space-400 hover:text-cyan-400 transition-colors text-lg md:text-xl">\
+                                <i class="fa-regular fa-face-smile"></i>\
+                            </button>\
+                            <button onclick="document.getElementById(\'chat-file-input\').click()" class="text-space-400 hover:text-cyan-400 transition-colors text-lg md:text-xl">\
+                                <i class="fa-solid fa-camera"></i>\
+                            </button>\
+                            <button onclick="toggleFileKiwiModal()" class="text-space-400 hover:text-cyan-400 transition-colors text-lg md:text-xl">\
+                                <i class="fa-solid fa-paperclip"></i>\
+                            </button>\
+                            <input type="file" id="chat-file-input" class="hidden" accept="image/*" onchange="window.handleChatFileUpload(this)">\
+                            <input type="text" id="chat-input" onkeydown="if(event.key===\'Enter\') window.sendPortalMsg()" placeholder="Type secure transmission..." class="flex-1 bg-space-950 border border-white/10 text-white rounded-xl md:rounded-[1.5rem] px-4 md:px-8 py-3 md:py-5 text-xs md:text-sm outline-none focus:ring-2 focus:ring-cyan-500 shadow-inner transition-all">\
+                            <button onclick="window.sendPortalMsg()" class="bg-cyan-500 text-space-950 w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-[1.5rem] flex items-center justify-center shadow-lg hover:bg-cyan-400 transition-all active:scale-95 shadow-cyan-500/20">\
+                                <i class="fa-solid fa-paper-plane text-sm md:text-xl"></i>\
+                            </button>\
+                        </div>\
+                    </div>\
+                </div>\
+            </div>\
+        ';
 
         function renderSidebar() {
             const sidebar = document.getElementById('chat-sidebar');
@@ -3217,7 +3302,7 @@
                          ${window.activeChatTarget === 'group' ? '<i class="fa-solid fa-users text-sm"></i>' : `<img src="${getProfilePic(window.activeChatTarget)}" class="w-full h-full object-cover" onerror="this.style.display='none'">`}
                     </div>
                     <div class="overflow-hidden">
-                        <h3 id="active-chat-name" class="text-xs md:text-sm font-black text-white uppercase tracking-wider truncate">${window.activeChatTarget === 'group' ? 'Fleet Broadcast' : (targetEmp?.first_name || 'Unit Sync')}</h3>
+                        <h3 id="active-chat-name" class="text-xs md:text-sm font-black text-white uppercase tracking-wider truncate">${window.activeChatTarget === 'group' ? 'Fleet Broadcast' : (targetEmp.first_name || 'Unit Sync')}</h3>
                         <div class="flex items-center gap-1.5 md:gap-2"><div class="w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-emerald-500 animate-pulse"></div><span class="text-[7px] md:text-[9px] font-bold text-emerald-400 uppercase tracking-widest">Established</span></div>
                     </div>
                 </div>
@@ -3376,9 +3461,13 @@
                     const receiverId = String(msg.receiver_id || msg.receiverId);
                     if (receiverId === 'group' || receiverId === me || senderId === me) {
                         // Better duplicate detection using timestamp + sender
-                        const isDuplicate = allChatMessages.some(m => Number(m.id) === Number(msg.id) || (m.timestamp === msg.timestamp && String(m.sender_id) === senderId));
+                        const isDuplicate = allChatMessages.some(function(m) {
+                            return Number(m.id) === Number(msg.id) || (m.timestamp === msg.timestamp && String(m.sender_id) === senderId);
+                        });
                         if (isDuplicate) {
-                            const index = allChatMessages.findIndex(m => m.timestamp === msg.timestamp && String(m.sender_id) === senderId);
+                            const index = allChatMessages.findIndex(function(m) {
+                                return m.timestamp === msg.timestamp && String(m.sender_id) === senderId;
+                            });
                             if (index !== -1) allChatMessages[index].id = msg.id;
                             return;
                         }
@@ -3427,3 +3516,4 @@
 </script>
 </body>
 </html>
+
