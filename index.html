@@ -1950,7 +1950,7 @@
         document.getElementById('dtr-entry-title').innerText = `${new Date(date).toDateString()} Entry`;
 
         const rdCheck = document.getElementById('dtr-is-rd');
-        const isRD = r.note && r.note.startsWith('[RD]');
+        const isRD = r && r.note && r.note.startsWith('[RD]');
         rdCheck.checked = !!isRD;
         toggleRDInput(rdCheck.checked);
 
@@ -2055,7 +2055,13 @@
 
                 if (error) throw error;
 
-                records.forEach(r => {
+                const startRange = new Date(s);
+                const endRange = new Date(e);
+
+                for (let d = new Date(startRange); d <= endRange; d.setDate(d.getDate() + 1)) {
+                    const dateStr = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+                    const r = records.find(x => x.date === dateStr) || { date: dateStr, time_in: null, time_out: null, note: '' };
+
                     const dateObj = new Date(r.date);
                     const isRD = r.note && r.note.startsWith('[RD]');
                     html += `<tr class="hover:bg-white/[0.02]">
@@ -2067,7 +2073,7 @@
                             ${isRD ? `<span class="glass-badge badge-cyan">REST DAY</span> <span class="text-[10px] text-slate-400 italic ml-1">${r.note.replace('[RD] ', '')}</span>` : `<span class="text-[10px] text-slate-400 italic">${r.note || '--'}</span>`}
                         </td>
                     </tr>`;
-                });
+                }
             } else {
                 const { data: records, error } = await sb.from('employee_schedules')
                     .select('*')
