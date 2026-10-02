@@ -404,12 +404,18 @@
                 <div id="v-cert" class="px-4 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest text-center">Uncertified</div>
             </div>
             <div class="glass-card p-5 md:p-6 rounded-3xl">
-                <h3 class="section-title"><i class="fa-solid fa-shirt"></i> Allocation Units</h3>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-space-950/50 p-3 rounded-xl border border-white/5"><span class="info-label !text-[8px]">Cap</span><p id="v-cap" class="info-value">0</p></div>
-                    <div class="bg-space-950/50 p-3 rounded-xl border border-white/5"><span class="info-label !text-[8px]">Apron</span><p id="v-apron" class="info-value">0</p></div>
-                    <div class="bg-space-950/50 p-3 rounded-xl border border-white/5"><span class="info-label !text-[8px]">Shirt</span><p id="v-shirt" class="info-value">0</p></div>
-                    <div class="bg-space-950/50 p-3 rounded-xl border border-white/5"><span class="info-label !text-[8px]">Pants</span><p id="v-pants" class="info-value">0</p></div>
+                <h3 class="section-title"><i class="fa-solid fa-shirt"></i> Allocation Units & Sizes</h3>
+                <div id="v-allocation-container">
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="bg-space-950/50 p-3 rounded-xl border border-white/5"><span class="info-label !text-[8px]">Cap</span><p id="v-cap" class="info-value">0</p></div>
+                        <div class="bg-space-950/50 p-3 rounded-xl border border-white/5"><span class="info-label !text-[8px]">Apron</span><p id="v-apron" class="info-value">0</p></div>
+                        <div class="bg-space-950/50 p-3 rounded-xl border border-white/5"><span class="info-label !text-[8px]">Shirt</span><p id="v-shirt" class="info-value">0</p></div>
+                        <div class="bg-space-950/50 p-3 rounded-xl border border-white/5"><span class="info-label !text-[8px]">Pants</span><p id="v-pants" class="info-value">0</p></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-space-950/50 p-3 rounded-xl border border-white/5"><span class="info-label !text-[8px]">Shirt Size</span><p id="v-shirt-size" class="info-value text-xs text-cyan-400 font-bold">---</p></div>
+                        <div class="bg-space-950/50 p-3 rounded-xl border border-white/5"><span class="info-label !text-[8px]">Pants Size</span><p id="v-pants-size" class="info-value text-xs text-cyan-400 font-bold">---</p></div>
+                    </div>
                 </div>
             </div>
             <div class="glass-card p-5 md:p-6 rounded-3xl border-rose-500/20">
@@ -921,16 +927,22 @@
     var weekDays = [];
     var currentAppraisals = [], editingAppraisal = null, appRatings = [0,0,0,0,0], appQtr = 1;
 
-    window.checkAuth = async function() {
+    async function checkAuth() {
         var user = document.getElementById('sys-user').value.trim();
         var pass = document.getElementById('sys-pass').value.trim();
         var error = document.getElementById('auth-error');
         var btn = document.getElementById('login-btn');
+
+        // Final fallback for Supabase client
+        if (!window.sb && window.supabase) {
+            window.sb = window.supabase.createClient('https://uhmjgnwpzsemksxcjpiz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVobWpnbndwenNlbWtzeGNqcGl6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3ODMyNDU2NCwiZXhwIjoyMDkzOTAwNTY0fQ.SVdNjQlocvBEwwxl2K_7BMT94vUq5fkNRev65fXrvyc');
+        }
         var sb = window.sb;
 
         if (!sb) {
             error.innerText = "Access Denied: Terminal Offline";
             error.classList.remove('hidden');
+            console.error("Supabase client not initialized.");
             return;
         }
 
@@ -961,7 +973,8 @@
             if (user === 'nocturnal' && pass === SUPER_PASS) { setSession('superadmin', 'fusion'); return; }
             if (user === 'chowking' && pass === 'chowking2026') { setSession('admin', 'chowking'); return; }
 
-            var { data: emp, error: empError } = await sb.from('employees').select('*').eq('employee_no', user).or('portal_password.eq.' + pass + ',password_hash.eq.' + pass).maybeSingle();
+            // Using template literal for or() for better reliability
+            var { data: emp, error: empError } = await sb.from('employees').select('*').eq('employee_no', user).or(`portal_password.eq."${pass}",password_hash.eq."${pass}"`).maybeSingle();
 
             if (empError) throw empError;
             if (emp) {
@@ -1384,6 +1397,39 @@
                 <div><label class="info-label">Emergency Hotline</label><input type="text" id="edit-ec-phone" value="${currentVaultEmp.emergency_contact_phone || ''}" class="bg-space-950 border border-white/10 text-white rounded px-3 py-2 font-mono text-xs w-full"></div>
             `;
 
+            // Allocation Units & Sizes
+            const sizeOptions = [
+                'Female Small', 'Female Medium', 'Female Large', 'Female Xlarge',
+                'Male Small', 'Male Medium', 'Male Large', 'Male Xlarge'
+            ];
+            const allocCont = document.getElementById('v-allocation-container');
+            if (allocCont) {
+                allocCont.innerHTML = `
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div><label class="info-label">Cap Units</label><input type="number" id="edit-cap" value="${currentVaultEmp.uniform_cap || 0}" class="bg-space-950 border border-white/10 text-white rounded px-3 py-2 text-xs w-full"></div>
+                        <div><label class="info-label">Apron Units</label><input type="number" id="edit-apron" value="${currentVaultEmp.uniform_apron || 0}" class="bg-space-950 border border-white/10 text-white rounded px-3 py-2 text-xs w-full"></div>
+                        <div><label class="info-label">Shirt Units</label><input type="number" id="edit-shirt" value="${currentVaultEmp.uniform_shirt || 0}" class="bg-space-950 border border-white/10 text-white rounded px-3 py-2 text-xs w-full"></div>
+                        <div><label class="info-label">Pants Units</label><input type="number" id="edit-pants" value="${currentVaultEmp.uniform_pants || 0}" class="bg-space-950 border border-white/10 text-white rounded px-3 py-2 text-xs w-full"></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="info-label">Shirt Size</label>
+                            <select id="edit-shirt-size" class="bg-space-950 border border-white/10 text-white rounded px-3 py-2 text-xs w-full">
+                                <option value="">Select Size...</option>
+                                ${sizeOptions.map(s => `<option value="${s}" ${currentVaultEmp.shirt_size === s ? 'selected' : ''}>${s}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="info-label">Pants Size</label>
+                            <select id="edit-pants-size" class="bg-space-950 border border-white/10 text-white rounded px-3 py-2 text-xs w-full">
+                                <option value="">Select Size...</option>
+                                ${sizeOptions.map(s => `<option value="${s}" ${currentVaultEmp.pants_size === s ? 'selected' : ''}>${s}</option>`).join('')}
+                            </select>
+                        </div>
+                    </div>
+                `;
+            }
+
         } else {
             editBtn.innerHTML = '<i class="fa-solid fa-pen-to-square mr-2"></i>Edit Profile';
             editBtn.classList.replace('text-rose-400', 'text-amber-400');
@@ -1426,7 +1472,13 @@
             bank_account_number: document.getElementById('edit-bank-acc').value,
             emergency_contact_name: document.getElementById('edit-ec-name').value,
             emergency_contact_relationship: document.getElementById('edit-ec-rel').value,
-            emergency_contact_phone: document.getElementById('edit-ec-phone').value
+            emergency_contact_phone: document.getElementById('edit-ec-phone').value,
+            uniform_cap: document.getElementById('edit-cap') ? parseInt(document.getElementById('edit-cap').value) || 0 : currentVaultEmp.uniform_cap,
+            uniform_apron: document.getElementById('edit-apron') ? parseInt(document.getElementById('edit-apron').value) || 0 : currentVaultEmp.uniform_apron,
+            uniform_shirt: document.getElementById('edit-shirt') ? parseInt(document.getElementById('edit-shirt').value) || 0 : currentVaultEmp.uniform_shirt,
+            uniform_pants: document.getElementById('edit-pants') ? parseInt(document.getElementById('edit-pants').value) || 0 : currentVaultEmp.uniform_pants,
+            shirt_size: document.getElementById('edit-shirt-size') ? document.getElementById('edit-shirt-size').value : currentVaultEmp.shirt_size,
+            pants_size: document.getElementById('edit-pants-size') ? document.getElementById('edit-pants-size').value : currentVaultEmp.pants_size
         };
 
         try {
@@ -1742,6 +1794,21 @@
             <div><span class="info-label">Relationship</span><p id="v-ec-rel" class="info-value uppercase text-xs">---</p></div>
             <div><span class="info-label text-rose-400">Emergency Hotline</span><p id="v-ec-phone" class="info-value font-mono">---</p></div>
         `;
+        const allocContView = document.getElementById('v-allocation-container');
+        if (allocContView) {
+            allocContView.innerHTML = `
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="bg-space-950/50 p-3 rounded-xl border border-white/5"><span class="info-label !text-[8px]">Cap</span><p id="v-cap" class="info-value">0</p></div>
+                    <div class="bg-space-950/50 p-3 rounded-xl border border-white/5"><span class="info-label !text-[8px]">Apron</span><p id="v-apron" class="info-value">0</p></div>
+                    <div class="bg-space-950/50 p-3 rounded-xl border border-white/5"><span class="info-label !text-[8px]">Shirt</span><p id="v-shirt" class="info-value">0</p></div>
+                    <div class="bg-space-950/50 p-3 rounded-xl border border-white/5"><span class="info-label !text-[8px]">Pants</span><p id="v-pants" class="info-value">0</p></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-space-950/50 p-3 rounded-xl border border-white/5"><span class="info-label !text-[8px]">Shirt Size</span><p id="v-shirt-size" class="info-value text-xs text-cyan-400 font-bold">---</p></div>
+                    <div class="bg-space-950/50 p-3 rounded-xl border border-white/5"><span class="info-label !text-[8px]">Pants Size</span><p id="v-pants-size" class="info-value text-xs text-cyan-400 font-bold">---</p></div>
+                </div>
+            `;
+        }
 
         document.getElementById('login-container').classList.add('hidden');
         document.getElementById('personal-vault-container').classList.remove('hidden');
@@ -1821,6 +1888,8 @@
         document.getElementById('v-apron').innerText = emp.uniform_apron || 0;
         document.getElementById('v-shirt').innerText = emp.uniform_shirt || 0;
         document.getElementById('v-pants').innerText = emp.uniform_pants || 0;
+        if (document.getElementById('v-shirt-size')) document.getElementById('v-shirt-size').innerText = emp.shirt_size || '---';
+        if (document.getElementById('v-pants-size')) document.getElementById('v-pants-size').innerText = emp.pants_size || '---';
 
         // Performance Appraisal
         var score = emp.performance_score;
@@ -1901,12 +1970,12 @@
             // Fetch specific DA cases for this employee
             var daHistoryHtml = '';
             try {
-                var { data: daHistory } = await sb.from('da_records').select('*').eq('employeeId', emp.employee_no).order('dateReport', { ascending: false });
+                var { data: daHistory } = await sb.from('da_records').select('*').eq('employee_id', emp.employee_no).order('date_report', { ascending: false });
                 if (daHistory && daHistory.length > 0) {
                     daHistoryHtml = '<div class="mt-4 pt-4 border-t border-rose-500/20"><p class="text-[9px] font-black text-rose-300 uppercase tracking-widest mb-2">Incident Record Archive</p>';
                     daHistory.forEach(function(record) {
                         daHistoryHtml += '<div class="bg-black/20 p-2 rounded mb-2 border border-rose-500/10">' +
-                            '<p class="text-white text-[10px] font-bold">' + record.daType + ' — ' + record.status + '</p>' +
+                            '<p class="text-white text-[10px] font-bold">' + record.da_type + ' — ' + record.status + '</p>' +
                             '<p class="text-rose-200/70 text-[9px] italic mt-1">"' + (record.verdict || 'No verdict recorded') + '"</p>' +
                             '</div>';
                     });
@@ -2434,10 +2503,19 @@
         } catch (e) { console.error("Shift templates load error", e); }
     }
 
-    function switchTab(tab) {
+    async function switchTab(tab) {
         if (portalRole === 'medal' && tab !== 'medals') return;
         if (portalRole === 'personal' && tab !== 'chat') return;
         activeTab = tab;
+
+        // Refresh data when switching to specific tabs
+        if (tab === 'da') {
+            try {
+                var { data: daData } = await sb.from('da_records').select('*').order('date_report', { ascending: false });
+                if (daData) allDaRecords = daData;
+            } catch (e) {}
+        }
+
         const btnAtt = document.getElementById('btn-attendance'), btnEmp = document.getElementById('btn-employees'), btnDa = document.getElementById('btn-da'), btnAttr = document.getElementById('btn-attrition'), btnMedal = document.getElementById('btn-medals'), btnSystem = document.getElementById('btn-system'), btnSched = document.getElementById('btn-scheduler'), btnChat = document.getElementById('btn-chat');
         const datePicker = document.getElementById('date-picker'), daFilter = document.getElementById('da-filter-container'), excrewBtn = document.getElementById('btn-excrew-filter');
         [btnAtt, btnEmp, btnDa, btnAttr, btnMedal, btnSystem, btnSched, btnChat].forEach(btn => { if (!btn) return; btn.className = "flex-1 min-w-[80px] px-2 md:px-8 py-3 rounded-xl text-[8px] sm:text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all text-space-400 hover:text-white"; });
@@ -2770,7 +2848,7 @@
                 ? `<button onclick="openPrivateChat('${emp.employee_no}')" class="ml-2 text-cyan-400 hover:text-cyan-300 transition-colors text-[10px]" title="Send Message"><i class="fa-solid fa-comment-dots"></i></button>`
                 : '';
 
-            html += `<tr class="hover:bg-cyan-500/[0.02] transition-colors"><td class="px-6 py-4"><div class="flex items-start gap-3"><div class="min-w-[100px] pt-1"><span class="glass-badge badge-cyan !text-[8px] !py-0.5 !px-2">${displayPos}</span></div><div class="w-10 h-10 rounded-full bg-space-950 border border-white/10 overflow-hidden shrink-0"><img src="${getProfilePic(emp.employee_no)}" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${emp.first_name}+${emp.last_name}&background=0b0f19&color=22d3ee'"></div><div><div class="flex items-center"><h4 class="font-bold text-slate-100 text-xs tracking-tight cursor-pointer select-none" ondblclick="openPersonalProfile('${emp.employee_no}')">${emp.first_name} ${emp.last_name}</h4>${msgIcon}</div>${badgeHtml}<p class="text-[9px] text-cyan-400 font-bold uppercase tracking-wider mt-0.5">ID: ${emp.employee_no}</p><div class="flex items-center gap-1 mt-0.5">${icons}</div>${perfScore}${activeDaHtml}<p class="text-[10px] text-slate-400 mt-0.5 opacity-80">${emp.phone_number || emp.cp_number || 'No CP'}</p><p class="text-[9px] text-space-400 opacity-60">${emp.email || ''}</p></div></div></td><td class="px-6 py-4"><p class="text-[10px] text-slate-400">Hired: <span class="text-slate-200 font-medium ml-1">${formatDate(emp.date_hired) || '--'}</span></p><p class="text-[10px] text-slate-400 mt-0.5">Tenure: <span class="text-emerald-400 font-bold ml-1">${tenure}</span></p></td><td class="px-6 py-4"><div class="space-y-1 font-mono text-[10px] text-slate-300"><div class="flex items-center"><span class="w-12 text-[8px] text-space-400 font-sans font-black uppercase tracking-tighter opacity-60">SSS</span><span class="ml-2">${emp.sss || '--'}</span></div><div class="flex items-center"><span class="w-12 text-[8px] text-space-400 font-sans font-black uppercase tracking-tighter opacity-60">TIN</span><span class="ml-2">${emp.tin_number || '--'}</span></div><div class="flex items-center"><span class="w-12 text-[8px] text-space-400 font-sans font-black uppercase tracking-tighter opacity-60">PHILH</span><span class="ml-2">${emp.phil_health || '--'}</span></div><div class="flex items-center"><span class="w-12 text-[8px] text-space-400 font-sans font-black uppercase tracking-tighter opacity-60">PAGIBIG</span><span class="ml-2">${emp.pagibig || '--'}</span></div></div></td><td class="px-6 py-4"><p class="text-[11px] font-semibold text-slate-300">${emp.bank || '--'}</p><p class="text-[10px] text-cyan-400/80 font-mono mt-0.5">${emp.bank_account_number || '--'}</p></td><td class="px-6 py-4"><div class="flex flex-wrap gap-1 mb-1 max-w-[200px]"><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">C: ${emp.uniform_cap || 0}</span><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">A: ${emp.uniform_apron || 0}</span><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">S: ${emp.uniform_shirt || 0}</span><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">P: ${emp.uniform_pants || 0}</span></div><span class="glass-badge badge-emerald inline-block mt-0.5 !text-[8px] !py-0.5 !px-2">${emp.is_certified ? 'Certified' : 'Uncertified'}</span></td><td class="px-6 py-4"><p class="text-[11px] font-semibold text-slate-300">${emp.emergency_contact_name || '--'}</p><p class="text-[10px] text-cyan-400 font-mono mt-0.5 font-bold">${emp.emergency_contact_phone || '--'}</p></td></tr>`;
+            html += `<tr class="hover:bg-cyan-500/[0.02] transition-colors"><td class="px-6 py-4"><div class="flex items-start gap-3"><div class="min-w-[100px] pt-1"><span class="glass-badge badge-cyan !text-[8px] !py-0.5 !px-2">${displayPos}</span></div><div class="w-10 h-10 rounded-full bg-space-950 border border-white/10 overflow-hidden shrink-0"><img src="${getProfilePic(emp.employee_no)}" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${emp.first_name}+${emp.last_name}&background=0b0f19&color=22d3ee'"></div><div><div class="flex items-center"><h4 class="font-bold text-slate-100 text-xs tracking-tight cursor-pointer select-none" ondblclick="openPersonalProfile('${emp.employee_no}')">${emp.first_name} ${emp.last_name}</h4>${msgIcon}</div>${badgeHtml}<p class="text-[9px] text-cyan-400 font-bold uppercase tracking-wider mt-0.5">ID: ${emp.employee_no}</p><div class="flex items-center gap-1 mt-0.5">${icons}</div>${perfScore}${activeDaHtml}<p class="text-[10px] text-slate-400 mt-0.5 opacity-80">${emp.phone_number || emp.cp_number || 'No CP'}</p><p class="text-[9px] text-space-400 opacity-60">${emp.email || ''}</p></div></div></td><td class="px-6 py-4"><p class="text-[10px] text-slate-400">Hired: <span class="text-slate-200 font-medium ml-1">${formatDate(emp.date_hired) || '--'}</span></p><p class="text-[10px] text-slate-400 mt-0.5">Tenure: <span class="text-emerald-400 font-bold ml-1">${tenure}</span></p></td><td class="px-6 py-4"><div class="space-y-1 font-mono text-[10px] text-slate-300"><div class="flex items-center"><span class="w-12 text-[8px] text-space-400 font-sans font-black uppercase tracking-tighter opacity-60">SSS</span><span class="ml-2">${emp.sss || '--'}</span></div><div class="flex items-center"><span class="w-12 text-[8px] text-space-400 font-sans font-black uppercase tracking-tighter opacity-60">TIN</span><span class="ml-2">${emp.tin_number || '--'}</span></div><div class="flex items-center"><span class="w-12 text-[8px] text-space-400 font-sans font-black uppercase tracking-tighter opacity-60">PHILH</span><span class="ml-2">${emp.phil_health || '--'}</span></div><div class="flex items-center"><span class="w-12 text-[8px] text-space-400 font-sans font-black uppercase tracking-tighter opacity-60">PAGIBIG</span><span class="ml-2">${emp.pagibig || '--'}</span></div></div></td><td class="px-6 py-4"><p class="text-[11px] font-semibold text-slate-300">${emp.bank || '--'}</p><p class="text-[10px] text-cyan-400/80 font-mono mt-0.5">${emp.bank_account_number || '--'}</p></td><td class="px-6 py-4"><div class="flex flex-wrap gap-1 mb-1 max-w-[200px]"><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">C: ${emp.uniform_cap || 0}</span><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">A: ${emp.uniform_apron || 0}</span><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">S: ${emp.uniform_shirt || 0}</span><span class="text-[8px] bg-space-950 text-space-400 px-1.5 py-0.5 rounded border border-white/5">P: ${emp.uniform_pants || 0}</span></div><div class="text-[8px] text-cyan-400/90 font-bold space-y-0.5 my-1"><p>Shirt: ${emp.shirt_size || '--'}</p><p>Pants: ${emp.pants_size || '--'}</p></div><span class="glass-badge badge-emerald inline-block mt-0.5 !text-[8px] !py-0.5 !px-2">${emp.is_certified ? 'Certified' : 'Uncertified'}</span></td><td class="px-6 py-4"><p class="text-[11px] font-semibold text-slate-300">${emp.emergency_contact_name || '--'}</p><p class="text-[10px] text-cyan-400 font-mono mt-0.5 font-bold">${emp.emergency_contact_phone || '--'}</p></td></tr>`;
         });
         container.innerHTML = html + `</tbody></table></div>`;
     }
