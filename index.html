@@ -1808,6 +1808,11 @@
                     <input type="checkbox" id="edit-hidden" ${currentVaultEmp.is_hidden_from_scheduler ? 'checked' : ''} class="w-4 h-4 accent-cyan-500">
                     <label for="edit-hidden" class="text-[10px] font-black text-cyan-400 uppercase tracking-widest">Hide from Scheduler</label>
                 </div>
+
+                <div class="mt-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20">
+                    <label class="info-label text-rose-400">Pending Suspension No. (Days)</label>
+                    <input type="number" id="edit-pending-suspension" value="${currentVaultEmp.pending_suspension_days || currentVaultEmp.pendingSuspensionDays || 0}" min="0" placeholder="0" class="bg-space-950 border border-white/10 text-rose-300 font-bold rounded px-3 py-2 text-xs w-full">
+                </div>
             `;
 
             // System Registries
@@ -1932,7 +1937,8 @@
             uniform_shirt: document.getElementById('edit-shirt') ? parseInt(document.getElementById('edit-shirt').value) || 0 : currentVaultEmp.uniform_shirt,
             uniform_pants: document.getElementById('edit-pants') ? parseInt(document.getElementById('edit-pants').value) || 0 : currentVaultEmp.uniform_pants,
             shirt_size: document.getElementById('edit-shirt-size') ? document.getElementById('edit-shirt-size').value : currentVaultEmp.shirt_size,
-            pants_size: document.getElementById('edit-pants-size') ? document.getElementById('edit-pants-size').value : currentVaultEmp.pants_size
+            pants_size: document.getElementById('edit-pants-size') ? document.getElementById('edit-pants-size').value : currentVaultEmp.pants_size,
+            pending_suspension_days: document.getElementById('edit-pending-suspension') ? parseInt(document.getElementById('edit-pending-suspension').value) || 0 : (currentVaultEmp.pending_suspension_days || 0)
         };
 
         const certChks = document.querySelectorAll('.vault-cert-chk:checked');
@@ -2340,18 +2346,19 @@
         var displayPos = emp.position || emp.scheduler_position;
         document.getElementById('v-name').innerText = emp.first_name + " " + emp.last_name;
 
-        var idPosHtml = '<p id="v-id-pos" class="text-cyan-400 font-bold uppercase tracking-[0.15em] text-[10px] whitespace-nowrap">ID: ' + emp.employee_no + ' • ' + displayPos + '</p>';
+        var idPosHtml = '<div class="flex items-center flex-wrap gap-2"><p id="v-id-pos" class="text-cyan-400 font-bold uppercase tracking-[0.15em] text-[10px] whitespace-nowrap">ID: ' + emp.employee_no + ' • ' + displayPos + '</p>';
 
         if (emp.date_hired && emp.position !== 'Excrew') {
             var hired = new Date(emp.date_hired);
             var sixMonthsAgo = new Date();
             sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
             if (hired <= sixMonthsAgo) {
-                idPosHtml += '<div class="regular-badge ml-3"><span class="gold-glitter text-[8px] whitespace-nowrap">REGULAR</span></div>';
+                idPosHtml += '<div class="regular-badge"><span class="gold-glitter text-[8px] whitespace-nowrap">REGULAR</span></div>';
             } else {
-                idPosHtml += '<div class="probationary-badge ml-3"><span class="silver-glitter text-[8px] whitespace-nowrap">PROBATIONARY</span></div>';
+                idPosHtml += '<div class="probationary-badge"><span class="silver-glitter text-[8px] whitespace-nowrap">PROBATIONARY</span></div>';
             }
         }
+        idPosHtml += '</div>';
         document.getElementById('v-id-pos-container').innerHTML = idPosHtml;
 
         document.getElementById('v-fullname').innerText = emp.first_name + " " + (emp.middle_name ? emp.middle_name + ' ' : '') + emp.last_name;
@@ -2474,6 +2481,11 @@
             var absentLevel = parseInt(emp.absent_offence_level || emp.absentOffenceLevel || 0);
             var hamperingLevel = parseInt(emp.hampering_offence_level || emp.hamperingOffenceLevel || 0);
             var customOffences = emp.custom_offences || emp.customOffences || [];
+
+            var pendingDays = parseInt(emp.pending_suspension_days || emp.pendingSuspensionDays || 0);
+            if (pendingDays > 0) {
+                activeHtml += '<div class="flex items-center gap-2 mb-1 text-rose-200 font-bold text-xs"><span class="text-[8px] text-rose-400">▪</span><span>Pending Suspension No: <strong class="text-white font-black bg-black/40 px-1.5 py-0.5 rounded border border-rose-500/30">' + pendingDays + ' Days</strong></span></div>';
+            }
 
             if (lateLevel > 0) activeHtml += '<div class="flex items-center gap-2 mb-1"><span class="text-[8px]">▪</span><span>Lates: ' + lateLevel + getOrdinal(lateLevel) + ' Offence</span></div>';
             if (absentLevel > 0) activeHtml += '<div class="flex items-center gap-2 mb-1"><span class="text-[8px]">▪</span><span>Absent: ' + absentLevel + getOrdinal(absentLevel) + ' Offence</span></div>';
@@ -3209,8 +3221,8 @@
             }
         } else {
             document.getElementById('btn-back-vault').classList.add('hidden');
-            document.getElementById('stats-container').classList.remove('hidden'); document.getElementById('nav-controls').classList.remove('hidden'); document.getElementById('admin-controls').classList.remove('hidden');
-            [statCards.present, statCards.late, statCards.absent, statCards.da].forEach(c => c.classList.remove('hidden'));
+            document.getElementById('stats-container').classList.add('hidden'); document.getElementById('nav-controls').classList.remove('hidden'); document.getElementById('admin-controls').classList.remove('hidden');
+            [statCards.present, statCards.late, statCards.absent, statCards.da].forEach(c => c.classList.add('hidden'));
             const tabs = ['attendance', 'employees', 'da', 'reports', 'attrition', 'medals', 'scheduler', 'chat', 'announcements', 'permits'];
             tabs.forEach(t => { const b = document.getElementById('btn-' + t); if (b) b.classList.remove('hidden'); });
             const sysBtn = document.getElementById('btn-system'); if (portalRole === 'superadmin') sysBtn.classList.remove('hidden'); else sysBtn.classList.add('hidden');
@@ -3808,25 +3820,6 @@
         const probaCount = dataToRender.filter(e => e.date_hired && new Date(e.date_hired) > sixMonthsAgo && e.position !== 'Excrew').length;
 
         let html = `
-        <div class="mb-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div class="bg-space-950/60 p-3.5 rounded-2xl border border-white/5 backdrop-blur-md flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0"><i class="fa-solid fa-users text-sm"></i></div>
-                <div><p class="text-[8px] font-black text-space-400 uppercase tracking-widest">Total Personnel</p><p class="text-base font-black text-white">${totalCount}</p></div>
-            </div>
-            <div class="bg-space-950/60 p-3.5 rounded-2xl border border-white/5 backdrop-blur-md flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0"><i class="fa-solid fa-circle-check text-sm"></i></div>
-                <div><p class="text-[8px] font-black text-space-400 uppercase tracking-widest">Certified Crew</p><p class="text-base font-black text-emerald-400">${certCountTotal}</p></div>
-            </div>
-            <div class="bg-space-950/60 p-3.5 rounded-2xl border border-white/5 backdrop-blur-md flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0"><i class="fa-solid fa-award text-sm"></i></div>
-                <div><p class="text-[8px] font-black text-space-400 uppercase tracking-widest">Regular Status</p><p class="text-base font-black text-amber-400">${regularCount}</p></div>
-            </div>
-            <div class="bg-space-950/60 p-3.5 rounded-2xl border border-white/5 backdrop-blur-md flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-slate-500/10 border border-slate-500/20 flex items-center justify-center text-slate-300 shrink-0"><i class="fa-solid fa-user-clock text-sm"></i></div>
-                <div><p class="text-[8px] font-black text-space-400 uppercase tracking-widest">Probationary</p><p class="text-base font-black text-slate-300">${probaCount}</p></div>
-            </div>
-        </div>
-
         <div class="flex items-center justify-between mb-2">
             <span class="text-[9px] font-black text-space-400 uppercase tracking-widest">Master Personnel Ledger</span>
             <span class="text-[9px] font-bold text-cyan-400 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-expand text-[10px]"></i> Auto-Fit Enabled</span>
@@ -3919,6 +3912,9 @@
             const ageVal = calculateAge(emp.birthday);
             const ageText = ageVal !== null ? `${ageVal} yrs` : '--';
 
+            const pendingDays = parseInt(emp.pending_suspension_days || emp.pendingSuspensionDays || 0);
+            const pendingBadgeHtml = pendingDays > 0 ? `<div class="mt-1"><span class="px-1.5 py-0.5 rounded bg-rose-500/20 border border-rose-500/40 text-rose-300 text-[7px] font-black uppercase tracking-widest">Pending Suspension No: ${pendingDays} Days</span></div>` : '';
+
             html += `
             <tr class="hover:bg-cyan-500/[0.04] transition-all group">
                 <td class="px-4 py-3">
@@ -3936,6 +3932,7 @@
                                 ${badgeHtml}
                             </div>
                             <p class="text-[8px] text-cyan-400 font-bold uppercase tracking-wider mt-0.5">ID: ${emp.employee_no} • <span class="text-slate-300 font-medium">${emp.marital_status || 'Single'}</span></p>
+                            ${pendingBadgeHtml}
                             <div class="flex items-center gap-1 mt-0.5">${icons}</div>
                             ${perfScore}
                             ${activeDaHtml}
