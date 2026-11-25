@@ -3779,6 +3779,58 @@
         modal.classList.remove('hidden');
     }
 
+    function formatOriginalQualityDriveUrl(url) {
+        if (!url || typeof url !== 'string') return '';
+        let clean = url.trim();
+
+        if (clean.includes('drive.google.com/file/d/')) {
+            const fileId = clean.split('file/d/')[1].split('/')[0].split('?')[0];
+            return `https://lh3.googleusercontent.com/d/${fileId}=s0`;
+        }
+        if (clean.includes('drive.google.com/uc?') || clean.includes('drive.google.com/open?id=')) {
+            const match = clean.match(/[?&]id=([^&]+)/);
+            if (match && match[1]) return `https://lh3.googleusercontent.com/d/${match[1]}=s0`;
+        }
+        if (clean.includes('lh3.googleusercontent.com/d/')) {
+            const base = clean.split('=')[0];
+            return `${base}=s0`;
+        }
+        return clean;
+    }
+
+    let isPhotoFullscreen = false;
+
+    function togglePhotoFullscreen() {
+        const modalBox = document.getElementById('report-photo-modal-box');
+        const imgEl = document.getElementById('report-photo-img');
+        const statusTag = document.getElementById('report-photo-fullscreen-tag');
+
+        if (!modalBox || !imgEl) return;
+
+        isPhotoFullscreen = !isPhotoFullscreen;
+
+        if (isPhotoFullscreen) {
+            modalBox.className = "fixed inset-0 z-[9999] bg-black/98 p-4 flex flex-col items-center justify-center w-full h-full overflow-auto animate-in fade-in duration-200";
+            imgEl.className = "max-w-none max-h-none min-w-[90vw] cursor-zoom-out rounded-2xl shadow-2xl transition-all duration-300 transform scale-100 hover:scale-105";
+            if (statusTag) {
+                statusTag.innerText = "🔍 Fullscreen Original Quality (Double Click or Esc to Exit)";
+                statusTag.classList.remove('hidden');
+            }
+        } else {
+            modalBox.className = "relative max-w-4xl w-full max-h-[90vh] flex flex-col items-center transition-all duration-200";
+            imgEl.className = "max-w-full max-h-[75vh] object-contain rounded-xl shadow-lg cursor-zoom-in transition-all duration-300";
+            if (statusTag) {
+                statusTag.classList.add('hidden');
+            }
+        }
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && isPhotoFullscreen) {
+            togglePhotoFullscreen();
+        }
+    });
+
     function openReportPhotoViewer(url, title) {
         let modal = document.getElementById('report-photo-modal');
         if (!modal) {
@@ -3786,20 +3838,38 @@
             modal.id = 'report-photo-modal';
             modal.className = 'fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex flex-col items-center justify-center p-4';
             modal.innerHTML = `
-                <div class="relative max-w-4xl w-full max-h-[90vh] flex flex-col items-center">
+                <div id="report-photo-modal-box" class="relative max-w-4xl w-full max-h-[90vh] flex flex-col items-center">
                     <div class="w-full flex items-center justify-between mb-3 px-2">
-                        <span id="report-photo-title" class="text-xs font-black text-cyan-400 uppercase tracking-widest">Report Photo</span>
-                        <button onclick="document.getElementById('report-photo-modal').classList.add('hidden')" class="bg-rose-500/20 border border-rose-500/30 text-rose-400 px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-rose-500/30 transition-all">Close ✕</button>
+                        <div class="flex items-center gap-2">
+                            <span id="report-photo-title" class="text-xs font-black text-cyan-400 uppercase tracking-widest">Report Photo</span>
+                            <span id="report-photo-fullscreen-tag" class="hidden text-[9px] font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-md uppercase tracking-wider">Original Quality</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="togglePhotoFullscreen()" class="bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 px-3 py-1.5 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-cyan-500/30 transition-all flex items-center gap-1.5" title="Double click photo or click to toggle fullscreen">
+                                <i class="fa-solid fa-expand text-[10px]"></i> Fullscreen
+                            </button>
+                            <a id="report-photo-open-btn" href="#" target="_blank" class="bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 px-3 py-1.5 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-cyan-500/30 transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-up-right-from-square text-[10px]"></i> Open Link
+                            </a>
+                            <button onclick="if(isPhotoFullscreen) togglePhotoFullscreen(); document.getElementById('report-photo-modal').classList.add('hidden')" class="bg-rose-500/20 border border-rose-500/30 text-rose-400 px-3 py-1.5 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-rose-500/30 transition-all">Close ✕</button>
+                        </div>
                     </div>
                     <div class="w-full max-h-[80vh] flex items-center justify-center overflow-auto rounded-2xl border border-white/10 bg-space-950 p-2 shadow-2xl">
-                        <img id="report-photo-img" src="" class="max-w-full max-h-[75vh] object-contain rounded-xl shadow-lg">
+                        <img id="report-photo-img" src="" ondblclick="togglePhotoFullscreen()" title="Double-click to toggle Fullscreen Original Quality" class="max-w-full max-h-[75vh] object-contain rounded-xl shadow-lg cursor-zoom-in transition-all duration-300">
                     </div>
+                    <p class="text-[9px] text-space-400 font-bold uppercase tracking-widest mt-2"><i class="fa-solid fa-hand-pointer text-cyan-400 mr-1"></i> Double-click image to toggle Fullscreen Original Quality</p>
                 </div>`;
             document.body.appendChild(modal);
         }
 
+        isPhotoFullscreen = false;
+        const modalBox = document.getElementById('report-photo-modal-box');
+        if (modalBox) modalBox.className = "relative max-w-4xl w-full max-h-[90vh] flex flex-col items-center transition-all duration-200";
+
+        const originalQualityUrl = formatOriginalQualityDriveUrl(url);
         document.getElementById('report-photo-title').innerText = title || 'Attached Photo Preview';
-        document.getElementById('report-photo-img').src = url;
+        document.getElementById('report-photo-img').src = originalQualityUrl;
+        document.getElementById('report-photo-open-btn').href = originalQualityUrl;
         modal.classList.remove('hidden');
     }
 
